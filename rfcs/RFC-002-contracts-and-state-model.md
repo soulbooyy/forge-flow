@@ -4,6 +4,18 @@
 
 Draft
 
+Review stage: Grill-Me feedback has been incorporated as current draft decisions. RFC-002 is intended to validate the contract and state boundaries required to unblock RFC-001 acceptance.
+
+## Current Draft Decisions
+
+- Runtime State must not be persisted into Durable Run Summary by default.
+- Runtime State may enter Durable Run Summary only through an explicit promotion, summarization, selection, and redaction step.
+- Milestone 1 `RepositoryContextResult` must use deterministic retrieval metadata instead of broad probabilistic `confidence` or free-form `ranking_rationale`.
+- Milestone 1 acceptance criteria must not require creation, validation, persistence, or use of `PatchProposal`, `ValidationResult`, `ReviewResult`, or `PRResult`.
+- `evidence_refs` must identify evidence location and verification metadata; raw source snippets must not be embedded by default.
+- Long-term Memory is entirely out of scope for Milestone 1, including both reads and writes.
+- RFC-002 must define minimum contract/state criteria required to unblock RFC-001 acceptance.
+
 ## Context
 
 ForgeFlow is an enterprise autonomous software engineering agent platform built on DeerFlow and LangGraph.
@@ -84,6 +96,36 @@ Runtime State exists to support execution. It should not be treated as a durable
 
 Runtime State may contain temporary references to repository files or command outputs, but it should avoid retaining large source snapshots or raw logs longer than needed.
 
+### Runtime-to-Durable Promotion Rule
+
+Runtime State must not be persisted into Durable Run Summary by default.
+
+Any value promoted from Runtime State into Durable Run Summary must pass through an explicit summarization, selection, and redaction step.
+
+The promotion step may produce only bounded durable records such as:
+
+- contract identifiers
+- final contract summaries
+- evidence references
+- artifact identifiers
+- policy decisions
+- stop reasons
+- retry counts
+- final status
+- bounded summaries
+
+Raw runtime values must not be copied into Durable Run Summary by default.
+
+Default persistence categories:
+
+| Category | Data |
+|---|---|
+| Persist by default | contract IDs, final contract summaries, evidence references, artifact IDs, policy decisions, stop reason, retry count, final status, approved lineage metadata |
+| Persist only if redacted and bounded | tool output excerpts, validation log excerpts, search result snippets, plan revision summaries, error excerpts, trace excerpts |
+| Do not persist by default | raw source files, full logs, scratch reasoning, failed intermediate contract drafts, secrets, temporary workspace paths, raw environment variables, unbounded command output, raw tool payloads |
+
+Durable Run Summary is an audit and product-facing record, not a dump of runtime internals.
+
 ## Durable Run Summary / Audit Record
 
 Durable Run Summary / Audit Record is persisted for traceability, PR summary generation, evaluation, retrospective review, and audit.
@@ -145,7 +187,35 @@ Long-term Memory must not store:
 - transient run context
 - customer-sensitive data
 
-First-version Memory should default to no automatic writes. If memory writes exist at all, they must require human confirmation and should only store stable engineering knowledge.
+For milestones after Milestone 1, Memory should default to no automatic writes. If memory writes exist at all in later milestones, they must require human confirmation and should only store stable engineering knowledge.
+
+### Milestone 1 Memory Boundary
+
+Long-term Memory is out of scope for Milestone 1.
+
+Milestone 1 must not read from or write to Long-term Memory when producing `RepositoryContextResult`.
+
+`RepositoryContextResult` must be derived only from:
+
+- repo workspace
+- query or issue text
+- project configuration
+- conventions detectable in the workspace
+- deterministic retrieval signals
+- evidence references
+
+The following must not affect Milestone 1 repository context results:
+
+- prior run notes
+- manually curated memory
+- historical repair outcomes
+- previous validation summaries
+- user preferences
+- other memory-derived context
+
+If memory reads are introduced in a later milestone, they must require a separate accepted RFC or OpenSpec, be clearly labeled as non-authoritative context, remain separated from repository facts, and be excluded from deterministic retrieval scoring.
+
+Human-confirmed memory writes are not allowed in Milestone 1.
 
 ## Structured Contract Principles
 
@@ -204,7 +274,7 @@ It should express:
 - file search results
 - optional simple symbol hints
 - test command hints
-- confidence or ranking rationale
+- deterministic retrieval metadata
 - limitations
 
 Minimum field direction:
@@ -221,8 +291,9 @@ Minimum field direction:
 - `symbol_hints`
 - `test_command_hints`
 - `evidence_refs`
-- `confidence`
-- `ranking_rationale`
+- `match_score`
+- `match_reasons`
+- `ranking_inputs`
 - `limitations`
 
 `RepositoryContextResult` does not contain:
@@ -235,6 +306,51 @@ Minimum field direction:
 - memory write
 
 `RepositoryContextResult` should be deterministic in Milestone 1. It should be grounded in file search, text search, cheap language-agnostic symbol hints, project configuration, repository conventions, and evidence references.
+
+### Repository Context Ranking Metadata
+
+During Milestone 1, `RepositoryContextResult` must not expose broad probabilistic or semantic judgment fields such as generic `confidence` or free-form `ranking_rationale`.
+
+Ranking metadata must describe deterministic retrieval signals only.
+
+Milestone 1 should use bounded fields such as:
+
+- `match_score`
+- `match_reasons`
+- `ranking_inputs`
+- `evidence_refs`
+- `limitations`
+
+Field direction:
+
+- `match_score`: deterministic score derived from reproducible retrieval inputs.
+- `match_reasons`: bounded enum or controlled list of retrieval reasons.
+- `ranking_inputs`: deterministic signals used to compute ordering.
+- `evidence_refs`: references to evidence used by retrieval.
+- `limitations`: known retrieval gaps, unavailable analyzers, or incomplete coverage.
+
+`match_score` must be derived from deterministic retrieval inputs such as:
+
+- filename matches
+- path matches
+- text matches
+- cheap language-agnostic symbol hints
+- project configuration
+- test conventions
+- other reproducible repository signals
+
+`match_reasons` should use controlled values such as:
+
+- `filename_match`
+- `path_match`
+- `text_match`
+- `symbol_hint`
+- `test_convention_match`
+- `config_match`
+
+Free-form semantic rationale is not allowed in Milestone 1 unless it is clearly a bounded deterministic explanation of retrieval signals.
+
+`RepositoryContextResult` ranking metadata explains deterministic retrieval signals; it must not infer semantic relevance beyond evidence or represent agent belief.
 
 ## PatchProposal
 
@@ -328,17 +444,54 @@ The PR role only packages policy-eligible artifacts. `PRResult` records what hap
 Evidence references may point to:
 
 - file paths
-- file snippets or line ranges
+- line ranges
 - text search results
 - symbol hints
-- test output excerpts
-- tool outputs
+- command IDs
+- tool call IDs
+- artifact IDs
+- retrieval methods
+- content hashes
+- match metadata
 - validation reports
 - policy check results
 
 Evidence references should be compact, reproducible, and safe to persist. They should avoid embedding large source files or full logs directly into contracts.
 
 Evidence references matter because they make role outputs inspectable, testable, and suitable for PR summaries and evaluation.
+
+### Evidence Reference and Payload Boundary
+
+Contracts should prefer evidence references over embedded evidence payloads.
+
+`evidence_refs` identify where evidence came from and how it can be verified. They may include:
+
+- file path
+- line range
+- symbol name
+- search query
+- command ID
+- tool call ID
+- artifact ID
+- retrieval method
+- content hash
+- match metadata
+
+`evidence_refs` must not embed raw source content by default.
+
+Inline evidence excerpts are evidence payloads, not evidence references.
+
+Evidence payloads may include source snippets, validation output excerpts, or tool output excerpts only when they are:
+
+- optional
+- bounded
+- redacted
+- policy-governed
+- retained according to RFC-004 and RFC-005 policy
+
+For Milestone 1, `RepositoryContextResult` may include file paths, line ranges, match metadata, retrieval metadata, and content hashes by default.
+
+Inline source snippets must not be required for Milestone 1 acceptance criteria and must not be persisted by default.
 
 ## Artifact IDs
 
@@ -420,6 +573,24 @@ It helps unblock RFC-001 acceptance by:
 
 RFC-001 defines role and authority boundaries. RFC-002 defines the contract and state model needed to preserve those boundaries.
 
+## RFC-001 Acceptance Support
+
+RFC-002 is sufficient to unblock RFC-001 acceptance only if its contract and state model preserves the role, authority, runtime-control, and persistence boundaries defined by RFC-001.
+
+At minimum, RFC-002 must confirm that:
+
+- Planner artifacts remain declarative, advisory, and non-executable.
+- `RepositoryContextResult` contains deterministic retrieval evidence and bounded retrieval metadata, not agent judgment, root-cause inference, or repair strategy.
+- `PatchProposal` is the first contract that may carry fix strategy, patch intent, changed-file intent, or proposed code changes.
+- `ValidationResult` is diagnostic and must not prescribe repair, produce patch instructions, or direct changed files.
+- `ReviewResult` is recommendational and must not authorize PR creation, replace Human Approval, or contain final approval fields such as `approved_for_pr`.
+- `PRResult` records policy-gated side effects and artifact references, but must not authorize side effects, mutate patches, or reinterpret reviewed artifacts.
+- Policy decisions may be referenced or recorded by contracts, but policy authority belongs to RFC-004 and policy middleware.
+- Retry lineage must be representable without giving any workflow role ownership of retry loops, retry budgets, or stop-condition enforcement.
+- Durable Run Summary can be produced through explicit promotion and redaction without persisting raw Runtime State by default.
+
+If RFC-002 cannot satisfy these criteria, RFC-001 must remain Draft until the contract and state boundaries are revised.
+
 ## Relationship with Milestone 1
 
 Milestone 1 only requires the Repository Context Foundation Slice.
@@ -430,7 +601,7 @@ For Milestone 1, RFC-002 requires direction for:
 - evidence references
 - artifact references if needed
 - Runtime State vs Durable Run Summary distinction for context queries
-- no automatic Long-term Memory writes
+- no Long-term Memory reads or writes
 
 Milestone 1 does not require implementation of:
 
@@ -440,6 +611,30 @@ Milestone 1 does not require implementation of:
 - `PRResult`
 
 Those contracts are included here only as future milestone design direction.
+
+### Milestone 1 Contract Scope
+
+Milestone 1 acceptance criteria must not require creation, validation, persistence, or use of:
+
+- `PatchProposal`
+- `ValidationResult`
+- `ReviewResult`
+- `PRResult`
+
+During Milestone 1, these future contracts may be referenced only as compatibility anchors to avoid contract and state decisions that would block later workflow stages.
+
+They must not be:
+
+- implemented
+- tested
+- validated
+- persisted
+- exposed as Milestone 1 outputs
+- required by Milestone 1 acceptance criteria
+
+`RepositoryContextResult` is the only required Milestone 1 contract deliverable.
+
+Future contracts may be described in RFC-002 as future directions, but their presence in the document must not expand Milestone 1 scope.
 
 ## Alternatives Considered
 
@@ -465,7 +660,7 @@ Rejected for this RFC because it would over-specify future milestones. RFC-002 s
 
 ForgeFlow could write memory after every apparently successful run.
 
-Rejected for early milestones because success may be partial, evidence may be incomplete, and unverified lessons can pollute future runs. Early memory writes require human confirmation.
+Rejected for Milestone 1 because success may be partial, evidence may be incomplete, and unverified lessons can pollute future runs. Later memory reads or writes require a separate accepted RFC or OpenSpec, and writes require human confirmation.
 
 ## Trade-offs
 
@@ -494,18 +689,21 @@ The trade-off is intentional. ForgeFlow prioritizes governable engineering autom
 - Contracts may become too weak if important policy or evidence fields are omitted.
 - Free-form fields may reintroduce implicit authority unless carefully bounded.
 - Artifact references may become unusable if retention and redaction are not defined in RFC-005 and RFC-004.
-- Long-term Memory may become unsafe if human confirmation is skipped.
+- Long-term Memory may become unsafe if introduced before a later RFC or OpenSpec defines read/write boundaries.
 - Milestone 1 may expand if future contracts are mistaken for implementation requirements.
+- Durable Run Summary may leak runtime internals if promotion and redaction are skipped.
+- Evidence payloads may leak source code if confused with evidence references.
 
 ## Open Questions
 
 - What is the minimal Milestone 1 schema for `RepositoryContextResult`?
-- What evidence reference format is stable enough for search results, file snippets, and test hints?
+- What evidence reference format is stable enough for search results, file line ranges, and test hints?
 - Which artifacts need IDs in Milestone 1, if any?
 - How should mutable and immutable contract fields be identified?
 - How should contract supersession work across retries?
 - What fields belong in Durable Run Summary versus contract artifacts?
-- What memory review workflow is required before any memory writes are allowed?
+- What later milestone should introduce non-authoritative memory reads, if any?
+- What memory review workflow is required before any future memory writes are allowed?
 - How should contract versions be represented across RFCs and OpenSpec changes?
 
 ## Decision Summary
@@ -513,13 +711,18 @@ The trade-off is intentional. ForgeFlow prioritizes governable engineering autom
 - ForgeFlow state is split into Runtime State, Durable Run Summary / Audit Record, and Long-term Memory.
 - Runtime State is short-lived, mutable workflow execution state.
 - Durable Run Summary / Audit Record is persisted for trace, PR summary, evaluation, retrospective, and audit.
+- Runtime State must enter Durable Run Summary only through explicit promotion, summarization, selection, and redaction.
 - Long-term Memory stores only stable engineering knowledge and must not store source code, secrets, temporary logs, unverified reasoning, or large diffs.
-- First-version Memory does not auto-write unless human-confirmed.
+- Long-term Memory is entirely out of scope for Milestone 1, including reads and writes.
 - ForgeFlow uses structured contracts instead of free-form role outputs.
 - `RepositoryContextResult` is the only contract required for Milestone 1.
+- Milestone 1 acceptance criteria must not require creation, validation, persistence, or use of `PatchProposal`, `ValidationResult`, `ReviewResult`, or `PRResult`.
 - `PatchProposal`, `ValidationResult`, `ReviewResult`, and `PRResult` are future milestone contract directions.
+- Milestone 1 `RepositoryContextResult` uses deterministic retrieval metadata such as `match_score`, `match_reasons`, and `ranking_inputs`, not broad probabilistic confidence or free-form ranking rationale.
 - Contracts should consider schema version, run ID, contract ID, timestamps, evidence refs, artifact IDs, risk flags, policy decisions, retry lineage, stop reason, and mutable/immutable field boundaries.
-- Evidence references point to files, snippets, search results, test outputs, and tool outputs.
+- Evidence references point to evidence location and verification metadata, not raw source content by default.
+- Evidence payloads such as snippets or output excerpts are optional, bounded, redacted, and policy-governed.
 - Artifact IDs point to larger persisted artifacts such as diffs, logs, run summaries, and PR body drafts.
 - Contracts should reference large artifacts instead of embedding all content directly.
 - RFC-002 supports RFC-001 by making workflow role handoffs explicit, testable, auditable, and policy-readable.
+- RFC-002 defines minimum contract/state criteria required to unblock RFC-001 acceptance.
