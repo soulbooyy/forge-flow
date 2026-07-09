@@ -1,3 +1,22 @@
+# 初始架构草稿
+
+状态：历史草稿  
+类型：早期设计输入  
+最后更新：2026-07-09
+
+本文档记录 ForgeFlow 在第一次 Grill-Me 架构评审之前的早期架构设想。
+
+它不是当前权威架构规范。
+
+当前项目方向以后续文档为准：
+- `docs/vision.md`
+- `docs/milestones.md`
+- `docs/development-process.md`
+- `docs/project-foundation-proposal.md`
+- `rfcs/`
+
+本文档中的部分设计可能已经被后续 RFC 或项目文档收敛、修正或取代。
+
 ## 1. 项目名称
 
 **DeerFlow Autonomous Software Engineer Agent**
