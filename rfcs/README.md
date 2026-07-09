@@ -18,7 +18,7 @@ RFCs are not feature implementation specs. Feature-level implementation plans be
 
 | RFC | Title | Status | Purpose |
 |---|---|---|---|
-| RFC-001 | Agent Architecture | Draft | Define Planner, Software Engineer, Validation, Review, and PR as workflow roles; clarify role boundaries, workflow graph ownership, repair-loop ownership, and human approval separation. |
+| [RFC-001](RFC-001-agent-architecture.md) | Agent Architecture | Draft | Define Planner, Software Engineer, Validation, Review, and PR as workflow roles; clarify role boundaries, workflow graph ownership, repair-loop ownership, and human approval separation. |
 | RFC-002 | State Model and Structured Contracts | Draft | Define Runtime State, Durable Run Summary / Audit Record, Long-term Memory, and the required contract families such as `RepositoryContextResult`, `PatchProposal`, `ValidationResult`, `ReviewResult`, and `PRResult`. |
 | RFC-003 | Tool and MCP Integration | Draft | Define tool capability levels, evidence-returning requirements, MCP integration boundaries, sandbox edit access, and external write policy. |
 | RFC-004 | Sandbox and Security Governance | Draft | Define command policy, path policy, network policy, resource limits, diff thresholds, secret scanning, sensitive file policy, cost/retry caps, and human approval gates. |
