@@ -36,7 +36,7 @@ The long-term vision is autonomous software maintenance. The first implementatio
 
 | Milestone | Name | Goal | Main Deliverable | Status | Depends On |
 |---|---|---|---|---|---|
-| Milestone 0 | Project Foundation | Establish project boundaries, documentation system, RFC roadmap, and scope corrections. | Foundation documents and RFC roadmap. | In progress | Initial architecture draft |
+| Milestone 0 | Project Foundation | Establish project boundaries, documentation system, RFC roadmap, and scope corrections. | Foundation documents, RFC roadmap, and initial ADRs. | Near Complete | Initial architecture draft |
 | Milestone 1 | Repository Context Foundation Slice | Build the first deterministic repository context capability. | Repository Context Service OpenSpec and `RepositoryContextResult`. | Planned | Milestone 0, RFC-001/002/004/007 skeleton decisions |
 | Milestone 2 | Structured PatchProposal Slice | Produce evidence-backed patch intent from repository context. | `PatchProposal` contract and governed patch proposal flow. | Planned | Milestone 1, RFC-002/003/004 |
 | Milestone 3 | Validation and Review Slice | Validate patches and produce blocking-level review results. | `ValidationResult`, `ReviewResult`, bounded retry policy. | Planned | Milestone 2, RFC-004/005/006 |
@@ -354,6 +354,10 @@ These rules protect ForgeFlow from turning the long-term vision into the first i
 
 - Milestone 1 must not expand into patch generation.
 - Repository Context Service must remain deterministic in Milestone 1.
+- Milestone 1 must not include autonomous code editing.
+- Milestone 1 must not include validation repair loops.
+- Milestone 1 must not include PR creation.
+- Repository Context Service must not use LLM reasoning in Milestone 1.
 - Draft PR is not required before Milestone 4.
 - Similar issue retrieval is not required before Milestone 6.
 - SWE-bench is not required for the first evaluation milestone.
@@ -385,15 +389,28 @@ Current milestone:
 
 ```text
 Milestone 0: Project Foundation
-Status: In progress
+Status: Near Complete
+Next phase: OpenSpec Feature Planning for Milestone 1
 ```
+
+Completed:
+
+- Project foundation documents created.
+- RFC roadmap created.
+- RFC-001 Agent Architecture baselined and accepted as the Milestone 1 scope guard.
+- RFC-002 Contracts and State Model drafted and reviewed.
+- RFC-004 Sandbox and Security Governance drafted and reviewed.
+- RFC-007 DeerFlow Extension Strategy drafted and reviewed.
+- DeerFlow upstream revision recorded.
+- DeerFlow extension-point assessment completed.
+- Initial ADRs recorded.
+- Milestone 1 and full MVP boundary clarified.
 
 Next steps:
 
-- finalize `vision.md`
-- finalize `milestones.md`
-- finalize `development-process.md`
-- create RFC-001 Agent Architecture
-- run Grill-Me review on RFC-001
-- proceed to RFC-002, RFC-004, and RFC-007
-- only after that, create the first OpenSpec change for Repository Context Service
+- initialize OpenSpec
+- create first OpenSpec change: Repository Context Service
+- keep Milestone 1 limited to Repository Context Foundation Slice
+- define `RepositoryContextResult` feature scope
+- prepare controlled evaluation fixtures for Milestone 1
+- do not start `PatchProposal`, Validation, or PR implementation yet
