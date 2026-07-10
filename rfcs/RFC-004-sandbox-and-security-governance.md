@@ -6,6 +6,19 @@ Draft
 
 RFC-004 is an RFC-001 acceptance precondition. RFC-001 should not become Accepted until RFC-004 defines a usable sandbox and security governance skeleton that can enforce the side-effect, approval, retry, and policy boundaries described by RFC-001.
 
+Review stage: Grill-Me feedback has been incorporated as current draft decisions. RFC-004 is intended to validate the sandbox, security, approval, side-effect, and policy boundaries required to unblock RFC-001 acceptance.
+
+## Current Draft Decisions
+
+- Milestone 1 requires a controlled read-only workspace boundary, not full sandbox-local write/test execution.
+- Tool permission levels classify capability surfaces; they are not final authorization decisions.
+- Every command execution must be represented as a policy-evaluable Command Intent before execution.
+- Every Human Approval gate must use a structured Approval Request artifact.
+- Diff thresholds are policy-profile based, with conservative defaults and reviewed repo-level overrides.
+- Every policy-evaluated action must produce a structured Policy Decision Record.
+- Secret scanning and redaction must happen before artifact persistence, commit creation, draft PR packaging, or external publication.
+- RFC-004 must define explicit RFC-001 Security Acceptance Criteria before it can unblock RFC-001 acceptance.
+
 ## Context
 
 ForgeFlow is an enterprise autonomous software engineering agent platform built on DeerFlow and LangGraph.
@@ -94,16 +107,87 @@ Rules:
 
 This model follows the principle: Agent proposes, policy decides.
 
+### Policy Decision Record
+
+Policy decisions must be structured audit records, not unstructured log lines.
+
+Every policy-evaluated action must produce a Policy Decision Record, whether the result is:
+
+- `allowed`
+- `blocked`
+- `requires_human_approval`
+
+At minimum, a Policy Decision Record should include:
+
+- decision ID
+- run ID
+- policy profile ID and version
+- action intent ID when applicable
+- command intent ID when applicable
+- approval request ID when applicable
+- tool level
+- action type
+- target paths
+- decision result
+- triggered rules
+- risk flags
+- required approvals
+- artifact IDs
+- evidence references
+- timestamp
+- evaluator identity and version
+- expiration or revalidation requirement when applicable
+- bounded reason summary
+
+Policy Decision Records must link policy outcomes to the specific action, artifacts, paths, policy profile, and evidence evaluated at decision time.
+
+They must be suitable for:
+
+- audit
+- debugging
+- human review
+- PR evidence
+- evaluation
+
+A later action must not rely on a stale Policy Decision Record if any of the following changed:
+
+- action intent
+- command intent
+- approval request
+- artifact
+- diff
+- target paths
+- policy profile
+- validation result
+- review result
+- human approval state
+
 ## Tool Permission Levels
 
-ForgeFlow tools should be classified by capability level.
+ForgeFlow tools should be classified by capability level. Tool permission levels are capability classifications, not final authorization decisions.
+
+A tool level describes the capability surface exposed by a tool, such as read-only repository access, sandbox-local mutation, external side effects, or actions that may require Human Approval. The level alone must not determine whether a concrete action is allowed.
+
+Every concrete tool action must still be evaluated by policy. Policy evaluation should consider:
+
+- tool level
+- target path
+- command or action
+- diff size
+- sensitive file category
+- network access
+- artifact persistence
+- approval state
+- run context
+- milestone scope
+- applicable security or governance rules
 
 | Level | Name | Examples | Expected Use |
 |---|---|---|---|
 | Level 0 | Read-only repository context | file search, text search, read bounded file references, inspect project config, read-only `git status` or `git log` if allowed | Milestone 1 |
 | Level 1 | Sandbox-local write | edit files inside isolated workspace, create temporary files, generate diff, run tests inside sandbox | Patch / Validation slices |
 | Level 2 | External side effect | create branch, create commit, create draft PR, comment on GitHub issue / PR, query CI status | Draft PR MVP |
-| Level 3 | High-risk / approval-required | modify sensitive files, delete files, change GitHub Actions, change deployment config, change auth / crypto / permission logic, large diff, merge PR, deployment, production access | Approval-gated only |
+| Level 3 | High-risk / approval-gated category | modify sensitive files, delete files, change GitHub Actions, change deployment config, change auth / crypto / permission logic, large diff, merge PR, deployment, production access | Approval-gated only |
 
 Milestone 1 should primarily use Level 0.
 
@@ -111,7 +195,17 @@ Patch and Validation milestones may use Level 1.
 
 The Draft PR MVP may use Level 2.
 
-Level 3 requires Human Approval. The MVP does not allow automatic merge or deployment.
+Level 0 must not be treated as automatically safe, because read-only access may still expose sensitive files, secrets, proprietary source, or restricted configuration.
+
+Level 1 must not be treated as automatically allowed, because sandbox-local writes may still affect sensitive files or exceed diff policy.
+
+Level 2 must not be treated as automatically authorized, because external side effects require artifact and policy checks.
+
+Level 3 should be understood as a policy outcome or approval-gated action category, not a substitute for policy evaluation.
+
+Tool permission level classifies capability surface; policy decides authorization for a specific action.
+
+The MVP does not allow automatic merge or deployment.
 
 ## Sandbox Boundary
 
@@ -141,16 +235,78 @@ This RFC does not choose the final sandbox implementation technology. Docker, VM
 
 Sandbox failure should become structured evidence, not unbounded raw logs.
 
+### Milestone 1 Read-Only Workspace Boundary
+
+Milestone 1 does not require the full sandbox-local write/test execution environment. It requires a controlled read-only workspace boundary for Repository Context Service.
+
+At minimum, Milestone 1 must:
+
+- identify an explicit repository workspace root
+- confine all repository reads to that workspace root
+- forbid parent-directory escape
+- forbid symlink escape
+- forbid reads outside the workspace root
+- forbid repository file writes
+- forbid dependency installation
+- forbid network access by default
+- forbid arbitrary command execution
+- allow only approved read-only search or inspection tools
+- ensure approved read-only tools are workspace-confined
+- ensure outputs are bounded and redacted according to evidence and summary policy
+
+Any file output must be limited to controlled ForgeFlow artifacts when required, and those artifacts must not mutate the repository workspace.
+
+Evidence references may include file paths, line ranges, match metadata, retrieval metadata, and content hashes by default, but must not embed raw source snippets by default.
+
+Full sandbox-local write, edit, test, dependency installation, arbitrary command execution, and network semantics are deferred to later Level 1 or higher sandbox milestones.
+
+Milestone 1 acceptance must not depend on future write/test sandbox infrastructure.
+
 ## Command Policy
 
 Command execution must be policy-gated.
+
+### Command Intent Boundary
+
+Every command execution must be represented as a policy-evaluable Command Intent before execution.
+
+Command Intent is a documentation-level contract for policy evaluation, not necessarily an implementation API in this RFC. It describes the proposed command action in structured form so policy can evaluate the action before sandbox execution.
+
+At minimum, a Command Intent should identify:
+
+- command name
+- arguments
+- working directory
+- environment policy
+- requested network access
+- expected outputs or artifacts
+- timeout request
+- output size limit
+- workflow step
+- contract reference or run reference
+- reason for execution
+- proposed tool permission level
+
+Command Intent must describe environment policy rather than persist or expose a raw environment dump.
+
+Policy evaluation must consume the Command Intent and return an explicit decision before execution begins. Controlled decision values should include:
+
+- `allowed`
+- `blocked`
+- `requires_human_approval`
+
+Raw shell strings must not be the unit of policy evaluation.
+
+Shell text, if used by the execution layer, must be derived from or associated with an approved Command Intent.
+
+Execution logs and artifacts must link back to the Command Intent, workflow step, run reference, and relevant contract references so command execution remains auditable and reproducible.
 
 Recommended command policy:
 
 - Unknown commands are denied by default.
 - Safe commands may be allowlisted.
 - Denylists are secondary protection, not the primary model.
-- Commands must be parsed structurally, not only string-matched.
+- Command allowlists and denylists are policy inputs; they must not replace Command Intent evaluation.
 - Dangerous shell features should be blocked or approval-gated.
 - Commands must have timeout limits.
 - Commands must have output size limits.
@@ -217,21 +373,51 @@ Modifying sensitive files is not always forbidden, but it must be policy-gated. 
 
 Diffs must be bounded and inspectable.
 
-Diff boundary policy should evaluate:
+Diff thresholds are policy inputs, not agent suggestions.
+
+Diff boundary policy should be policy-profile based, with conservative global defaults and repo-level overrides only through reviewed configuration.
+
+A diff policy profile should define thresholds and handling rules for:
 
 - changed file count threshold
 - total changed line threshold
+- deletions
+- binary modifications
 - generated file handling
-- deletion detection
-- binary file modification detection
-- sensitive path detection
-- scope drift detection
+- sensitive paths
+- scope drift
+- human approval thresholds
+- hard block thresholds
+
+Policy evaluation must record:
+
+- which policy profile was used
+- which thresholds were applied
+- which repo-level overrides were active
+- which sensitive-path overrides were active
+- which generated-file rules were applied
+- which rule produced the final decision
+
+Repo-level overrides may adjust thresholds only through reviewed and auditable configuration.
+
+Repo-level overrides must not silently weaken:
+
+- sensitive-path policy
+- approval requirements
+- hard block rules
+- milestone scope constraints
+- secret scanning requirements
+- external side-effect policy
+
+Agent roles may explain why a large diff is necessary, but they must not create, modify, weaken, or bypass diff thresholds.
+
+The workflow graph and policy middleware must treat threshold values as policy-controlled inputs.
 
 Diff boundary violations should produce one of these policy decisions:
 
-- allowed
-- blocked
-- requires_human_approval
+- `allowed`
+- `blocked`
+- `requires_human_approval`
 
 The policy decision should be recorded in the durable run record and made available to downstream contracts where relevant.
 
@@ -241,14 +427,42 @@ Secret scanning and redaction are minimum guardrails.
 
 ForgeFlow should:
 
-- scan generated diff
-- scan logs if persisted
-- scan PR body if generated
+- scan generated diffs before commit creation, branch packaging, or draft PR packaging
+- scan PR body drafts before draft PR creation
+- scan logs, tool outputs, command outputs, validation outputs, and trace excerpts before durable persistence or user-facing summaries
 - avoid storing secrets in memory
 - avoid storing raw source snippets in long-term memory
 - redact sensitive tool outputs
 - redact credentials, tokens, private keys, and environment values
 - prefer trace references and artifact IDs over large raw payloads when possible
+
+A patch artifact with unresolved secret warnings must not be used for commit creation or PR packaging until policy has resolved the warning.
+
+PR body generation must not externally publish:
+
+- tokens
+- credentials
+- customer data
+- sensitive configuration
+- unredacted secret-like content
+
+Confirmed secrets must be blocked, not merely approval-gated.
+
+Uncertain or low-confidence secret warnings may require Human Approval or security review according to severity and policy profile.
+
+Secret scanning and redaction results must produce or reference a Policy Decision Record that records:
+
+- scanned artifact
+- triggered rules
+- severity
+- decision
+- required approvals if any
+- redaction status
+- artifact IDs
+
+Secret scanning must be preventive, not merely detective.
+
+Audit trails should show that unsafe artifacts were blocked or redacted before persistence, commit creation, PR packaging, or external publication.
 
 Secret scanning is a minimum guardrail, not a complete security guarantee.
 
@@ -309,6 +523,43 @@ The MVP allows draft PR creation only through policy-gated workflow. It does not
 
 Human Approval is independent from Review. Review recommends; policy and Human Approval decide.
 
+### Human Approval Request Boundary
+
+Any Human Approval gate must be represented by a structured Approval Request artifact.
+
+Human Approval must approve a specific policy-gated action artifact, not a vague workflow stage.
+
+An Approval Request should identify:
+
+- requested action
+- action intent ID or command intent ID
+- triggering policy rule
+- risk flags
+- affected paths
+- sensitive file categories
+- diff summary when applicable
+- evidence references
+- artifact IDs
+- validation status when applicable
+- review status when applicable
+- available approval choices
+- expiration or revalidation requirements
+- audit record linkage
+
+Approval choices should include at least:
+
+- approve
+- reject
+- request changes
+
+An approval decision must be scoped to the specific action, artifacts, policy state, and risk context presented in the Approval Request.
+
+It must not be reused for broader actions, changed artifacts, expanded diff scope, different affected paths, or later side effects unless policy explicitly allows reuse and revalidation conditions are satisfied.
+
+If the underlying artifact, diff, policy result, validation result, review result, affected path set, or requested side effect changes after approval, the approval must expire or require revalidation.
+
+Human Approval is an auditable policy gate. It must not be reduced to an unstructured chat prompt.
+
 ## Observability and Redaction Requirements
 
 Security-relevant decisions must be visible in traces and durable run records.
@@ -344,7 +595,9 @@ RFC-004 supports RFC-001 by confirming:
 - Planner output is advisory, not permission.
 - Review recommends; policy decides.
 - Human Approval is an independent gate.
+- Human Approval approves structured Approval Request artifacts, not vague workflow stages.
 - PR role only packages policy-eligible artifacts.
+- PR side effects such as branch creation, commit creation, and draft PR creation are separately policy-gated.
 - Workflow graph must respect policy outcomes.
 - Agent roles must not own policy, approval, retries, or side-effect authorization.
 
@@ -361,6 +614,7 @@ RFC-004 expects:
 - `artifact_ids` referencing sandbox logs, diffs, scans, and PR body artifacts
 - `evidence_refs` avoiding large raw sensitive payloads
 - `stop_reason` recording `blocked`, `approval_required`, `resource_limit_exceeded`, or similar outcomes
+- Policy Decision Records referenced from contracts or run summary when policy decisions affect downstream eligibility
 
 Contracts should not become policy engines. Policy authority belongs to RFC-004 and policy middleware; contracts make policy-relevant facts visible.
 
@@ -379,12 +633,17 @@ Milestone 1 does not require:
 
 Milestone 1 still requires:
 
+- explicit repository workspace root
 - read-only path policy
 - evidence reference policy
 - trace redaction policy
 - workspace boundary
+- approved workspace-confined read-only search or inspection tools
 - no memory auto-write
 - no LLM reasoning inside Repository Context Service
+- no dependency installation
+- no arbitrary command execution
+- no broad network access
 
 Security guardrails must not be postponed simply because Milestone 1 is read-only. The Milestone 1 security scope should be small, but explicit.
 
@@ -456,16 +715,41 @@ Human Approval for every action would block useful automation. It remains approp
 - Agent proposes; policy decides.
 - Review recommends; policy decides.
 - Human Approval is an independent gate.
-- Milestone 1 is read-only repository context.
+- Human Approval uses structured Approval Request artifacts.
+- Every policy-evaluated action produces a structured Policy Decision Record.
+- Command execution requires a policy-evaluable Command Intent before execution.
+- Tool permission levels classify capability surface; policy decides authorization for concrete actions.
+- Milestone 1 is controlled read-only repository context, not full sandbox-local write/test execution.
 - Security guardrails must not be postponed.
 - High-risk actions require approval.
 - Automatic merge and deployment are out of MVP scope.
 - Policy decisions are stored in Durable Run Summary / Audit Record.
 - Prefer references and artifacts over raw sensitive payloads.
-- Level 0 tools are appropriate for Milestone 1.
-- Level 1 tools are expected for later Patch / Validation slices.
-- Level 2 tools are expected for Draft PR MVP.
-- Level 3 actions require Human Approval.
+- Diff thresholds are policy-profile based, with conservative defaults and reviewed repo-level overrides.
+- Secret scanning and redaction happen before persistence, commit creation, PR packaging, or external publication.
+- Level 0 capability is appropriate for Milestone 1 when policy allows specific read-only actions.
+- Level 1 capability is expected for later Patch / Validation slices.
+- Level 2 capability is expected for Draft PR MVP.
+- Level 3 is an approval-gated action category, not a substitute for policy evaluation.
+
+## RFC-001 Security Acceptance Criteria
+
+RFC-004 is sufficient to unblock RFC-001 acceptance only if it demonstrates that the security, policy, approval, sandbox, retry, and side-effect boundaries required by RFC-001 can be enforced.
+
+At minimum, RFC-004 must confirm that:
+
+- Every executable or side-effecting action is represented by an Action Intent or Command Intent before execution.
+- Every policy-evaluated action produces a structured Policy Decision Record with an explicit result such as `allowed`, `blocked`, or `requires_human_approval`.
+- Tool permission levels are capability classifications, not final authorization decisions.
+- Human Approval uses structured Approval Request artifacts and approves specific policy-gated actions, not vague workflow stages.
+- PR side effects, including branch creation, commit creation, and draft PR creation, are separately policy-gated.
+- `ReviewResult` cannot authorize PR creation, replace Human Approval, or contain final approval fields such as `approved_for_pr`.
+- Diff, secret scanning, path, command, network, artifact persistence, and external side-effect policies can block or escalate actions before execution, persistence, packaging, commit creation, or external publication.
+- Retry budgets, resource limits, timeout limits, and stop-condition enforcement are owned by workflow graph / runtime policy, not by workflow roles.
+- Policy decisions are persisted into Durable Run Summary or audit records as structured policy evidence.
+- Milestone 1 has an explicit read-only workspace boundary that is distinct from later sandbox-local write/test execution.
+
+If RFC-004 cannot satisfy these criteria, RFC-001 must remain Draft until the security and policy boundaries are revised.
 
 ## Acceptance Preconditions
 
