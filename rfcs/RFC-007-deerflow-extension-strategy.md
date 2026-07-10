@@ -6,6 +6,20 @@ Draft
 
 RFC-007 is an RFC-001 acceptance precondition. RFC-001 should not become Accepted until RFC-007 defines the extension boundary between DeerFlow runtime foundations and ForgeFlow product-layer behavior.
 
+Review stage: Grill-Me feedback has been incorporated as current draft decisions. RFC-007 remains Draft until pinned DeerFlow revision, extension-point capability assumptions, state mapping boundary, policy attachment feasibility, no-core-modification rule, and minimal Milestone 1 integration scope are documented.
+
+## Current Draft Decisions
+
+- ForgeFlow may depend on documented DeerFlow extension points, but undocumented DeerFlow dependencies must be recorded as integration assumptions.
+- DeerFlow must be pinned before Milestone 1 implementation begins, preferably as a Git submodule under `third_party/deer-flow`, or with an equivalent immutable commit reference.
+- Milestone 1 acceptance must not depend on local DeerFlow core modifications, temporary patches, or unmerged DeerFlow patches.
+- ForgeFlow structured contracts and Durable Run Summary are authoritative product-layer state.
+- DeerFlow messages, runtime state, and checkpoints may only carry mapped runtime state, transient context, recoverable references, or explicitly mapped contract-derived data.
+- RFC-007 must include a DeerFlow extension-point capability assessment for RFC-004 policy attachment feasibility.
+- Milestone 1 DeerFlow work must stay minimal and limited to read-only Repository Context assumptions, pinning/reference, no-core-modification proof, and documented limitations.
+- Full workflow graph integration, role runtime implementation, write/test sandbox integration, approval pause/resume, PR side effects, and full checkpoint mapping are deferred to later milestones.
+- RFC-007 must define RFC-001 DeerFlow Extension Acceptance Criteria and remain Draft until those criteria are documented.
+
 ## Context
 
 ForgeFlow is built on DeerFlow and LangGraph, but its goal is not to rename DeerFlow, copy DeerFlow source, or modify DeerFlow internals without an explicit boundary. ForgeFlow is an enterprise autonomous software engineering agent platform focused on software maintenance workflows.
@@ -109,6 +123,36 @@ ForgeFlow should not redefine DeerFlow generic runtime concepts unless a future 
 
 DeerFlow may execute generic graph and tool orchestration mechanics. ForgeFlow owns the product meaning of a software maintenance workflow, the contracts that pass between workflow roles, and the policy decisions that govern side effects.
 
+## DeerFlow Integration Assumption Boundary
+
+ForgeFlow may depend on documented DeerFlow extension points, but it must not silently depend on DeerFlow internals or undocumented extension behavior.
+
+Any dependency on DeerFlow internal state shape, message format, checkpoint layout, tool registry internals, middleware ordering, tracing payload structure, or other undocumented runtime behavior must be recorded as an integration assumption before implementation.
+
+Boundary-crossing implementation choices require RFC, ADR, or OpenSpec documentation before use.
+
+Examples of boundary-crossing decisions include:
+
+- storing ForgeFlow contract state directly inside DeerFlow message history
+- relying on DeerFlow checkpoint internals for Durable Run Summary
+- depending on undocumented middleware execution order
+- bypassing ForgeFlow policy wrappers by calling DeerFlow tools directly
+- mapping ForgeFlow workflow roles to DeerFlow-native components
+- treating DeerFlow message history as product-layer state
+- relying on DeerFlow trace payload internals for product-level run summary
+
+Each integration assumption should explain:
+
+- the DeerFlow behavior being relied on
+- whether the behavior is documented or internal
+- why the dependency is necessary
+- what ForgeFlow boundary it affects
+- what alternatives were considered
+- how upstream DeerFlow changes would be detected
+- what adapter or isolation layer protects ForgeFlow product semantics
+
+DeerFlow provides runtime foundations; ForgeFlow must preserve its product contracts, policy boundaries, durable state model, and workflow semantics through explicit adapters and documented integration assumptions.
+
 ## Current Integration Strategy
 
 ForgeFlow should not fork or modify DeerFlow core prematurely. During Milestone 0 and Milestone 1, DeerFlow should be treated as upstream framework foundation and reference implementation, not as ForgeFlow application code.
@@ -167,9 +211,78 @@ Reasons:
 
 ### Recommendation
 
-For Milestone 0 and Milestone 1, ForgeFlow should prefer a separate local reference repository or a Git submodule, depending on repository maturity.
+Milestone 0 may use a separate local DeerFlow reference repository for reading, comparison, and architecture research.
 
-If the project adopts a submodule, DeerFlow should live under a clear third-party location such as `third_party/deer-flow` and be treated as upstream reference/framework source, not ForgeFlow application code.
+Before Milestone 1 implementation begins, ForgeFlow must pin the DeerFlow upstream revision used for extension feasibility assessment.
+
+The preferred pinning mechanism is a Git submodule under `third_party/deer-flow`.
+
+If a Git submodule is not used, ForgeFlow must record an equivalent immutable upstream commit reference in project documentation.
+
+During Milestone 1, DeerFlow should be treated as upstream reference/framework source, not ForgeFlow application code.
+
+## DeerFlow Version Pinning for Milestone 1
+
+Milestone 0 may use a separate local DeerFlow reference repository for reading, comparison, and architecture research.
+
+Before Milestone 1 implementation begins, ForgeFlow must pin the DeerFlow upstream revision used for extension feasibility assessment.
+
+The preferred mechanism is a Git submodule under:
+
+```text
+third_party/deer-flow
+```
+
+If a Git submodule is not used, ForgeFlow must record an equivalent immutable upstream commit reference in project documentation.
+
+The immutable reference must include:
+
+- upstream repository URL
+- commit SHA
+- assessment date
+- assessed extension points
+- known integration assumptions
+- reason for the selected revision
+
+During Milestone 1, DeerFlow must be treated as a read-only upstream framework and runtime reference, not ForgeFlow application code.
+
+ForgeFlow implementation should depend only on the pinned revision and documented extension points or explicitly recorded integration assumptions.
+
+RFC-007 extension feasibility claims must identify the DeerFlow revision they were assessed against.
+
+If the pinned DeerFlow revision changes, affected integration assumptions must be reviewed before relying on prior conclusions.
+
+## No DeerFlow Core Modification in Milestone 1
+
+Milestone 1 must treat DeerFlow as a read-only upstream framework and runtime reference.
+
+ForgeFlow Milestone 1 acceptance must not depend on any local DeerFlow core modification, unmerged DeerFlow patch, or temporary change inside `third_party/deer-flow` or a local DeerFlow reference repository.
+
+Any local modification to DeerFlow source is prohibited on the Milestone 1 implementation path unless a separate RFC or ADR has already approved it.
+
+If an experiment requires modifying DeerFlow, it must be performed outside the Milestone 1 delivery path and documented as exploratory.
+
+Exploratory DeerFlow modifications must not become hidden dependencies for:
+
+- Repository Context Service
+- workflow graph behavior
+- state mapping
+- policy enforcement
+- checkpointing
+- tool orchestration
+- tracing
+- Durable Run Summary
+- product-level semantics
+
+If a DeerFlow core change appears necessary, the default path is:
+
+1. document the missing extension point
+2. evaluate whether a ForgeFlow adapter or wrapper can preserve the boundary
+3. record the integration assumption or limitation
+4. propose an upstream contribution or RFC / ADR when needed
+5. only then consider a fork or core modification
+
+ForgeFlow should extend DeerFlow through documented extension points, adapters, wrappers, and explicit integration assumptions, not through silent framework patches.
 
 ## Extension Patterns
 
@@ -217,6 +330,67 @@ DeerFlow runtime state should be used for generic execution and checkpointing. F
 ForgeFlow should not rely only on message history for business state.
 
 Runtime State may reference DeerFlow thread and run identifiers. Durable Run Summary should persist ForgeFlow-specific audit information. Long-term Memory policy is controlled by ForgeFlow, not by generic runtime behavior.
+
+### ForgeFlow State Authority and DeerFlow Runtime State Boundary
+
+ForgeFlow structured contracts and Durable Run Summary are the authoritative product-layer state.
+
+DeerFlow messages, runtime state, and checkpoints provide execution support, recovery support, and runtime continuity, but they must not become the authoritative store for ForgeFlow business state unless explicitly mapped by RFC-002 and RFC-007.
+
+DeerFlow runtime state and checkpoints may carry:
+
+- execution state
+- transient context
+- checkpoint metadata
+- recoverable references
+- explicitly mapped contract-derived data
+
+They must not replace:
+
+- structured contracts
+- Durable Run Summary
+- Policy Decision Records
+- Approval Request artifacts
+- artifact records
+- evidence references
+- retry lineage
+- validation status
+- review status
+- PR evidence
+- durable audit history
+
+If ForgeFlow stores contract-derived data in DeerFlow checkpoints for runtime recovery, the mapping must preserve:
+
+- contract identity
+- schema version
+- evidence references
+- artifact IDs
+- policy decision IDs when applicable
+- approval request or approval decision IDs when applicable
+- promotion/redaction boundaries defined by RFC-002
+
+DeerFlow message history may be used as conversational or execution context, but it must not be treated as the authoritative source for:
+
+- product facts
+- policy decisions
+- retry lineage
+- PR evidence
+- validation status
+- review status
+- durable audit history
+
+Any mapping from ForgeFlow contracts, artifacts, policy records, approval records, or Durable Run Summary fields into DeerFlow runtime state, checkpoint structures, or message history must be documented before implementation.
+
+The mapping must identify:
+
+- what is stored
+- why it is needed for runtime recovery
+- whether it is authoritative or derived
+- how it is versioned
+- how it is redacted
+- how it is reconstructed or validated
+
+ForgeFlow must not bypass RFC-002 by treating opaque DeerFlow messages, checkpoint internals, or runtime payloads as product-layer state.
 
 ### Option A: Store Everything in DeerFlow Messages
 
@@ -269,6 +443,50 @@ Security middleware, cost control, patch boundary, approval gates, and trace enr
 Middleware must not be implemented only as prompt instructions.
 
 If a DeerFlow hook is insufficient for a required ForgeFlow policy gate, the gap must be documented in an RFC, ADR, or OpenSpec before implementation depends on internal DeerFlow behavior.
+
+## DeerFlow Extension-Point Capability Assessment
+
+RFC-007 must include a documented DeerFlow extension-point capability assessment before RFC-001 acceptance or before Milestone 1 implementation relies on DeerFlow integration assumptions.
+
+The assessment must identify whether the pinned DeerFlow revision provides usable documented extension points, adapters, or wrappers for the ForgeFlow governance boundaries required by RFC-004.
+
+At minimum, the assessment should cover support for:
+
+- pre-tool policy evaluation
+- post-tool result capture
+- command or action intent association
+- middleware ordering
+- checkpoint mapping
+- trace event enrichment
+- error handling
+- stop-condition propagation
+- later approval pause/resume behavior when it enters scope
+- later external side-effect gating when it enters scope
+
+For Milestone 1, the required assessment scope may be limited to read-only Repository Context access.
+
+For Milestone 1, the assessment must confirm that the following can be supported without modifying DeerFlow core:
+
+- workspace-confined read/search governance
+- bounded and redacted result capture
+- evidence reference recording
+- trace or summary linkage
+- deterministic Repository Context Service support
+
+Capabilities that are not yet required for Milestone 1 may be recorded as future extension assumptions.
+
+Future extension assumptions may include:
+
+- sandbox-local write/test execution
+- Human Approval pause/resume
+- commit creation
+- draft PR creation
+- external side-effect gating
+- full checkpoint mapping for `PatchProposal`, `ValidationResult`, `ReviewResult`, or `PRResult`
+
+These future assumptions must not be treated as proven until a later RFC, ADR, or OpenSpec validates the relevant DeerFlow extension points.
+
+If required RFC-004 governance cannot be attached through documented DeerFlow extension points, adapters, or wrappers, RFC-007 must record the limitation and RFC-001 must remain Draft until the integration strategy is revised.
 
 ## Workflow Graph Integration
 
@@ -328,6 +546,8 @@ DeerFlow may execute tools, but ForgeFlow policy decides capability eligibility.
 
 Milestone 1 is the Repository Context Foundation Slice.
 
+Milestone 1 must not become a full DeerFlow runtime integration project.
+
 Milestone 1 should:
 
 - use DeerFlow only as reference or minimal runtime foundation if needed
@@ -346,6 +566,35 @@ Milestone 1 should not:
 - implement Validation repair loop
 - promote workflow roles into runtime classes
 - require a deep DeerFlow fork
+
+## Minimal DeerFlow Integration Scope for Milestone 1
+
+Milestone 1 must not become a full DeerFlow runtime integration project.
+
+For Milestone 1, DeerFlow-related work is limited to the minimum needed to support or assess deterministic read-only Repository Context Service.
+
+Required before Milestone 1 implementation begins:
+
+- pin the DeerFlow revision or record an equivalent immutable upstream commit reference
+- document DeerFlow extension-point assumptions relevant to read-only Repository Context access
+- confirm that Repository Context Service does not require DeerFlow core modification
+- state whether DeerFlow is used only as an upstream reference or as a minimal runtime foundation for Milestone 1
+- record known limitations, unsupported assumptions, and deferred integration risks
+
+Deferred to later milestones:
+
+- full ForgeFlow workflow graph integration
+- runtime implementation of Planner, Software Engineer, Validation, Review, or PR roles
+- sandbox-local write and test execution integration
+- Human Approval pause/resume integration
+- GitHub branch, commit, draft PR, or other external side-effect integration
+- full checkpoint mapping for `PatchProposal`, `ValidationResult`, `ReviewResult`, or `PRResult`
+- production-grade DeerFlow adapter layer
+- full policy middleware integration for write, test, PR, or external side-effect workflows
+
+Milestone 1 may document future DeerFlow integration assumptions, but it must not implement or require them for Repository Context acceptance.
+
+The purpose of RFC-007 in Milestone 1 is to make upstream assumptions reproducible and prevent hidden coupling, not to complete the full ForgeFlow-DeerFlow runtime integration.
 
 ## Alternatives Considered
 
@@ -393,10 +642,13 @@ Forking may become appropriate if deep core changes are proven necessary, but an
 - Treating DeerFlow as a black box may hide important runtime constraints.
 - Over-constraining Milestone 1 may delay the vertical MVP.
 - RFC-007 assumptions may conflict with future Repository Context Service OpenSpec details; such conflicts should be captured without expanding Milestone 1 scope.
+- A pinned DeerFlow revision may reveal insufficient documented extension points for RFC-004 policy attachment.
+- Undocumented DeerFlow dependencies may be missed unless integration assumptions are reviewed during OpenSpec planning.
+- Local DeerFlow experiments may accidentally become hidden dependencies if not kept outside the Milestone 1 delivery path.
 
 ## Open Questions
 
-- Should DeerFlow be a local reference repo or Git submodule for Milestone 1?
+- What exact DeerFlow revision should be pinned before Milestone 1 implementation begins?
 - Which DeerFlow extension points are stable enough to rely on?
 - Where should ForgeFlow package code live?
 - How should ForgeFlow contracts map to DeerFlow messages, state, and checkpoints?
@@ -406,18 +658,42 @@ Forking may become appropriate if deep core changes are proven necessary, but an
 - When should a fork be considered?
 - How will compatibility be tested after DeerFlow upstream updates?
 - What DeerFlow internals, if any, must be documented as temporary dependencies before Milestone 1 implementation?
+- What documented DeerFlow hooks, adapters, or wrappers can support read-only Repository Context governance without core modification?
+- What limitations should be recorded if DeerFlow cannot support RFC-004 policy attachment assumptions through documented extension points?
 
 ## Decision Summary
 
 - Treat DeerFlow as upstream framework/reference, not product layer.
 - ForgeFlow owns software engineering domain semantics.
-- Do not modify DeerFlow core during Milestone 1 unless explicitly approved by a future RFC.
+- Pin DeerFlow before Milestone 1 implementation, preferably as `third_party/deer-flow` or through an equivalent immutable commit reference.
+- Do not allow Milestone 1 acceptance to depend on local DeerFlow core modifications, temporary changes, or unmerged patches.
 - Prefer external application layer and adapters.
 - Keep workflow roles as ForgeFlow concepts.
-- Keep structured contracts outside opaque message-only state.
+- Keep ForgeFlow structured contracts and Durable Run Summary as authoritative product-layer state.
+- Keep DeerFlow messages, runtime state, and checkpoints limited to mapped runtime state, transient context, recoverable references, or explicitly mapped contract-derived data.
 - Attach security governance through explicit policy, middleware, and runtime gates.
+- Require a DeerFlow extension-point capability assessment for RFC-004 policy attachment feasibility.
 - Repository Context Service is a ForgeFlow-owned deterministic service.
 - Milestone 1 must not require a deep DeerFlow fork.
+- Milestone 1 DeerFlow integration scope is limited to pinning/reference, read-only Repository Context assumptions, no-core-modification proof, and documented limitations.
+
+## RFC-001 DeerFlow Extension Acceptance Criteria
+
+RFC-007 is sufficient to unblock RFC-001 acceptance only after the DeerFlow extension assumptions required by RFC-001 have been documented at skeleton level.
+
+At minimum, RFC-007 must confirm that:
+
+- the DeerFlow upstream revision used for assessment is pinned or immutably recorded
+- the DeerFlow / ForgeFlow ownership boundary is accepted
+- any dependency on DeerFlow internals or undocumented extension behavior is recorded as an integration assumption
+- Milestone 1 does not depend on DeerFlow core modification, local DeerFlow patches, or unmerged upstream patches
+- ForgeFlow structured contracts and Durable Run Summary remain the authoritative product-layer state
+- any DeerFlow runtime/checkpoint/message mapping preserves RFC-002 contract identity, schema version, evidence references, artifact IDs, policy decision IDs when applicable, approval record IDs when applicable, and promotion/redaction boundaries
+- RFC-004 policy attachment feasibility has been assessed at skeleton level, including whether pre-tool policy evaluation, post-tool capture, trace enrichment, checkpoint mapping, stop-condition propagation, and later approval pause/resume or external side-effect gating can be supported without modifying DeerFlow core
+- the minimal Milestone 1 DeerFlow integration scope is limited to pinning/reference, read-only Repository Context assumptions, no-core-modification proof, and documented limitations
+- any unsupported extension assumptions, integration gaps, or upstream risks are recorded as risks or open questions rather than silently assumed away
+
+If these criteria are not satisfied, RFC-001 must remain Draft until RFC-007 records the missing DeerFlow assumptions or revises the integration strategy.
 
 ## Acceptance Preconditions
 
@@ -425,10 +701,15 @@ RFC-007 should become Accepted only after:
 
 - DeerFlow / ForgeFlow ownership boundary is agreed.
 - Current integration strategy is agreed.
+- DeerFlow revision pinning or immutable reference strategy is agreed.
 - Acceptable extension patterns are documented.
 - Forbidden coupling patterns are documented.
+- Integration assumption rules are documented.
 - State integration strategy is compatible with RFC-002.
 - Security integration strategy is compatible with RFC-004.
+- DeerFlow extension-point capability assessment is documented at skeleton level.
 - Workflow role interpretation is compatible with RFC-001.
+- Milestone 1 no-core-modification rule is accepted.
+- Minimal Milestone 1 DeerFlow integration scope is accepted.
 - Milestone 1 constraints are consistent with `docs/milestones.md`.
 - No conflict with Repository Context Service OpenSpec readiness is found.
