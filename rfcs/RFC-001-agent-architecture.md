@@ -2,11 +2,13 @@
 
 ## Status
 
-Draft
+Accepted
 
-Review stage: Grill-Me feedback has been incorporated as current draft decisions. RFC-002 and RFC-004 have validated their adjacent contract/state and security boundaries at skeleton level. Acceptance remains blocked on RFC-007 concrete DeerFlow extension assumptions, including pinned DeerFlow revision and extension-point capability assessment.
+Accepted as the Agent Architecture baseline and Milestone 1 scope guard.
 
-## Current Draft Decisions
+Acceptance was based on RFC-002, RFC-004, and RFC-007 skeleton validation, including the DeerFlow extension-point assessment recorded in `docs/assessments/deerflow-extension-points.md`.
+
+## Current Accepted Decisions
 
 - Milestone 1 must not create concrete Planner, Software Engineer, Validation, Review, or PR implementation units.
 - Workflow role promotion requires an accepted OpenSpec.
@@ -17,7 +19,7 @@ Review stage: Grill-Me feedback has been incorporated as current draft decisions
 - PR packages policy-eligible artifacts and must not modify the patch.
 - DeerFlow runtime and ForgeFlow workflow graph responsibilities are separate.
 - Detailed contract, policy, runtime-extension, trace, tool, and evaluation decisions are deferred to other RFCs.
-- RFC-001 remains Draft until RFC-007 records the concrete DeerFlow extension assumptions required to validate adjacent runtime boundaries.
+- RFC-001 is accepted as the current Agent Architecture baseline and Milestone 1 scope guard.
 
 ## Context
 
@@ -558,34 +560,35 @@ Examples in RFC-001 are boundary examples unless explicitly marked as normative 
 
 ## Acceptance Preconditions
 
-RFC-001 should remain in Draft until the skeletons for RFC-002, RFC-004, and RFC-007 exist and confirm that their adjacent boundaries do not contradict this Agent Architecture.
+RFC-001 required the skeletons for RFC-002, RFC-004, and RFC-007 to exist and confirm that their adjacent boundaries do not contradict this Agent Architecture.
 
-Before RFC-001 is promoted to Accepted:
+Acceptance validation:
 
 - RFC-002 must confirm that contract schemas, state separation, evidence references, and retry lineage can support the role boundaries defined here. This condition is satisfied at skeleton level by RFC-002's RFC-001 Acceptance Support section.
 - RFC-004 must confirm that sandbox policy, approval policy, retry caps, sensitive file policy, diff policy, and security governance can enforce the side-effect and authority boundaries defined here. This condition is satisfied at skeleton level by RFC-004's RFC-001 Security Acceptance Criteria section.
-- RFC-007 must confirm that DeerFlow graph/runtime extension points can support the runtime and workflow graph responsibility split defined here. This condition is not yet satisfied because RFC-007 requires a pinned or immutably recorded DeerFlow revision, a documented extension-point capability assessment, and recorded integration assumptions before it can unblock RFC-001 acceptance.
+- RFC-007 must confirm that DeerFlow graph/runtime extension points can support the runtime and workflow graph responsibility split defined here. This condition is satisfied at skeleton level by RFC-007's recorded DeerFlow revision and `docs/assessments/deerflow-extension-points.md`.
 
-Until acceptance, the constraints in this RFC should be treated as current draft decisions for Milestone 1 planning. They may guide OpenSpec drafting and implementation scoping, but they should not be treated as final schemas or final DeerFlow integration mechanics.
+RFC-001 acceptance does not accept RFC-002, RFC-004, or RFC-007 themselves. Those RFCs remain independently reviewed documents and may still require their own acceptance reviews.
 
 ## Acceptance Review Notes
 
 RFC-001 has been reviewed against RFC-002, RFC-004, RFC-007, and the Milestone 1 planning documents.
 
-Current review status:
+Accepted review status:
 
 - RFC-002 satisfies the contract and state-model validation needed by RFC-001 at skeleton level.
 - RFC-004 satisfies the sandbox, security, policy, approval, and side-effect validation needed by RFC-001 at skeleton level.
-- RFC-007 defines the correct DeerFlow / ForgeFlow ownership boundary, but it explicitly requires additional concrete assumptions before unblocking RFC-001 acceptance.
+- RFC-007 satisfies the DeerFlow extension validation needed by RFC-001 at skeleton level by recording the DeerFlow upstream revision and Milestone 1 extension-point assessment.
 
-RFC-001 should remain Draft until RFC-007 records:
+Acceptance inputs:
 
-- the pinned or immutably recorded DeerFlow upstream revision used for assessment
-- the DeerFlow extension-point capability assessment for Milestone 1 read-only Repository Context assumptions
-- confirmation that Milestone 1 does not depend on DeerFlow core modifications, temporary patches, or unmerged patches
-- any unsupported extension assumptions, integration gaps, or upstream risks as explicit risks or open questions
+- RFC-002: contract and state-model boundary validation
+- RFC-004: sandbox, security, policy, approval, and side-effect boundary validation
+- RFC-007: DeerFlow / ForgeFlow ownership and runtime extension boundary validation
+- DeerFlow recorded revision: `c0b917cce2cd8b8644a3ed17d58ddb31adc5299a`
+- DeerFlow assessment: `docs/assessments/deerflow-extension-points.md`
 
-Once those RFC-007 conditions are documented and do not contradict this RFC, RFC-001 may be promoted to Accepted as the Agent Architecture baseline and Milestone 1 scope guard.
+RFC-001 is accepted as an architecture baseline and Milestone 1 scope guard. Future RFCs, ADRs, or accepted OpenSpec changes may refine, amend, or supersede this RFC, but must record the change explicitly.
 
 ## Alternatives Considered
 
@@ -674,6 +677,6 @@ For early ForgeFlow development:
 - PR role packages policy-eligible artifacts only; each GitHub side effect is separately policy-gated.
 - PR body content must derive from structured contracts and evidence.
 - Detailed contract, policy, runtime-extension, trace, tool, and evaluation decisions are deferred to later RFCs.
-- RFC-001 remains Draft until RFC-007 records the concrete DeerFlow extension assumptions required to validate adjacent runtime boundaries.
+- RFC-001 is accepted as the current Agent Architecture baseline and Milestone 1 scope guard.
 - Milestone 1 remains limited to Repository Context Foundation Slice.
 - The full GitHub Issue to Draft PR workflow remains a later MVP vertical slice.
