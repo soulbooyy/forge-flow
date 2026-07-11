@@ -539,12 +539,7 @@ Hash input:
       "retrieval_signal": "text_match"
     },
     {
-      "content_hash": {
-        "algorithm": "sha256",
-        "value": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
-      },
       "evidence_kind": "file_path_match",
-      "hash_scope": "full_inspected_text",
       "id": "ev_sha256:3333333333333333333333333333333333333333333333333333333333333333",
       "locator": null,
       "path": "src/repository_context.py",
@@ -730,4 +725,3 @@ Evidence refs preserve auditability through paths, locators, IDs, and hashes wit
 ### Placeholder IDs in examples
 
 Examples use fixed placeholder hashes for readability. Acceptance fixtures must compute and compare real IDs using canonical serialization.
-
