@@ -1,5 +1,12 @@
 """Immutable Repository Context contracts."""
 
+from .canonical import (
+    canonical_bytes,
+    contract_id_for,
+    error_id_for,
+    evidence_id_for,
+    sha256_hex,
+)
 from .models import (
     BoundedOptionalInput,
     CandidateCounts,
@@ -51,4 +58,9 @@ __all__ = (
     "TextLocator",
     "ValidationErrorSummary",
     "WorkspaceRef",
+    "canonical_bytes",
+    "contract_id_for",
+    "error_id_for",
+    "evidence_id_for",
+    "sha256_hex",
 )
