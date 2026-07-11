@@ -32,6 +32,7 @@ from .models import (
     WorkspaceRef,
 )
 from .profile import M1_DEFAULTS, RepositoryContextProfile
+from .workspace import WorkspaceBoundary, WorkspaceBoundaryError
 
 __all__ = (
     "BoundedOptionalInput",
@@ -58,6 +59,8 @@ __all__ = (
     "TextLocator",
     "ValidationErrorSummary",
     "WorkspaceRef",
+    "WorkspaceBoundary",
+    "WorkspaceBoundaryError",
     "canonical_bytes",
     "contract_id_for",
     "error_id_for",
