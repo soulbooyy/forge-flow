@@ -32,6 +32,7 @@ from .models import (
     WorkspaceRef,
 )
 from .profile import M1_DEFAULTS, RepositoryContextProfile
+from .scanner import ScanReport, ScannedFile, scan_workspace
 from .workspace import WorkspaceBoundary, WorkspaceBoundaryError
 
 __all__ = (
@@ -54,6 +55,8 @@ __all__ = (
     "ReturnedCounts",
     "RunCounts",
     "RunSummary",
+    "ScanReport",
+    "ScannedFile",
     "SearchResult",
     "TestCommandHint",
     "TextLocator",
@@ -66,4 +69,5 @@ __all__ = (
     "error_id_for",
     "evidence_id_for",
     "sha256_hex",
+    "scan_workspace",
 )

@@ -39,6 +39,11 @@ class WorkspaceBoundary:
     def root_id(self) -> str:
         return self._root_id
 
+    @property
+    def filesystem_root(self) -> Path:
+        """Return the resolved root for internal read-only scanner use."""
+        return self._root
+
     def validate_workspace_ref(self, workspace_ref: WorkspaceRef) -> None:
         if not _is_safe_root_id(workspace_ref.root_id):
             raise WorkspaceBoundaryError("invalid_workspace_ref")
