@@ -1,385 +1,249 @@
 ## ADDED Requirements
 
-### Requirement: Repository Context Service is deterministic and read-only
-The system SHALL provide a Repository Context Service that derives repository context from a declared workspace root, a query, and optional issue text using deterministic retrieval signals only.
+### Requirement: Repository Context result envelopes SHALL be explicit deterministic contracts
+The Repository Context capability SHALL return exactly one of two tagged envelopes:
 
-The service MUST NOT use LLM reasoning for relevance judgment, code summarization, root-cause inference, repair strategy, semantic ranking, or test recommendation during Milestone 1.
+- `result_type: "repository_context_result"` for a successful `RepositoryContextResult`
+- `result_type: "repository_context_validation_error"` for an input or workspace validation failure
 
-The service MUST NOT generate patches, edit code, execute tests, create branches, create commits, create pull requests, read long-term memory, write long-term memory, implement workflow role agents, implement a workflow graph, or require full DeerFlow runtime integration.
+A successful `RepositoryContextResult` SHALL include `schema_version`, `contract_id`, `workspace_ref`, `query`, `issue_text`, `relevant_files`, `search_results`, `test_command_hints`, `evidence_refs`, `limitations`, and `run_summary`. It SHALL NOT include `runtime_metadata`, raw repository content, raw command output, host absolute paths, timestamps, process identifiers, execution duration, stack traces, environment variables, memory records, policy decisions, patch state, validation outcomes, branch state, commit state, or PR state.
 
-Repeated runs over the same workspace content, query, optional issue text, and configuration MUST produce structurally equivalent deterministic payloads after excluding fields explicitly marked as runtime metadata.
+`RepositoryContextResult.contract_id` SHALL be derived from canonical UTF-8 JSON bytes for the deterministic contract payload, with `contract_id` itself omitted before hashing. Canonical JSON SHALL sort object keys lexicographically, preserve arrays in their OpenSpec-defined deterministic order, include required empty arrays and objects, omit absent optional fields instead of serializing them as `null` unless a field explicitly requires `null`, use JSON booleans, use integer JSON numbers for counts, scores, limits, and line numbers, include no insignificant whitespace, and avoid floating point values. The hash format SHALL be `rcr_sha256:<lowercase-hex-sha256>`.
 
-Runtime timestamps, random values, process-specific values, host absolute paths, and nondeterministic filesystem traversal order MUST NOT affect relevant files, evidence references, search results, test command hints, ranking metadata, limitations, or deterministic input summaries.
+The canonical contract payload SHALL include deterministic contract facts, including `result_type`, `schema_version`, caller-supplied logical workspace identity, configuration profile identity, normalized inputs, relevant files, search results, evidence references, test command hints, limitations, deterministic run-summary counts, limit summaries, and limitation summaries. The payload SHALL exclude runtime-only or environment-specific values. Any change to limitations, skipped coverage, truncation, deterministic run-summary counts, positive evidence, returned ordering, or deterministic configuration identity SHALL change `contract_id`.
 
-#### Scenario: Deterministic repeated retrieval
-- **WHEN** the service is invoked twice with the same workspace content, query, optional issue text, and configuration
-- **THEN** the deterministic payloads are structurally equivalent after excluding explicit runtime metadata
+Validation failures SHALL be represented only by a validation error envelope. A validation error envelope SHALL include `result_type`, `schema_version`, `error_id`, `completion_status: "validation_error"`, `error_code`, `input_category`, a bounded user-safe `message`, and a bounded `summary`; it MAY include a bounded redacted `input_ref`. It SHALL NOT include `contract_id`, `relevant_files`, `search_results`, `test_command_hints`, `evidence_refs`, `limitations`, or any partial successful-result payload. `error_id` SHALL use the format `rce_sha256:<lowercase-hex-sha256>` and SHALL be derived from the canonical validation error payload with `error_id` omitted.
 
-#### Scenario: No LLM relevance dependency
-- **WHEN** repository context is produced for a query
-- **THEN** the result is explainable through deterministic retrieval inputs rather than LLM-generated relevance judgment or free-form semantic rationale
+#### Scenario: Successful result identity is canonical
+- **GIVEN** two runs with the same valid inputs, workspace contents, and configuration profile
+- **WHEN** the service serializes the deterministic result payload using canonical JSON
+- **THEN** both runs produce the same `contract_id`
+- **AND** the serialized payload excludes `contract_id` itself, runtime metadata, host absolute paths, timestamps, process identifiers, durations, stack traces, raw source snippets, raw command output, and environment variables
 
-#### Scenario: Out-of-scope implementation is rejected
-- **WHEN** a Milestone 1 repository context run identifies possible files or test commands
-- **THEN** it does not edit files, produce a patch, execute a test command, start a repair loop, create a branch, create a commit, create a PR artifact, invoke long-term memory, or invoke workflow role agents
+#### Scenario: Coverage changes affect identity
+- **GIVEN** two runs with the same positive matches
+- **WHEN** one run also records a skipped file, ignored directory, truncation, unreadable file, malformed optional metadata, or different deterministic run-summary count
+- **THEN** the two successful results produce different `contract_id` values
 
-### Requirement: RepositoryContextResult contract is concrete and bounded
-The system SHALL produce `RepositoryContextResult` as the only required Milestone 1 contract deliverable.
+#### Scenario: Validation failure is not a partial result
+- **GIVEN** an invalid required input
+- **WHEN** validation fails before repository context is safely produced
+- **THEN** the service returns `result_type: "repository_context_validation_error"`
+- **AND** the envelope includes `error_id` but not `contract_id`
+- **AND** the envelope includes none of the successful-result fields `relevant_files`, `search_results`, `test_command_hints`, `evidence_refs`, or `limitations`
 
-`RepositoryContextResult` MUST be serializable as a deterministic structured object whose deterministic payload is independent from explicit runtime metadata.
+### Requirement: Inputs SHALL be bounded, normalized, and explicitly versioned
+The service input SHALL include a caller-supplied logical `workspace_ref.root_id`, a caller-supplied `configuration_profile_id`, a workspace root, a query, and MAY include issue text. `workspace_ref.root_id` SHALL be safe to persist and SHALL NOT be derived from host absolute paths, filesystem metadata, repository contents, timestamps, machine identity, secrets, or runtime metadata. Missing or unsafe workspace identity SHALL return `missing_workspace_ref` or `invalid_workspace`.
 
-The top-level contract MUST contain these required fields:
+The only Milestone 1 configuration profile SHALL be `repository-context/m1-defaults-v1`. The service SHALL reject any other profile with a validation error such as `invalid_config_profile`. The profile identity SHALL be echoed in `run_summary.input_summary` and included in the canonical contract payload. The profile SHALL identify all deterministic behavior covered by Milestone 1, including normalization rules, matching rules, ranking weights, score caps, ignore policy, scan limits, result limits, decoding policy, and test-hint policy. These defaults SHALL NOT change silently under the same profile identity; any future contract-affecting change SHALL require a new explicit profile identity such as `repository-context/m1-defaults-v2`.
 
-- `schema_version`: non-empty string identifying the Repository Context contract schema.
-- `contract_id`: stable deterministic identifier derived from deterministic input summary and deterministic payload, or another implementation-defined stable value that remains unchanged for equivalent deterministic payloads.
-- `workspace_ref`: object describing the workspace without exposing host-specific absolute paths.
-- `query`: object representing normalized query input.
-- `issue_text`: object representing optional issue text input.
-- `relevant_files`: ordered array of relevant file result objects, permitted to be empty.
-- `search_results`: ordered array of search result objects, permitted to be empty.
-- `test_command_hints`: ordered array of test command hint objects, permitted to be empty.
-- `evidence_refs`: ordered array of evidence reference objects, permitted to be empty.
-- `limitations`: ordered array of limitation objects, permitted to be empty.
-- `run_summary`: minimal non-payload run-summary object.
+Input normalization SHALL be fixed for Milestone 1: apply Unicode NFC normalization, trim leading and trailing whitespace, collapse internal whitespace runs to one ASCII space, and derive a case-insensitive matching view using Unicode casefolding. `query.normalized` SHALL be the sole retrieval and ranking driver. Optional `issue_text.normalized` SHALL be recorded only as bounded input context; it SHALL NOT produce match reasons, evidence references, search results, scores, no-match behavior, or ranking changes.
 
-The top-level contract MAY contain these optional fields:
+The default profile SHALL bound inputs. `query.normalized` SHALL be non-empty and SHALL NOT exceed 512 Unicode scalar values. Empty, whitespace-only, or oversized queries SHALL produce validation errors such as `empty_query` or `query_too_large`. Optional issue text SHALL NOT fail an otherwise valid run only because it is oversized; instead the service SHALL normalize and retain at most 4096 Unicode scalar values, record deterministic truncation or omission in `run_summary.input_summary`, and emit an `issue_text_truncated` limitation when truncation occurs. The contract SHALL NOT persist unbounded raw query text, raw issue bodies, logs, stack traces, credentials, or binary-like input. Caller-provided raw references MAY be recorded only as bounded references, not embedded raw content.
 
-- `runtime_metadata`: object containing explicit runtime metadata excluded from deterministic payload comparison.
-- `symbol_hints`: ordered array of symbol hint objects, permitted only as optional deterministic output and not required for Milestone 1 acceptance.
+#### Scenario: Query drives retrieval
+- **GIVEN** a valid query and issue text that mentions additional files
+- **WHEN** the service retrieves repository context
+- **THEN** only `query.normalized` drives filename, path, text matching, ranking, search results, evidence references, and no-match behavior
+- **AND** `issue_text.normalized` appears only as bounded input context
 
-The contract MUST NOT contain a patch, diff, final root-cause decision, code edit, PR content, memory write, workflow role authorization, raw source snippet, full file content, prompt, hidden runtime state, or full DeerFlow checkpoint.
+#### Scenario: Oversized issue text is bounded
+- **GIVEN** a valid query and optional issue text longer than the configured issue-text bound
+- **WHEN** the service produces a successful result
+- **THEN** the result includes a bounded normalized issue-text value or bounded reference
+- **AND** the result includes an `issue_text_truncated` limitation
+- **AND** the result does not embed the full raw issue text
 
-#### Scenario: Required contract surface is present
-- **WHEN** repository context retrieval completes successfully
-- **THEN** the result includes all required top-level `RepositoryContextResult` fields with valid empty arrays or objects where no matches exist
+### Requirement: Workspace inspection SHALL be read-only, filesystem-only, and workspace-confined
+Milestone 1 SHALL inspect workspaces only through direct language/runtime filesystem APIs or libraries confined to the workspace. The service SHALL NOT execute commands of any kind, including shell commands, subprocesses, `git`, `rg`, `grep`, `find`, package managers, test commands, language servers, external tools, or tool-backed search. The service SHALL NOT install dependencies, access the network by default, write repository files, create branches, create commits, create PRs, read or write memory, generate patches, run validation loops, or modify DeerFlow core.
 
-#### Scenario: Future milestone contracts are absent
-- **WHEN** a Milestone 1 context run completes
-- **THEN** it does not require creation, validation, persistence, or use of `PatchProposal`, `ValidationResult`, `ReviewResult`, or `PRResult`
+Every filesystem read SHALL pass canonical path normalization, ignore-policy evaluation, workspace-boundary checks, and symlink authorization before content is inspected. Returned paths SHALL be canonical workspace-relative paths using `/` separators, SHALL NOT start with `/`, SHALL NOT contain `.` or `..` segments, SHALL NOT contain empty segments or duplicate separators, SHALL preserve the path casing observed in the workspace, and SHALL never expose host absolute paths in successful results or validation errors. Lexical sorting and tie-breaking SHALL compare this canonical returned-path representation.
 
-#### Scenario: Runtime metadata is isolated
-- **WHEN** the result includes runtime-generated identifiers or timing metadata
-- **THEN** those values appear only under `runtime_metadata` or an equivalent explicitly excluded metadata location and do not affect deterministic payload comparison
+Symlink entries SHALL be treated only as traversal-control artifacts in Milestone 1. They SHALL NOT be ranked, SHALL NOT appear in `relevant_files`, SHALL NOT produce filename or path relevance evidence, and SHALL NOT expose target content. Symlink escapes and loops SHALL produce structured limitations such as `symlink_escape` or `symlink_loop` and deterministic run-summary counts.
 
-### Requirement: Input representation and validation are explicit
-The `workspace_ref` field SHALL identify the repository workspace through safe metadata only.
+#### Scenario: Path escape is rejected
+- **GIVEN** an input workspace path or discovered entry that would escape the workspace after normalization or symlink resolution
+- **WHEN** the service evaluates the path
+- **THEN** the service does not inspect escaped content
+- **AND** unsafe required workspace input produces a validation error such as `path_escape`
+- **AND** unsafe discovered entries are represented only through limitations and counts
 
-`workspace_ref` MUST include:
+#### Scenario: No command execution
+- **GIVEN** a valid workspace
+- **WHEN** the service discovers files or searches text
+- **THEN** it performs inspection only through workspace-confined filesystem APIs or libraries
+- **AND** it does not invoke shell commands, subprocesses, Git, search commands, package managers, test commands, language servers, network calls, memory APIs, or external side-effect tools
 
-- `root_id`: stable logical workspace identifier or caller-provided workspace reference.
-- `root_display_name`: optional non-authoritative display label, permitted to be empty or absent.
-- `path_format`: value indicating that paths exposed in the result are normalized workspace-relative paths.
+### Requirement: Discovery and ignore behavior SHALL be deterministic and narrow
+The `repository-context/m1-defaults-v1` profile SHALL use only the OpenSpec-defined ignore policy. It SHALL ignore exactly these path rules:
 
-`workspace_ref` MUST NOT include host-specific absolute paths by default.
+- `.git/`
+- `.forgeflow/cache/`
+- `.forgeflow/artifacts/`
+- `openspec/changes/*/fixtures/output/`
 
-The `query` field MUST include:
+The default profile SHALL NOT apply `.gitignore`, `.ignore`, global Git excludes, VCS ignore semantics, dependency-directory defaults, build-output defaults, all-hidden-directory defaults, or ecosystem-specific ignore rules. Files such as `.gitignore` SHALL be treated as ordinary workspace files unless excluded by an explicit Milestone 1 ignore rule.
 
-- `raw_ref` or `raw`: the caller-provided query reference or bounded query text.
-- `normalized`: deterministic normalized query string used for retrieval.
-- `is_empty`: boolean indicating whether the normalized query is empty.
+Ignored files SHALL count as one skipped file when encountered. Ignored directories SHALL count as one skipped directory when encountered; discovery SHALL NOT descend into them and SHALL NOT recursively count or inspect their contents. Skipped files and directories SHALL be reflected in deterministic run-summary counts and limitations where applicable, and the result SHALL NOT imply ignored content was inspected.
 
-The `issue_text` field MUST include:
+Canonical workspace-relative path SHALL be the sole file identity. The service SHALL NOT deduplicate files by inode, hard-link identity, or content hash. Identical evidence at different canonical paths SHALL remain distinct; duplicate evidence SHALL be deduplicated only within the same canonical path and canonical evidence key.
 
-- `present`: boolean indicating whether optional issue text was provided.
-- `raw_ref` or `raw`: caller-provided issue text reference or bounded issue text when present.
-- `normalized`: deterministic normalized issue text used for retrieval, permitted to be empty.
+#### Scenario: Explicit ignore policy only
+- **GIVEN** a workspace containing `.gitignore`, `node_modules/`, `.cache/`, `dist/`, and `.forgeflow/cache/`
+- **WHEN** the default profile discovers files
+- **THEN** `.forgeflow/cache/` is ignored
+- **AND** `.gitignore`, `node_modules/`, `.cache/`, and `dist/` are scanned unless another explicit Milestone 1 rule excludes them
 
-Empty query and whitespace-only query MUST return a structured validation error and MUST NOT perform repository scanning.
+#### Scenario: Ignored directory is counted once
+- **GIVEN** an ignored directory containing nested files
+- **WHEN** discovery encounters the ignored directory
+- **THEN** `run_summary.counts.skipped_directories` increases by one
+- **AND** discovery does not descend into the ignored directory
+- **AND** nested contents do not produce evidence, relevant files, or recursive skipped-file counts
 
-Absent optional issue text MUST be represented as `present: false` and MUST NOT be treated as an error.
+### Requirement: Text inspection, matching, locators, and content hashes SHALL be canonical
+Milestone 1 text inspection SHALL use strict UTF-8 decoding only. The service SHALL detect binary files before decoding using the presence of a NUL byte in the inspected prefix. UTF-8 BOM SHALL be permitted and removed before normalized text processing. Invalid UTF-8 SHALL produce an `unsupported_encoding` limitation; lossy replacement decoding, Latin-1 fallback, and heuristic charset detection SHALL NOT be used. After decoding, CRLF and CR line endings SHALL be normalized to LF before matching, locator calculation, and content hashing.
 
-Invalid workspace input or inaccessible workspace root MUST return a structured validation error and MUST NOT return a successful `RepositoryContextResult`.
+Text matching SHALL be line-based substring matching. The service SHALL split canonical inspected text into lines, derive a normalized and casefolded matching view for the query and each line, and match `query.normalized` as a substring within each normalized line. Matches SHALL NOT cross line boundaries. Multiple occurrences or overlapping matches on the same line SHALL collapse into one text locator; matching lines on different lines SHALL produce separate locators up to the configured per-file locator cap.
 
-Structured validation errors MUST include a stable error code, bounded message, and the invalid input category; they MUST NOT include raw source contents, host absolute paths, stack traces, or secrets.
+Text locators SHALL use 1-based line numbers and inclusive line ranges. `start_line` and `end_line` SHALL be required for text matches, columns SHALL be omitted, and file-level evidence SHALL use `locator: null`. For truncated scans, the service SHALL scan a prefix from the start of the file so reported line numbers remain original normalized file line numbers, and uninspected content beyond the scanned range SHALL produce a `file_scan_truncated` limitation.
 
-#### Scenario: Empty query is rejected
-- **WHEN** the service receives an empty query
-- **THEN** it returns a structured validation error with a stable empty-query code and does not scan repository files
+Inspected text evidence SHALL include `content_hash` verification metadata using SHA-256 over the canonical inspected text representation or canonical inspected range. Evidence SHALL record whether the hash covers the full inspected file or only a truncated inspected range. Skipped, ignored, unreadable, binary, or unsupported files SHALL NOT receive inspected-text content hashes. Content hashes are allowed evidence verification metadata, not raw source payload, not secret scanning, and not proof that content is secret-free.
 
-#### Scenario: Whitespace-only query is rejected
-- **WHEN** the service receives a whitespace-only query
-- **THEN** it returns a structured validation error with a stable empty-query code and does not scan repository files
+#### Scenario: Same-line duplicates collapse
+- **GIVEN** an inspected UTF-8 text file with multiple occurrences of the normalized query on the same line
+- **WHEN** text matching is performed
+- **THEN** the service emits one text locator for that line
+- **AND** the locator uses 1-based inclusive line numbers
 
-#### Scenario: Optional issue text absent
-- **WHEN** the service receives a valid query without optional issue text
-- **THEN** it returns a valid `RepositoryContextResult` whose `issue_text.present` value is false
+#### Scenario: Unsupported encoding is not searched
+- **GIVEN** a file that fails strict UTF-8 decoding
+- **WHEN** the service inspects the file
+- **THEN** the file does not produce text-match search results or inspected-text content hashes
+- **AND** the result records an `unsupported_encoding` limitation
 
-#### Scenario: Invalid workspace input is rejected
-- **WHEN** the workspace input cannot identify a valid workspace root
-- **THEN** the service returns a structured validation error and does not inspect repository files
+### Requirement: Ranking and relevant files SHALL use fixed direct evidence only
+`relevant_files` SHALL include only discovered, non-ignored files with at least one positive Milestone 1 match reason derived from direct filename, path, or text matching. Files with only limitations and no positive match SHALL NOT appear in `relevant_files`. Ignored files and directories SHALL NOT appear in `relevant_files`. Binary, unreadable, unsupported-encoding, or oversized files MAY appear only when they have a positive filename or path match and SHALL carry appropriate file kind and limitations without implying text inspection. Symlink entries SHALL NOT appear.
 
-#### Scenario: Inaccessible workspace root is rejected
-- **WHEN** the workspace root cannot be accessed for read-only inspection
-- **THEN** the service returns a structured validation error and does not produce a successful `RepositoryContextResult`
+Each `relevant_files` item SHALL include canonical `path`, `file_kind`, integer `match_score`, `ranking_inputs`, `match_reasons`, and `evidence_ref_ids`. `ranking_inputs` SHALL be the single source of truth for scoring and SHALL include exactly `filename_match: boolean`, `path_match: boolean`, and `text_match_count: integer`. `text_match_count` SHALL be the capped number of text locators used for scoring. The default score formula SHALL be:
 
-### Requirement: Workspace access is normalized, confined, and read-only
-The system SHALL confine all Repository Context Service repository reads to the declared workspace root.
+- `100` points when `filename_match` is true
+- `50` points when `path_match` is true
+- `25` points for each text locator counted in `text_match_count`, up to the configured per-file cap
 
-Before authorization or reading, the system MUST normalize and resolve the workspace root and candidate paths according to the host filesystem.
+`match_reasons` SHALL be a deterministic projection of `ranking_inputs`, ordered exactly as `filename_match`, `path_match`, `text_match`, including each reason only when the corresponding signal is positive. Milestone 1 SHALL NOT include `config_match`, `test_convention_match`, `symbol_hint`, semantic relevance signals, inferred framework metadata, issue-text signals, LLM-derived signals, AST signals, or language-server signals.
 
-The system MUST reject parent-directory escape, symlink escape, reads outside the workspace root, repository writes, dependency installation, default network access, and arbitrary command execution for Milestone 1 repository context behavior.
+Relevant files SHALL be sorted by `match_score` descending, then canonical path ascending. Any future change to weights, caps, tie-breakers, or allowed ranking inputs SHALL require a new explicit configuration profile identity.
 
-Absolute input paths MAY be accepted only as workspace root input or caller-supplied references; any path exposed through `RepositoryContextResult` MUST be normalized, workspace-relative, and MUST NOT contain `..`.
+#### Scenario: Score is recomputable from ranking inputs
+- **GIVEN** a returned relevant file
+- **WHEN** a fixture applies the documented formula to its `ranking_inputs`
+- **THEN** the computed score equals `match_score`
+- **AND** `match_reasons` contains only the ordered projection of positive ranking inputs
 
-Symlinks MUST be resolved before file access. Symlink targets outside the workspace root MUST NOT be read. Symlink loops MUST be skipped and represented through a limitation.
+#### Scenario: Ranking tie is stable
+- **GIVEN** two relevant files with equal `match_score`
+- **WHEN** the service orders `relevant_files`
+- **THEN** the file with the lexically smaller canonical path appears first
 
-Nested directories are allowed. Nested repository markers such as nested `.git` directories MUST NOT expand the authorized workspace boundary beyond the declared workspace root.
+### Requirement: Evidence, search results, and test command hints SHALL have separate narrow responsibilities
+`evidence_refs` SHALL contain references and verification metadata, not raw evidence payloads. `evidence_ref.id` SHALL use a canonical deterministic ID derived from a canonical evidence key with `id` omitted. The evidence key SHALL include canonical path when present, evidence kind, retrieval signal, normalized locator when present, and deterministic verification metadata such as inspected-text `content_hash` when present. The ID format SHALL be `ev_sha256:<lowercase-hex-sha256>`. Evidence IDs SHALL exclude runtime metadata, host absolute paths, timestamps, process identifiers, random values, execution details, raw snippets, and full source payloads.
 
-Case-sensitivity behavior MAY follow the host filesystem, but ordering and matching MUST remain deterministic for the same workspace on the same platform.
+`search_results` SHALL contain only bounded text-match results found inside inspected text content. A search result SHALL include canonical path, required text locator, and `evidence_ref_id`. Filename, path, configuration-file status, and test-convention facts SHALL NOT appear as search results and SHALL NOT use fake locators.
 
-Read-only tool capability levels MUST be treated as capability classifications, not as authorization decisions.
+`test_command_hints` SHALL be descriptive metadata only. They SHALL be included in the canonical payload when emitted but SHALL NOT be executed, SHALL NOT affect `match_score`, SHALL NOT affect relevant-file ranking, and SHALL NOT authorize validation execution. Test-hint discovery SHALL inspect only root-level `<workspace_root>/package.json` and `<workspace_root>/Makefile` when they are inside the allowed scan boundary.
 
-#### Scenario: Path traversal is blocked
-- **WHEN** repository context retrieval encounters a requested or discovered path that would resolve outside the workspace root through `..`
-- **THEN** the system excludes that path from repository inspection and records a limitation or validation error without exposing a host absolute path
+Root `package.json` handling SHALL parse strict JSON only, reject comments and trailing commas, consider only a top-level `scripts.test` string, and emit canonical command `npm test`. Invalid JSON or unsupported metadata SHALL produce a non-fatal limitation, not a validation error and not a hint. The service SHALL NOT infer Yarn, pnpm, Bun, dependencies, frameworks, lockfiles, or raw script bodies.
 
-#### Scenario: Symlink escape is blocked
-- **WHEN** repository context retrieval encounters a symlink whose resolved target is outside the workspace root
-- **THEN** the system does not read the target and records a limitation for the skipped symlink
+Root `Makefile` handling SHALL ignore blank and comment-only lines, detect a non-recipe target line whose target list includes exactly `test`, and emit canonical command `make test`. `.PHONY: test` alone, pattern rules, includes, variables, recipes, and command bodies SHALL NOT be parsed or emitted as hints.
 
-#### Scenario: Symlink loop is skipped
-- **WHEN** repository context retrieval encounters a symlink loop
-- **THEN** the system skips the loop and records a limitation without failing the whole successful result unless the workspace itself is inaccessible
+Hints SHALL include evidence references to metadata files or metadata lines, SHALL be deduplicated by canonical command and source, and SHALL be sorted lexicographically by canonical command then source path. Nested `package.json` or `Makefile` files MAY be searched as ordinary files but SHALL NOT emit test command hints.
 
-#### Scenario: Repository writes are not performed
-- **WHEN** the Repository Context Service searches files, text, configuration, symbols, or test conventions
-- **THEN** it does not modify repository files, create repository files, or install dependencies in the workspace
+#### Scenario: Text search results are not path hits
+- **GIVEN** a file whose path matches the query but whose text does not
+- **WHEN** the service returns context
+- **THEN** the file may appear in `relevant_files` with path evidence
+- **AND** no `search_results` entry is emitted for that path-only match
 
-#### Scenario: Arbitrary execution is not required
-- **WHEN** repository context retrieval needs file or text search
-- **THEN** it uses approved read-only inspection behavior and does not require arbitrary command execution or default network access
+#### Scenario: Root test hint is descriptive
+- **GIVEN** a root `package.json` with a strict top-level `scripts.test` string
+- **WHEN** the service emits test command hints
+- **THEN** it emits a deterministic `npm test` hint with evidence references
+- **AND** the hint is not executed and does not affect file scores or ordering
 
-### Requirement: Relevant file and search result shapes are defined
-Each `relevant_files` item SHALL represent one workspace-confined file considered relevant by deterministic retrieval.
+### Requirement: Limits, truncation, limitations, and run summary SHALL be deterministic
+The `repository-context/m1-defaults-v1` profile SHALL define these default bounds:
 
-Each relevant file object MUST include:
+- maximum normalized query length: 512 Unicode scalar values
+- maximum retained normalized issue-text length: 4096 Unicode scalar values
+- maximum inspected text bytes per file: 1,048,576
+- maximum scanned lines per file: 20,000
+- maximum text match locators per file used for scoring: 20
+- maximum returned relevant files: 50
+- maximum returned search results: 200
+- maximum returned evidence references: 300
+- maximum returned test command hints: 10
 
-- `path`: normalized workspace-relative path with no `..`.
-- `file_kind`: controlled value such as `text`, `binary`, `unsupported_encoding`, `unreadable`, or `oversized`.
-- `match_score`: deterministic numeric score where higher values rank earlier.
-- `match_reasons`: ordered deduplicated array of controlled match reason values.
-- `ranking_inputs`: deterministic object containing the retrieval signal counts or booleans used to compute `match_score`.
-- `evidence_ref_ids`: ordered deduplicated array of evidence reference identifiers related to this file.
-- `limitations`: ordered array of limitation codes specific to this file, permitted to be empty.
+Truncation and caps SHALL be explicit. Partial file scans SHALL produce limitations, skipped or truncated content SHALL NOT be represented as fully inspected, and `match_score` SHALL use only documented capped counts. Result-set truncation SHALL occur after deterministic candidate discovery, scoring, and sorting. The service SHALL first compute candidate relevant files, search results, evidence references, and test hints within scan limits; sort relevant-file candidates deterministically; apply `max_relevant_files`; retain only search results associated with retained relevant files; sort and cap `search_results`; sort and cap test command hints; and finally retain only evidence references referenced by retained relevant files, returned search results, or returned test hints.
 
-Each `search_results` item MUST include:
+The final result SHALL have no dangling references. Every `relevant_files[].evidence_ref_ids`, `search_results[].evidence_ref_id`, and `test_command_hints[].evidence_ref_ids` value SHALL resolve to a top-level `evidence_refs` item. If any otherwise valid candidate, locator, hint, or evidence reference is dropped by a result cap, the result SHALL include exactly one grouped `result_set_truncated` limitation with `scope: "result"` and bounded structured detail naming affected capped arrays.
 
-- `path`: normalized workspace-relative path with no `..`.
-- `evidence_ref_id`: identifier of the evidence reference for the match.
-- `match_kind`: controlled value such as `filename`, `path`, `text`, `config`, or `test_convention`.
-- `locator`: bounded locator such as a line range when available, permitted to be absent for file-level matches.
+Limitations SHALL be successful-result coverage records only. A limitation SHALL include `code`, `scope`, and bounded safe `detail`; it MAY include canonical `path`, deterministic `count`, and `related_evidence_ref_ids`. Initial limitation codes SHALL include `empty_repository`, `no_matches`, `ignored_path`, `binary_file_skipped`, `oversized_file_skipped`, `file_scan_truncated`, `result_set_truncated`, `unreadable_file`, `unsupported_encoding`, `symlink_escape`, `symlink_loop`, `path_escape`, `incomplete_coverage`, `issue_text_truncated`, and `malformed_metadata`. Limitations SHALL be ordered by `code` ascending, then scope using `input < workspace < directory < file < result`, then absent path before present path, then canonical path ascending, then deterministic count or bounded detail if needed. `related_evidence_ref_ids` SHALL be sorted by canonical evidence ID.
 
-Binary, unreadable, unsupported-encoding, and oversized files MUST NOT be treated as text-inspected. They MAY appear as relevant files only when deterministic non-content signals match, and they MUST include an appropriate file kind and limitation.
+`run_summary` SHALL be part of the successful `RepositoryContextResult` and SHALL be mechanically derivable from the deterministic result payload and configuration profile identity. Any separately emitted summary SHALL be a non-authoritative derived view. `completion_status` in successful results SHALL be `completed` only when `limitations` is empty and `completed_with_limitations` whenever `limitations` is non-empty. Validation errors SHALL use only `completion_status: "validation_error"` in the validation envelope.
 
-#### Scenario: Valid repository with file-name match
-- **WHEN** a valid repository contains a file whose normalized filename matches the normalized query
-- **THEN** the result includes that file in `relevant_files` with `filename_match`, deterministic ranking inputs, and an evidence reference
+`run_summary.counts` SHALL distinguish discovery/scanning counts from capped result arrays. It SHALL include single deterministic counts for `discovered_files`, `discovered_directories`, `scanned_text_files`, `skipped_files`, and `skipped_directories`. It SHALL also include `counts.candidates.relevant_files`, `counts.candidates.search_results`, `counts.candidates.evidence_refs`, and `counts.candidates.test_command_hints`, plus `counts.returned.relevant_files`, `counts.returned.search_results`, `counts.returned.evidence_refs`, `counts.returned.test_command_hints`, and `counts.returned.limitations`. Returned counts SHALL equal returned array lengths. `run_summary.limitation_codes` SHALL be the unique sorted set of limitation codes.
 
-#### Scenario: Valid repository with text match
-- **WHEN** a valid repository contains a text file whose inspected content matches the normalized query
-- **THEN** the result includes a text search result with a bounded locator and related evidence reference
+#### Scenario: No matches is a successful limited result
+- **GIVEN** a valid workspace and query with no deterministic filename, path, or text matches
+- **WHEN** the service completes repository inspection
+- **THEN** it returns `result_type: "repository_context_result"`
+- **AND** `relevant_files`, `search_results`, and match-related evidence are empty
+- **AND** the result includes a grouped `no_matches` limitation
+- **AND** `run_summary.completion_status` is `completed_with_limitations`
 
-#### Scenario: Empty repository returns empty result
-- **WHEN** a valid accessible workspace contains no inspectable repository files
-- **THEN** the service returns a valid `RepositoryContextResult` with empty result arrays and a limitation indicating empty or no inspectable files
+#### Scenario: Result caps preserve graph consistency
+- **GIVEN** candidate results exceeding one or more result caps
+- **WHEN** the service applies result truncation
+- **THEN** all returned references resolve to returned `evidence_refs`
+- **AND** the result includes one grouped `result_set_truncated` limitation
+- **AND** candidate counts exceed returned counts for the affected arrays
 
-#### Scenario: No-match query returns empty result
-- **WHEN** a valid repository contains files but no deterministic retrieval signal matches the query
-- **THEN** the service returns a valid `RepositoryContextResult` with empty `relevant_files`, `search_results`, and `evidence_refs`, plus a no-match limitation
+### Requirement: Repository Context results SHALL be non-authorizing, immutable, and not production-persisted by Milestone 1
+`RepositoryContextResult` SHALL be non-authorizing context and evidence only. It SHALL NOT approve later reads, commands, tests, edits, memory operations, network access, PR side effects, branch creation, commit creation, or policy decisions. Later workflow stages MAY reference the result but SHALL perform their own OpenSpec-authorized policy evaluation.
 
-### Requirement: Ranking metadata and ordering are deterministic
-The system SHALL rank relevant files and search results using deterministic metadata derived from reproducible repository signals.
+`RepositoryContextResult` SHALL be immutable after creation. Later stages SHALL NOT mutate it, append fields, mark files as approved, add validation outcomes, attach policy decisions, add patch or PR state, or store future-stage workflow state inside it. Later contracts or artifacts MAY reference `repository_context_contract_id` and specific `evidence_ref.id` values, but they SHALL carry their own schemas and identities.
 
-`match_score` MUST be a deterministic numeric score where higher scores sort before lower scores.
+Milestone 1 SHALL NOT introduce production persistence, artifact storage, contract lookup APIs, retention policy, access-control model, durable run-summary storage, migration scheme, or storage-integrity mechanism. Stable IDs SHALL support fixture comparison, regression tests, caller-owned handling, and future references only.
 
-Ranking input categories MUST be limited to deterministic signals such as:
+Milestone 1 SHALL explicitly exclude production secret scanning. The service SHALL reduce payload leakage by avoiding raw snippets, full file contents, unbounded user inputs, host absolute paths, stack traces, environment variables, raw command output, and runtime metadata. Fixtures MAY include synthetic sensitive-looking values to verify payload avoidance, but SHALL NOT require secret detection, classification, redaction policy, or secret-specific policy decisions.
 
-- `filename_match`
-- `path_match`
-- `text_match`
-- `config_match`
-- `test_convention_match`
-- `symbol_hint` when optional symbol hints are implemented
+#### Scenario: Result does not authorize later actions
+- **GIVEN** a result with `completion_status: "completed"` and no limitations
+- **WHEN** a later stage considers tests, edits, memory writes, network access, commits, branches, or PR creation
+- **THEN** the repository context result alone does not authorize those actions
 
-`match_reasons` MUST use controlled values from those ranking input categories and MUST be sorted in a stable documented order.
+#### Scenario: Later artifacts reference but do not mutate
+- **GIVEN** a future artifact that depends on repository context
+- **WHEN** it records provenance
+- **THEN** it references `contract_id` and relevant `evidence_ref.id` values
+- **AND** it does not modify the original `RepositoryContextResult`
 
-Relevant files MUST be ordered by:
+### Requirement: Acceptance fixtures SHALL pin contract behavior before implementation
+The OpenSpec change SHALL define Milestone 1 acceptance-test skeletons and fixture expected outputs before read-only retrieval implementation begins. Fixture input workspaces SHALL live under `openspec/changes/repository-context-foundation/fixtures/workspaces/<case>/`. Expected outputs SHALL live separately under `openspec/changes/repository-context-foundation/fixtures/expected/<case>/`. Generated test outputs, if any, SHALL live outside the scanned workspace or under the explicitly ignored `openspec/changes/*/fixtures/output/` path. The service SHALL run only against the specific fixture workspace root, not the parent fixtures directory.
 
-1. descending `match_score`
-2. stable ordered `match_reasons`
-3. normalized workspace-relative `path` in ascending lexical order
+Acceptance fixtures SHALL cover deterministic contract IDs, validation error envelopes, input normalization, query-only retrieval, path formatting, ignore behavior, read-only boundary checks, symlink escape handling, strict UTF-8 decoding, binary and unsupported files, oversized and truncated files, line-based matching, duplicate match collapse, fixed scoring, tie-breaking, relevant-file inclusion, text-only search results, evidence ID generation, content hashes, root-only test hints, malformed optional metadata limitations, result caps, candidate versus returned counts, no dangling evidence references, limitations ordering, empty repositories, no matches, immutable/non-authorizing semantics, payload avoidance, and side-effect absence.
 
-Search results and evidence references MUST be ordered by normalized workspace-relative path, locator order when present, evidence kind, retrieval signal, and stable identifier.
+Acceptance checks SHALL snapshot fixture workspaces before and after retrieval and assert that no repository files are modified, no files or directories are added or removed under the workspace, and generated outputs are not updated in place. They SHALL assert that no subprocesses, shell commands, Git commands, package-manager commands, test commands, network calls, PR or external side-effect tools, dependency installation, memory reads, or memory writes are invoked. Content hashes and path lists SHALL be strict; filesystem metadata such as mtimes MAY be best-effort where platform behavior is fragile. Temporary files, if required by a future implementation, SHALL be outside the repository workspace and SHALL NOT appear in the result.
 
-Test command hints, limitations, and symbol hints when present MUST use deterministic ordering and deduplication rules.
+#### Scenario: Fixtures precede implementation
+- **GIVEN** Milestone 1 implementation has not begun
+- **WHEN** the change is reviewed for implementation readiness
+- **THEN** acceptance-test skeletons and expected contract fragments exist for the deterministic behaviors listed in this requirement
+- **AND** service implementation tasks depend on those fixtures
 
-Duplicate matches across retrieval signals MUST be merged into one relevant file entry with combined match reasons, combined ranking inputs, and deduplicated evidence reference identifiers.
-
-Duplicate evidence references MUST be deduplicated by a stable key composed from path, evidence kind, locator, and retrieval signal.
-
-The service MUST NOT expose broad probabilistic `confidence` or free-form `ranking_rationale` for Milestone 1.
-
-#### Scenario: Ranking tie uses path tie-break
-- **WHEN** two relevant files have equal match scores and equivalent match reasons
-- **THEN** the file with the lexically earlier normalized workspace-relative path appears first
-
-#### Scenario: Duplicate matches are merged
-- **WHEN** the same file matches through filename, path, and text retrieval signals
-- **THEN** the result contains one relevant file entry with deduplicated match reasons, combined ranking inputs, and deduplicated evidence reference identifiers
-
-#### Scenario: Match score is reproducible
-- **WHEN** a file is ranked as relevant
-- **THEN** its `match_score` is derived from recorded deterministic `ranking_inputs`
-
-#### Scenario: Match reasons are controlled
-- **WHEN** a result explains why a file matched
-- **THEN** `match_reasons` uses controlled retrieval reason values rather than free-form semantic rationale
-
-### Requirement: Evidence references are separated from payloads
-The system SHALL represent evidence through compact `evidence_refs` that identify where evidence came from and how it can be verified.
-
-Evidence references MUST be separate from evidence payloads. Raw source snippets, full file contents, and unbounded tool output MUST NOT be embedded or persisted by default in `RepositoryContextResult`.
-
-Each evidence reference MUST include:
-
-- `id`: stable identifier or stable deduplication key.
-- `path`: normalized workspace-relative path with no `..`.
-- `evidence_kind`: controlled value such as `file_path`, `file_name`, `text_match`, `config_match`, `test_convention`, `symbol_hint`, or `diagnostic`.
-- `retrieval_signal`: controlled ranking input category that produced the evidence.
-- `locator`: bounded location such as line range when available, permitted to be absent for file-level evidence.
-- `content_hash`: optional deterministic hash or verification metadata when content was inspected.
-
-Evidence references MUST NOT imply that ignored, skipped, unreadable, binary, oversized, or unsupported-encoding files were text-inspected.
-
-Source content MAY be re-read later only through an authorized workspace read path outside the default `RepositoryContextResult` payload.
-
-#### Scenario: Evidence is inspectable without embedded source
-- **WHEN** a relevant file or search result appears in `RepositoryContextResult`
-- **THEN** the associated `evidence_refs` identify the path, evidence kind, retrieval signal, and bounded locator or verification metadata without embedding raw source snippets
-
-#### Scenario: Source payloads are not default contract data
-- **WHEN** repository context retrieval finds source lines that match the query
-- **THEN** the result references their locations but does not persist raw source payloads by default
-
-#### Scenario: Duplicate evidence references are deduplicated
-- **WHEN** two retrieval paths produce the same evidence key
-- **THEN** the result contains one evidence reference for that key and all related results point to that evidence reference identifier
-
-### Requirement: Skipped and limited files are represented explicitly
-The system SHALL represent skipped or partially inspected files through limitations without implying inspection that did not occur.
-
-Ignored files and ignored directories MUST be excluded from scanning according to the configured deterministic ignore policy. If no project-specific ignore policy is defined, the default policy MUST be documented by implementation and applied deterministically.
-
-Hidden directories MAY be ignored only through the configured deterministic ignore policy. The chosen policy MUST be reflected in limitations or run summary counts when hidden paths are skipped.
-
-Oversized files MUST be skipped or partially scanned according to a deterministic configured size limit. Partial scans MUST record truncation through a limitation.
-
-Binary files, unreadable files, unsupported encodings, symlink loops, symlink escapes, and truncated result sets MUST produce limitation entries when encountered during discovery or matching.
-
-Limitation entries MUST include a stable code, affected workspace-relative path when applicable, and bounded detail. They MUST NOT include raw source content, host absolute paths, stack traces, or secrets.
-
-#### Scenario: Ignored file is not inspected
-- **WHEN** a file is excluded by the deterministic ignore policy
-- **THEN** the file is not inspected and the result does not imply content evidence from that file
-
-#### Scenario: Hidden directory follows ignore policy
-- **WHEN** a hidden directory is skipped by the deterministic ignore policy
-- **THEN** the run summary or limitations record skipped coverage without implying those files were inspected
-
-#### Scenario: Binary file is skipped for text search
-- **WHEN** a binary file is discovered during retrieval
-- **THEN** the service does not perform text matching on it and records a binary-file limitation if the file affects coverage or matching
-
-#### Scenario: Oversized file records truncation or skip
-- **WHEN** a file exceeds the configured deterministic size limit
-- **THEN** the service records an oversized-file or truncated-scan limitation and does not embed file content
-
-#### Scenario: Unsupported encoding is recorded
-- **WHEN** a file cannot be decoded by the supported deterministic text decoding policy
-- **THEN** the service skips text inspection for that file and records an unsupported-encoding limitation
-
-### Requirement: Test command hints are deterministic and non-executable
-The system SHALL represent `test_command_hints` as descriptive repository-context hints only.
-
-Test command hints MUST be emitted only from deterministic repository conventions such as known config files, package metadata, test directory names, or documented project configuration.
-
-Test command hints MUST NOT be inferred through LLM reasoning and MUST NOT be executed during Milestone 1.
-
-Each test command hint MUST include:
-
-- `command`: descriptive command string.
-- `source`: deterministic source or convention that produced the hint.
-- `evidence_ref_ids`: ordered deduplicated evidence reference identifiers supporting the hint.
-
-Test command hints MAY be empty. When present, they MUST be deduplicated by command and source, then ordered by command and source lexically.
-
-#### Scenario: Test hint is descriptive only
-- **WHEN** a deterministic repository convention suggests a test command
-- **THEN** the result may include a test command hint with supporting evidence but does not execute the command
-
-#### Scenario: Test hints may be empty
-- **WHEN** no deterministic repository convention suggests a test command
-- **THEN** the result contains an empty `test_command_hints` array without error
-
-### Requirement: Symbol hints are optional and non-authoritative
-The system SHALL treat `symbol_hints` as optional non-authoritative output and MAY include them only when cheap language-agnostic deterministic extraction is implemented.
-
-Symbol hints are not required for Milestone 1 acceptance.
-
-When present, symbol hints MUST be derived from deterministic text patterns or other cheap language-agnostic signals. They MUST NOT require LLM reasoning, language-server dependency, semantic code indexing, or root-cause inference.
-
-When absent, the result MUST remain valid and MUST include no failure solely because symbol hints were not produced.
-
-#### Scenario: Symbol hints absent by default
-- **WHEN** deterministic symbol hint extraction is not implemented
-- **THEN** the service still returns a valid `RepositoryContextResult` without requiring `symbol_hints`
-
-#### Scenario: Symbol hints remain non-authoritative
-- **WHEN** the result includes `symbol_hints`
-- **THEN** those hints are represented as repository context only and do not authorize semantic relevance claims, test execution, validation, or repair behavior
-
-### Requirement: Minimal run summary alignment is non-payload and bounded
-The system SHALL include or emit minimal non-payload run-summary metadata for Milestone 1 repository context operations.
-
-The `run_summary` field in `RepositoryContextResult` MUST include:
-
-- `operation_type`: stable value for repository context retrieval.
-- `input_summary`: deterministic summary of normalized query, issue text presence, workspace reference, and configuration identity.
-- `counts`: object containing deterministic counts such as discovered files, scanned files, matched files, skipped files, evidence references, limitations, and test command hints.
-- `limitation_codes`: ordered deduplicated limitation codes.
-- `completion_status`: controlled value such as `completed`, `completed_with_limitations`, or `validation_error`.
-
-The run summary MUST NOT persist raw snippets, full file contents, prompts, hidden runtime state, full tool payloads, or full DeerFlow checkpoints.
-
-Any separate Durable Run Summary record for Milestone 1 MUST be derived from `RepositoryContextResult` and its bounded runtime metadata. It MUST preserve ForgeFlow structured contracts as authoritative product-layer state.
-
-#### Scenario: Run summary contains counts only
-- **WHEN** repository context retrieval completes
-- **THEN** `run_summary` records operation type, input summary, counts, limitation codes, and completion status without raw evidence payloads
-
-#### Scenario: Validation error summary is bounded
-- **WHEN** repository context retrieval fails validation before scanning
-- **THEN** any emitted summary records the validation status and stable error code without raw source content or host absolute paths
-
-### Requirement: Evaluation fixtures cover Milestone 1 behavior
-The system SHALL define controlled evaluation fixtures for Repository Context Service behavior before broad implementation.
-
-Fixtures MUST cover deterministic file search, text search, optional symbol hints when implemented, test command hints, evidence references, workspace boundary enforcement, ranking metadata, skipped files, empty results, validation errors, and explicit exclusions.
-
-Fixtures MUST NOT require patch generation, code editing, test execution, review automation, PR creation, memory access, workflow graph implementation, or full DeerFlow runtime integration.
-
-#### Scenario: Fixture verifies deterministic ranking
-- **WHEN** a fixture repository and query are evaluated
-- **THEN** expected relevant files, match reasons, ranking inputs, evidence references, and limitations can be compared reproducibly
-
-#### Scenario: Fixture verifies workspace boundary
-- **WHEN** a fixture contains a symlink or path reference that would escape the workspace root
-- **THEN** evaluation verifies the escaped target is not read and the limitation or diagnostic is recorded
-
-#### Scenario: Fixture verifies exclusions
-- **WHEN** a fixture query suggests an obvious code fix or test command
-- **THEN** evaluation verifies the service returns context and hints only, without producing patches or executing tests
-
-#### Scenario: Fixture verifies empty and skipped cases
-- **WHEN** fixtures include empty repositories, no-match queries, ignored files, binary files, oversized files, unreadable files, and unsupported encodings
-- **THEN** evaluation verifies each case produces the specified valid empty result, limitation, or structured validation error
+#### Scenario: Sensitive-looking payload is not embedded
+- **GIVEN** a fixture workspace containing a synthetic sensitive-looking value
+- **WHEN** the service returns repository context
+- **THEN** expected output may include canonical paths, evidence references, locators, content hashes, and limitations
+- **AND** expected output does not include the raw synthetic secret-like value or full file content

@@ -1,114 +1,109 @@
 ## Context
 
-Milestone 1 is the Repository Context Foundation Slice. RFC-001 is accepted as the current agent architecture baseline and scope guard. RFC-002, RFC-004, and RFC-007 remain draft documents with Grill-Me feedback incorporated; this OpenSpec treats them as boundary inputs for Milestone 1 rather than as permission to implement broader workflow capabilities.
+Milestone 1 needs a narrow Repository Context Foundation Slice that can supply deterministic repository context to later ForgeFlow stages without implementing those stages. The slice must be contract-first: callers receive bounded context and evidence references, not permissions, execution plans, mutable workflow state, or runtime tracing records.
 
-The Repository Context Service is a ForgeFlow-owned deterministic service. It gathers repository facts from a workspace root, query, and optional issue text. It must not act as a Planner, Software Engineer, Validation, Review, or PR role, and it must not introduce LLM judgment into retrieval or ranking.
+This change defines the contract behavior for a deterministic Repository Context Service only. It intentionally avoids PlannerAgent, SoftwareEngineerAgent, ValidationAgent, ReviewAgent, PRAgent, workflow graph implementation, orchestration runtime, patch generation, autonomous code editing, validation execution, review automation, PR creation, branch creation, commit creation, memory reads or writes, LLM reasoning, semantic ranking, root-cause analysis, code summarization, production persistence, and DeerFlow core modification.
 
-## Goals / Non-Goals
+## Goals
 
-**Goals:**
+- Define a precise `RepositoryContextResult` contract that can be implemented and fixture-tested.
+- Define a separate validation error envelope for invalid required inputs and unsafe workspace conditions.
+- Make result identity, evidence identity, ordering, normalization, matching, ranking, truncation, and counts deterministic across implementations.
+- Preserve a strict read-only, no-command, no-network, no-memory workspace boundary.
+- Keep test command hints descriptive and non-executable.
+- Pin acceptance fixtures and expected contract fragments before implementation begins.
 
-- Define the minimum deterministic Repository Context Service behavior for Milestone 1.
-- Define the `RepositoryContextResult` contract fields and evidence boundaries.
-- Define deterministic empty-result, invalid-input, ordering, deduplication, and skipped-file behavior before implementation begins.
-- Confine all repository inspection to read-only, workspace-root-contained operations.
-- Make retrieval ranking reproducible through deterministic signals.
-- Provide controlled fixtures that can verify behavior without broad production implementation.
+## Non-Goals
 
-**Non-Goals:**
-
-- No patch generation, code editing, diff creation, validation execution, repair loop, review automation, branch creation, commit creation, or PR creation.
-- No concrete Planner, Software Engineer, Validation, Review, or PR agent implementation units.
-- No long-term memory reads or writes.
-- No LLM reasoning for relevance judgment, summarization, root-cause inference, repair strategy, semantic ranking, or test recommendation.
-- No full DeerFlow graph/runtime integration, DeerFlow core modification, local DeerFlow patch, or dependency on unmerged DeerFlow changes.
-- No production policy engine or full trace/run summary system beyond minimal Milestone 1 alignment.
+- No role-agent implementation.
+- No workflow graph, DeerFlow runtime integration, or DeerFlow core modification.
+- No command governance or sandbox-command layer.
+- No patch generation, code editing, branch, commit, or PR side effects.
+- No test execution, validation loop, or validation planning.
+- No production tracing system, artifact store, contract lookup API, retention model, or access-control model.
+- No memory reads or writes.
+- No LLM, embedding, semantic, AST, or language-server reasoning inside repository context.
+- No symbol hints in Milestone 1.
+- No production secret scanning.
 
 ## Decisions
 
-### Decision 1: Implement Repository Context as a deterministic service
+### 1. Use explicit success and validation envelopes
 
-The service will rank and return context using reproducible repository signals such as file path matches, filename matches, text search matches, cheap language-agnostic symbol hints, project configuration, and test naming conventions.
+The service returns a tagged union. Successful inspection returns `result_type: "repository_context_result"` and a full immutable `RepositoryContextResult`. Validation failure returns `result_type: "repository_context_validation_error"` and never returns partial successful-result fields.
 
-Alternatives considered:
+This keeps invalid-input behavior separate from incomplete-coverage behavior. Missing workspace identity, empty or oversized query, invalid configuration profile, inaccessible workspace, unsafe path escape, or unsupported workspace conditions are validation errors. Empty repositories, no matches, skipped files, truncated scans, malformed optional test-hint metadata, unreadable files, unsupported encodings, and result caps are limitations inside an otherwise successful result.
 
-- LLM relevance ranking: rejected for Milestone 1 because it violates RFC-001 and RFC-002 determinism boundaries.
-- Full semantic code indexing: deferred because Milestone 1 should avoid broad implementation and language-specific analyzer complexity.
+### 2. Derive identities from canonical deterministic payloads
 
-### Decision 2: Use `RepositoryContextResult` as the only required Milestone 1 contract
+`contract_id`, `evidence_ref.id`, and validation `error_id` are hash-derived from canonical JSON payloads with the identity field itself omitted. Canonical JSON uses UTF-8, lexicographic object-key ordering, deterministic array ordering, no insignificant whitespace, integer numbers for scores/counts/limits/lines, explicit empty required collections, omitted absent optionals, and no floats.
 
-The Milestone 1 contract will include schema/run identity, workspace and query references, relevant files, search results, optional symbol hints, test command hints, evidence references, deterministic ranking metadata, and limitations.
+The successful contract hash includes semantic contract content, not implementation behavior. Runtime-only and environment-specific values are excluded. The resulting IDs are useful for fixture comparison, regression tests, caller-owned references, and future contracts, but they do not imply production persistence in Milestone 1.
 
-The deterministic repository-context payload should be distinguishable from runtime metadata. Runtime-generated values such as a run identifier may exist for traceability, but they must not affect deterministic payload comparison.
+### 3. Require caller-supplied logical workspace and configuration identity
 
-Alternatives considered:
+The service input requires a safe caller-supplied `workspace_ref.root_id` and `configuration_profile_id`. Milestone 1 allows only `repository-context/m1-defaults-v1`. The service does not derive workspace identity from host paths, repository contents, filesystem metadata, timestamps, or machine state.
 
-- Include `PatchProposal`, `ValidationResult`, `ReviewResult`, or `PRResult`: rejected because those are future milestone directions only.
-- Persist raw snippets in the contract by default: rejected because evidence references must remain separate from evidence payloads.
+The configuration profile is the contract behavior version. It covers normalization, matching, ranking weights, score caps, scan limits, result limits, ignore policy, decoding, test hint discovery, side-effect boundaries, and deferred capabilities. Defaults must not silently change under the same profile identity; any future contract-affecting default change should introduce a new explicit profile such as `repository-context/m1-defaults-v2` through a later OpenSpec change.
 
-### Decision 3: Keep repository access read-only and workspace-confined
+### 4. Make normalization and matching cheap, exact, and language-agnostic
 
-All file inspection must resolve under the declared workspace root, reject parent-directory escape, reject symlink escape, avoid repository writes, avoid dependency installation, avoid arbitrary command execution, and avoid default network access.
+The query is normalized by NFC normalization, trimming, whitespace collapse, and casefolded matching views. `query.normalized` is the sole retrieval and ranking driver. Optional issue text is normalized and bounded as input context only; it does not drive retrieval, ranking, search results, evidence, or no-match behavior.
 
-Returned paths should be normalized workspace-relative paths. Host-specific absolute paths should remain outside `RepositoryContextResult` so durable records do not expose unsafe local filesystem details.
+Milestone 1 text matching is line-based substring matching over normalized line views after strict UTF-8 decoding, UTF-8 BOM removal, CRLF/CR to LF normalization, and query normalization. Matches do not cross line boundaries. Duplicate occurrences on the same line collapse to one locator.
 
-Alternatives considered:
+### 5. Restrict inspection to direct read-only filesystem APIs
 
-- Reuse a later write/test sandbox shape immediately: rejected because Milestone 1 does not need write or command execution infrastructure.
-- Treat read-only tools as automatically safe: rejected because read-only access can still expose sensitive data and must be policy-aware.
+Milestone 1 uses direct workspace-confined filesystem APIs or libraries for traversal, metadata reads, bounded text reads, decoding, hashing, ignore-policy application, path normalization, and symlink boundary enforcement. It forbids all command execution, including commands commonly considered read-only (`git`, `rg`, `grep`, `find`, package managers, test commands, and language servers).
 
-### Decision 4: Treat DeerFlow as optional reference material for Milestone 1
+This avoids accidentally implementing a command-governance slice and keeps RFC-004-style policy decisions outside repository context. The result is context and evidence only; it authorizes no later actions.
 
-The Milestone 1 Repository Context path should be ForgeFlow-owned and must not require DeerFlow core modification. The recorded DeerFlow revision may remain an immutable upstream reference.
+### 6. Keep path identity canonical and workspace-relative
 
-Alternatives considered:
+Returned paths are canonical workspace-relative paths using `/`, preserving observed casing and excluding leading slash, `.` segments, `..` segments, empty segments, duplicate separators, and host absolute paths. Lexical ordering uses this returned representation.
 
-- Implement the capability inside DeerFlow core: rejected because it blurs the ForgeFlow product layer and upstream runtime boundary.
-- Require full DeerFlow runtime graph integration now: deferred because Repository Context acceptance can be proven without it.
+Canonical workspace-relative path is the only file identity. The service does not deduplicate by inode, hard link, or content hash. Symlinks are traversal-control artifacts only in Milestone 1; they are not relevant files and do not expose target content.
 
-### Decision 5: Defer symbol hints from Milestone 1 acceptance
+### 7. Use a fixed narrow ignore policy
 
-Cheap language-agnostic symbol hints are allowed only as optional output when deterministic extraction is already available. They are not required for Milestone 1 acceptance.
+The default profile ignores only `.git/`, `.forgeflow/cache/`, `.forgeflow/artifacts/`, and `openspec/changes/*/fixtures/output/`. It does not honor `.gitignore`, `.ignore`, global Git excludes, ecosystem defaults, hidden-directory defaults, dependency-directory defaults, or build-output defaults.
 
-Alternatives considered:
+Ignored directories are counted once and not descended into. This keeps discovery deterministic and prevents generated fixture outputs or ForgeFlow artifacts from polluting context while avoiding broad hidden implementation defaults.
 
-- Require symbol hints in the first implementation slice: rejected because it could pull the milestone toward language-specific parsing or analyzer dependencies.
-- Forbid symbol hints entirely: rejected because ADR-002 allows optional cheap language-agnostic hints when they remain deterministic.
+### 8. Use direct scoring signals only
 
-### Decision 6: Use structural deterministic comparison
+`ranking_inputs` is the single scoring source and contains only `filename_match`, `path_match`, and capped `text_match_count`. The default score is filename match `100`, path match `50`, and `25` per counted text locator up to the per-file cap. Sorting uses score descending and canonical path ascending.
 
-Repeated repository-context runs must produce structurally equivalent deterministic payloads after excluding explicitly marked runtime metadata. Canonical serialization may be used by tests, but wall-clock timestamps, random values, process IDs, nondeterministic traversal order, and host absolute paths must not affect the deterministic payload.
+`match_reasons` is a deterministic projection of ranking inputs. There is no `config_match`, `test_convention_match`, `symbol_hint`, issue-text signal, semantic signal, inferred framework signal, LLM signal, AST signal, or language-server signal.
 
-Alternatives considered:
+### 9. Keep evidence references separate from payloads
 
-- Require byte-equivalent whole-result serialization: rejected because minimal run metadata may include runtime identifiers.
-- Allow vague equivalence: rejected because evaluation fixtures need objectively testable comparison rules.
+Evidence references identify where deterministic evidence came from and may include verification metadata such as SHA-256 content hashes for inspected text. They do not persist raw snippets, full file contents, host absolute paths, command output, stack traces, or runtime metadata.
 
-### Decision 7: Keep trace alignment minimal and non-payload
+Search results are text-match locators only. Filename/path matches are represented through relevant-file ranking inputs, match reasons, and evidence references. Test command hints are separate descriptive metadata.
 
-Milestone 1 trace/run-summary alignment is limited to non-payload operational facts that can be derived from or associated with `RepositoryContextResult`, such as operation type, deterministic input summary, scanned/matched/skipped/limited counts, limitation codes, and completion status.
+### 10. Keep test command hints root-only and non-executable
 
-Alternatives considered:
+Milestone 1 test hints inspect only root `package.json` and root `Makefile`. A strict top-level `scripts.test` string in root `package.json` emits `npm test`. A non-recipe target line in root `Makefile` whose target list includes exactly `test` emits `make test`.
 
-- Define a production tracing system now: rejected because RFC-005-level observability is outside Milestone 1.
-- Persist raw snippets or full tool payloads for debugging: rejected because RFC-002 and RFC-004 require bounded references and redaction boundaries.
+Hints are deduplicated, sorted, evidenced, included in the successful contract, and never executed. They do not affect ranking. Malformed optional metadata produces non-fatal limitations.
 
-## Risks / Trade-offs
+### 11. Make limitations and run summary part of the deterministic contract
 
-- Deterministic retrieval may miss semantically relevant files that an LLM or language server might find. Mitigation: expose `limitations` and controlled retrieval metadata, then add richer analyzers in later accepted specs.
-- Evidence references without source payloads may require a second lookup for human inspection. Mitigation: include stable paths, line ranges, hashes, and retrieval metadata.
-- Test command hints may be mistaken for authorization to execute tests. Mitigation: specify hints as non-executable context only; test execution is out of scope.
-- Strict deterministic ordering may require extra normalization logic across platforms. Mitigation: define workspace-relative path ordering and require same-workspace same-platform determinism without mandating a portable case-sensitivity model.
-- RFC-002, RFC-004, and RFC-007 are still Draft while RFC-001 is Accepted. Mitigation: this OpenSpec uses their current draft decisions only as Milestone 1 constraints and does not rely on broader acceptance.
+Limitations are successful-result coverage records only. They describe incomplete or bounded inspection, skipped paths, truncation, unsupported files, malformed optional metadata, empty repositories, no matches, and result caps. They are structurally ordered and included in the contract hash.
 
-## Migration Plan
+`run_summary` is inside the successful result and is mechanically derivable from deterministic payload facts and configuration identity. It is not a production tracing system. Counts distinguish discovery/scanning counts from candidate and returned result-array counts so result truncation is observable without dangling references.
 
-This is the first OpenSpec change in the repository, so there is no existing OpenSpec capability to migrate.
+### 12. Pin fixtures before implementation
 
-Implementation should proceed only after this change is reviewed and accepted. The first implementation slice should add fixtures and a minimal read-only Repository Context path, then validate it against the scenarios in this spec.
+Milestone 1 is contract-first. Acceptance-test skeletons, fixture workspaces, expected contract fragments, expected validation errors, ordering assertions, limitation expectations, evidence-shape checks, payload-avoidance checks, and side-effect absence checks must exist before retrieval implementation begins.
 
-## Open Questions
+Fixture workspaces are separate from expected outputs and generated outputs. Generated outputs must never be written inside scanned workspaces. Fixture side-effect checks verify that repository content and path lists do not change, and that no command, network, dependency installation, PR, external side-effect, or memory API is invoked.
 
-- Should the project later add DeerFlow as a Git submodule under `third_party/deer-flow`, or keep the current immutable revision record as sufficient for Milestone 1?
-- What exact fixture repositories should be used for the first deterministic retrieval evaluation set?
-- Should optional symbol hints be implemented in the first code slice or recorded as a Milestone 1 stretch item if cheap language-agnostic extraction is insufficient?
+## Risks and Mitigations
+
+- **Risk: Contract shape becomes too broad.** Mitigation: keep Milestone 1 fields limited to deterministic repository context, evidence references, limitations, test hints, and run summary; defer symbol hints, semantic analysis, and future workflow artifacts.
+- **Risk: Determinism varies across implementations.** Mitigation: specify canonical JSON, exact normalization, fixed scoring, tie-breakers, path formatting, limits, and fixture expectations.
+- **Risk: Read-only boundary is weakened by read-only commands.** Mitigation: forbid all command execution and allow only workspace-confined filesystem APIs.
+- **Risk: Evidence references leak payloads.** Mitigation: store references, locators, and hashes rather than raw snippets or full content; explicitly exclude production secret scanning while testing payload avoidance.
+- **Risk: Stable IDs imply storage infrastructure.** Mitigation: define IDs for identity and references only; keep production persistence and lookup APIs out of Milestone 1.
