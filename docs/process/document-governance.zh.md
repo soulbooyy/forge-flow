@@ -1,6 +1,6 @@
 # ForgeFlow 文档治理
 
-## 3. 文档类型与职责
+## 1. 文档类型与职责
 
 | 文档                                    | 职责                                                                                                                                   |
 | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
@@ -17,7 +17,7 @@
 
 文档应该被视为产品的一部分，而不是可选的说明文字。
 
-### 4.7 Documentation Authority Hierarchy
+## 2. 文档权威层级
 
 ```text
 Vision
@@ -38,7 +38,7 @@ Vision
 - Milestone Progress 记录 Milestone 当前在哪里。
 
 
-### 14.7 Phase Completion Record 和进度索引
+## 3. Phase Completion Record 和进度索引
 
 每个 Milestone 的每一个实现 Phase 都必须在 `docs/milestones/<milestone-slug>/phases/phase-<number>-<phase-name>.md` 保留一份正式的 Phase Completion Record。文件名必须从已完成 reconciliation 的 canonical implementation plan Phase 名称转换为稳定的 kebab-case；已存在的 Completion Record 文件名应保持不变。不得根据聊天提示词为后续 Phase 命名。
 
@@ -72,6 +72,6 @@ Vision
 
 完成 Completion Record 和 progress 索引更新后，输出简短总结并停止等待用户确认。不得自动进入下一阶段。
 
-### 14.8 翻译策略
+## 4. 翻译策略
 
 英文流程文档是 canonical。既有 `.zh.md` 流程文档是稳定、持久流程规则的维护性翻译。滚动 progress 和临时执行产物默认不创建翻译。

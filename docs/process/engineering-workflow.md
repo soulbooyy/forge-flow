@@ -1,4 +1,4 @@
-# ForgeFlow Development Process
+# ForgeFlow Engineering Workflow
 
 ## 1. Purpose
 
@@ -30,24 +30,7 @@ ForgeFlow development follows these principles:
 
 These principles apply especially while the project is still in foundation and pre-MVP stages.
 
-## 3. Document Types and Responsibilities
-
-| Document | Responsibility |
-|---|---|
-| `docs/product/vision.md` | Project vision, target users, long-term direction, MVP boundary, Milestone 1 boundary, and core principles. |
-| `docs/product/roadmap/milestones.md` | Stage planning. Defines Milestone 1, MVP, later phases, scope exclusions, and exit criteria. |
-| `docs/architecture/foundation/project-foundation-proposal.md` | Pre-RFC foundation design proposal. It is early design input, not the final architecture specification. |
-| `rfcs/` | Major architecture decisions such as Agent Architecture, State Model, Tool/MCP Integration, Sandbox Governance, Evaluation Framework, and DeerFlow Extension Strategy. |
-| `openspec/` or `specs/changes/` | Feature-level specifications such as Repository Context Service, PatchProposal generation, Validation workflow, ReviewResult generation, and Draft PR creation. |
-| `adr/` | Accepted architecture decision records, usually created after RFC discussion reaches a decision. |
-| `docs/milestones/<milestone-slug>/implementation-plan.md` | Canonical implementation sequence, file-level work, dependencies, TDD steps, and phase acceptance conditions. |
-| `docs/milestones/<milestone-slug>/` | Milestone status index and formal Phase Completion Records. |
-| `retrospectives/` | Milestone retrospectives that record what worked, what failed, causes of rework, and follow-up improvements. |
-| `README.md` | Project entry point. It should contain only stable high-level information and navigation to current docs. |
-
-Documentation should be treated as part of the product, not as optional commentary.
-
-## 4. ForgeFlow Engineering Workflow
+## 3. ForgeFlow Engineering Workflow
 
 ForgeFlow follows a staged engineering workflow:
 
@@ -63,7 +46,7 @@ Vision
 This workflow applies to every milestone. The following sections define one
 continuous process; later sections provide detailed rules for individual stages.
 
-### 4.1 Architecture
+### 3.1 Architecture
 
 Architecture starts from the project vision and produces RFCs and ADRs. RFCs
 define architecture boundaries, system responsibilities, trade-offs, and
@@ -73,21 +56,21 @@ rejected alternatives, and important trade-offs.
 Implementation must not begin while required architecture decisions remain
 unresolved.
 
-### 4.2 Specification
+### 3.2 Specification
 
 Specification takes the relevant RFCs and accepted ADRs as input and produces
 an OpenSpec change. OpenSpec is the authoritative feature contract and must
 include a proposal, design, tasks, and feature specifications. Each change must
 state scope, acceptance criteria, non-goals, and constraints.
 
-### 4.3 Grill-Me Design Review
+### 3.3 Grill-Me Design Review
 
 Important features must receive a Grill-Me design challenge before planning.
 Grill-Me exposes hidden assumptions, unclear boundaries, scope creep, and
 architecture violations. It does not alter architecture decisions; final
 decisions remain recorded in RFCs, ADRs, and OpenSpec.
 
-### 4.4 Planning
+### 3.4 Planning
 
 Planning takes an accepted OpenSpec change as input and produces the canonical
 Implementation Plan. The plan is the sole authority for execution order and
@@ -110,7 +93,7 @@ plan that requires synchronization.
 Implementation phases must come from the canonical plan. Chat prompts do not
 redefine a phase's scope, interface, file list, or acceptance criteria.
 
-### 4.5 Implementation
+### 3.5 Implementation
 
 Implementation uses Lightweight Implementation Execution and follows this
 sequence for each phase:
@@ -126,33 +109,13 @@ Read Phase Requirement
 -> Update Milestone Progress
 ```
 
-### 4.6 Verification
+### 3.6 Verification
 
 Every completed phase verifies that tests pass, scope is respected, the Git diff
 has been reviewed, and documentation is updated. Before committing, run targeted
 tests, cumulative implemented tests, `git diff --check`, and `git status`.
 
-### 4.7 Documentation Authority Hierarchy
-
-```text
-Vision
--> RFC
--> ADR
--> OpenSpec
--> Implementation Plan
--> Phase Completion Record
--> Milestone Progress
-```
-
-- Vision explains why the work exists.
-- RFCs define the architecture.
-- ADRs record settled architectural choices.
-- OpenSpec defines the feature contract.
-- The Implementation Plan defines how to execute the work.
-- Phase Completion Records state what a phase actually completed.
-- Milestone Progress states where the milestone currently stands.
-
-### 4.8 AI-assisted Development Tools
+### 3.7 AI-assisted Development Tools
 
 Superpowers and other AI-assisted development tools are execution aids. They may
 help with task decomposition, implementation planning, or review assistance,

@@ -1,6 +1,6 @@
 # ForgeFlow 开发生命周期
 
-### 4.9 推荐开发流程
+## 1. 推荐开发流程
 
 ### Phase 0：Project Foundation
 
@@ -91,7 +91,7 @@
 
 * 项目有意识地改进
 * 未来贡献者能够理解为什么发生了这些变化
-## 11. Definition of Ready
+## 2. Definition of Ready
 
 一个功能只有在以下条件满足时，才准备好实现：
 
@@ -106,7 +106,7 @@
 
 对于 Milestone 1，这意味着 Repository Context Service 必须保持为确定性基础切片，而不是补丁生成或 PR 自动化工作流。
 
-## 12. Definition of Done
+## 3. Definition of Done
 
 一个功能在以下条件满足时才算完成：
 
@@ -120,7 +120,7 @@
 
 Done 意味着该功能已经实现、测试、评估、记录，并且可以追溯。
 
-## 13. 范围控制规则
+## 4. 范围控制规则
 
 这些规则适用于 ForgeFlow 早期开发：
 

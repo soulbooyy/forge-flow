@@ -1,6 +1,6 @@
 # ForgeFlow Development Lifecycle
 
-### 4.9 Recommended Development Flow
+## 1. Recommended Development Flow
 
 ### Phase 0: Project Foundation
 
@@ -91,7 +91,7 @@ Outcome:
 
 - the project improves deliberately
 - future contributors can understand why changes happened
-## 11. Definition of Ready
+## 2. Definition of Ready
 
 A feature is ready for implementation only when:
 
@@ -106,7 +106,7 @@ A feature is ready for implementation only when:
 
 For Milestone 1, this means Repository Context Service must remain a deterministic foundation slice, not a patch generation or PR automation workflow.
 
-## 12. Definition of Done
+## 3. Definition of Done
 
 A feature is done when:
 
@@ -120,7 +120,7 @@ A feature is done when:
 
 Done means the feature is implemented, tested, evaluated, documented, and traceable.
 
-## 13. Scope Control Rules
+## 4. Scope Control Rules
 
 These rules apply during early ForgeFlow development:
 

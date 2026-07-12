@@ -1,6 +1,6 @@
 # ForgeFlow Git and Review Practices
 
-## 5. When to Use Grill-Me
+## 1. When to Use Grill-Me
 
 Grill-Me is a design review mechanism. It should pressure-test assumptions, expose scope creep, and sharpen architectural boundaries.
 
@@ -25,7 +25,7 @@ Modes:
 
 Grill-Me feedback should be incorporated into the relevant document rather than left only in chat history.
 
-## 6. When to Use RFC
+## 2. When to Use RFC
 
 Use an RFC for decisions that affect architecture, project boundaries, safety, state, contracts, runtime integration, or evaluation.
 
@@ -63,7 +63,7 @@ Recommended RFC structure:
 
 An RFC may be accepted, rejected, superseded, or deferred.
 
-## 7. When to Use OpenSpec
+## 3. When to Use OpenSpec
 
 Use OpenSpec for feature-level planning before implementation.
 
@@ -90,7 +90,7 @@ OpenSpec should not be used to:
 
 The first OpenSpec change should be Repository Context Service, and only after the relevant RFC skeleton decisions exist.
 
-## 8. When to Use ADR
+## 4. When to Use ADR
 
 Use ADRs to record accepted technical decisions.
 
@@ -113,7 +113,7 @@ Recommended ADR structure:
 
 ADRs should not reopen the full debate. That belongs in RFCs.
 
-## 9. Git Workflow
+## 5. Git Workflow
 
 Use clear, specific commit messages.
 
@@ -137,7 +137,7 @@ Guidelines:
 - avoid vague messages such as `update`, `fix stuff`, or `misc changes`
 - keep commits focused enough that project evolution can be understood from Git history
 
-## 10. Branching Recommendation
+## 6. Branching Recommendation
 
 Use a lightweight branch strategy suitable for a personal project that may become open source.
 
