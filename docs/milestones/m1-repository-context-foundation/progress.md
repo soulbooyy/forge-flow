@@ -2,8 +2,7 @@
 
 ## Purpose
 
-This file records Milestone 1 execution state only. It does not define feature
-requirements, architecture decisions, or implementation tasks.
+This is the Milestone 1 status index. It does not define requirements, architecture, or implementation tasks, and it does not replace the canonical implementation plan or the Phase Completion Records.
 
 ## Authoritative References
 
@@ -14,46 +13,46 @@ requirements, architecture decisions, or implementation tasks.
 - [RFC-007: DeerFlow Extension Strategy](../../../rfcs/RFC-007-deerflow-extension-strategy.md)
 - [ADR index](../../../adr/README.md)
 - [Canonical Milestone 1 implementation plan](../../implementation-plans/milestone-1-repository-context-foundation.md)
+- [Development process](../../development-process.md#14-lightweight-implementation-execution)
 
-## Execution Policy
-
-Milestone implementation follows the [Lightweight Implementation Execution](../../development-process.md#14-lightweight-implementation-execution)
-section of the development process.
-
-## Current Status
+## Execution Environment
 
 | Field | Value |
 | --- | --- |
 | Branch | `feature/m1-repository-context-foundation` |
 | Worktree | `.worktrees/m1-repository-context-foundation` |
+| Execution mode | Lightweight Implementation Execution |
+
+## Current Status
+
+| Field | Value |
+| --- | --- |
 | Milestone | Repository Context Foundation |
-| Completed documented execution phases | 1-3 |
-| Next phase | Reconcile phase numbering and scanner status before further implementation |
-| Overall status | Active; implementation progression paused for documentation governance reconciliation |
+| Completed through | Phase 3 |
+| Next incomplete phase | Phase 4 |
+| Overall state | Active; paused after Phase 3 documentation reconciliation |
+| Latest cumulative test result | Phase 1-3 unittest suite: 34 passed |
 
-### Numbering Reconciliation Required
+## Phase Index
 
-The canonical implementation plan labels deterministic scanning as Phase 3 and
-retrieval as Phase 4. Existing execution records label workspace security as
-Phase 3 and scanner work as Phase 4; Git history includes scanner commit
-`14e9bae`. This file does not redefine the canonical plan or duplicate scanner
-results. Before another implementation phase begins, maintainers must reconcile
-the execution numbering with the canonical plan through the appropriate
-planning or OpenSpec process.
+| Phase | Name | Status | Commit | Completion Record |
+| --- | --- | --- | --- | --- |
+| 1 | Contract Foundation | Accepted | `fd9813f1a62eead8d87a88de2f6592590783ab75` | [Phase 1 record](phase-1-contract-foundation.md) |
+| 2 | Canonical Identity | Accepted | `9fa68b8db27f785829221c7b3a6994229fbe693f` | [Phase 2 record](phase-2-canonical-identity.md) |
+| 3 | Workspace Security | Accepted | `4b77b81971c9390e41f4a2beec50508c5919e4ea` | [Phase 3 record](phase-3-workspace-security.md) |
+| 4 | See canonical implementation plan | Pending |  | Not created |
+| 5 | See canonical implementation plan | Pending |  | Not created |
+| 6 | See canonical implementation plan | Pending |  | Not created |
+| 7 | See canonical implementation plan | Pending |  | Not created |
+| 8 | See canonical implementation plan | Pending |  | Not created |
 
-## Phase Progress
+## Reconciliation Items
 
-| Phase | Status | Goal | Implemented outcome | Tests | Commit | Scope confirmation | Notes |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Accepted | Contract foundation | Immutable Repository Context models, tagged envelopes, and versioned defaults | `test_contracts`: 8 passed at checkpoint | `fd9813f` | No serialization, filesystem access, retrieval, or service behavior | Stable contract base |
-| 2 | Accepted | Canonical identity | Canonical JSON and pure SHA-256 identity helpers | Phase 1-2 suite: 20 passed at checkpoint | `9fa68b8` | No validation execution, workspace access, or retrieval | Identity fields exclude themselves |
-| 3 | Accepted | Workspace security | Workspace identity validation and read-only path containment | Phase 1-3 suite: 34 passed at checkpoint | `4b77b81` | No scanning, content reads, matching, ranking, or service | Final independent security review approved |
-| 4 | Reconciliation required | See canonical implementation plan | Git history contains `14e9bae`; no result is restated here | See Git history and test suite | `14e9bae` | No new scope asserted by this progress record | Execution numbering conflicts with canonical plan |
-| 5 | Pending | See canonical implementation plan | Not recorded | Not recorded | Not recorded | No implementation result asserted | Pending reconciliation |
-| 6 | Pending | See canonical implementation plan | Not recorded | Not recorded | Not recorded | No implementation result asserted | Pending reconciliation |
-| 7 | Pending | See canonical implementation plan | Not recorded | Not recorded | Not recorded | No implementation result asserted | Pending reconciliation |
-| 8 | Pending | See canonical implementation plan | Not recorded | Not recorded | Not recorded | No implementation result asserted | Pending reconciliation |
+- `README` status may be out of date.
+- `docs/milestones.md` and `docs/milestones.zh.md` status may be out of date.
+- OpenSpec task checkboxes remain unchecked.
+- Canonical-plan phase numbering and historical execution/Git history may differ; reconcile this before beginning the next implementation phase.
 
 ## Change Log
 
-- 2026-07-12: Consolidated accepted Phase 1-3 outcomes from execution records into this canonical rolling progress file. Recorded phase-numbering reconciliation requirement rather than silently changing the canonical plan or Git history.
+- 2026-07-12: Restored formal Phase 1-3 Completion Records and reduced this file to the Milestone-level status index.

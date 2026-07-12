@@ -387,13 +387,52 @@ Milestone 1 使用 branch `feature/m1-repository-context-foundation` 和 worktre
 
 当修改 OpenSpec contract、安全边界、canonical identity algorithm、外部依赖或跨平台安全行为；偏离 canonical plan；或用户明确要求 review 时，必须升级为独立审查。
 
-### 14.7 文档更新和停止条件
+### 14.7 Phase Completion Record 和进度索引
 
-每个 Phase commit 后，只更新 milestone `progress.md`，记录状态、目标、实现结果、测试、commit、范围确认和下一个未完成阶段。默认不生成 phase brief、phase report、review diff、rereview diff 或独立 checkpoint report。
+Milestone 1 的每一个 Phase（包括 Phase 1 至 Phase 8）都必须在
+`docs/milestones/m1-repository-context-foundation/phase-X-<phase-name>.md`
+保留一份正式的 Phase Completion Record。文件名必须从已完成 reconciliation 的
+canonical implementation plan Phase 名称转换为稳定的 kebab-case；已存在的
+Completion Record 文件名应保持不变。不得根据聊天提示词为后续 Phase 命名。
 
-新的架构决策进入 ADR，需求变化进入 OpenSpec，实施顺序变化进入 canonical implementation plan。progress 文件不得重新定义这些内容。
+所有 Phase Completion Record 必须使用完全相同的模板。Phase 4 至 Phase 8
+不得使用简化版或不同结构：
 
-更新 progress 后，输出简短总结并停止等待用户确认。不得自动进入下一阶段。
+```text
+# Phase X: <Phase Name>
+
+## 1. Goal
+## 2. Scope
+### Included
+### Excluded
+## 3. Changed Files
+## 4. Implementation
+## 5. Design Decisions
+## 6. TDD and Tests
+## 7. Important Fixes and Edge Cases
+## 8. Commit
+## 9. Acceptance
+## 10. Scope Boundary Confirmation
+## 11. Follow-up
+```
+
+`Changed Files` 使用 `File | Change | Purpose` 表格。`TDD and Tests` 必须
+记录 RED、GREEN、必要的重构或修复迭代、命令、targeted result 和 cumulative-suite
+result。该记录只保留已经完成的工程事实，不包含 agent dispatch、review diff 正文或
+临时调试叙述。
+
+每个 Phase commit 后，必须同时创建或更新对应的 Phase Completion Record 和
+milestone `progress.md`。Completion Record 承担该 Phase 的详细记录；`progress.md`
+是简洁的 Milestone 索引，只记录 Phase 状态、commit、文档链接、当前阶段、下一个
+未完成 Phase 和 Milestone 级 reconciliation item。两者都不得重新定义需求、架构或
+实施顺序。
+
+默认不生成 Superpowers brief、review diff、rereview diff 或 agent execution report。
+新的架构决策进入 ADR，需求变化进入 OpenSpec，实施顺序变化进入 canonical
+implementation plan。
+
+完成 Completion Record 和 progress 索引更新后，输出简短总结并停止等待用户确认。
+不得自动进入下一阶段。
 
 ### 14.8 翻译策略
 

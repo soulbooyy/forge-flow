@@ -409,19 +409,56 @@ security boundary, canonical identity algorithm, external dependency, or
 cross-platform security behavior; when it diverges from the canonical plan; or
 when explicitly requested by the user.
 
-### 14.7 Documentation and Stop Condition
+### 14.7 Phase Completion Records and Progress
 
-After a phase commit, update only the milestone `progress.md` with status,
-goal, implemented outcome, tests, commit, scope confirmation, and the next
-incomplete phase. Do not create phase briefs, phase reports, review diffs,
-rereview diffs, or standalone checkpoint reports by default.
+Every Milestone 1 phase, including Phases 1 through 8, must have one formal
+Phase Completion Record at
+`docs/milestones/m1-repository-context-foundation/phase-X-<phase-name>.md`.
+The file name is derived from the reconciled canonical implementation-plan
+phase name in stable kebab-case; established completion-record file names are
+preserved. Do not derive future file names from a chat prompt.
 
-New architecture decisions belong in ADRs, requirement changes in OpenSpec,
-and sequencing changes in the canonical implementation plan. The progress file
-does not redefine any of them.
+All Phase Completion Records use exactly this template. Phases 4 through 8 may
+not use a shortened or different structure:
 
-After updating progress, provide a concise summary and stop for user
-confirmation. Do not automatically begin the next phase.
+```text
+# Phase X: <Phase Name>
+
+## 1. Goal
+## 2. Scope
+### Included
+### Excluded
+## 3. Changed Files
+## 4. Implementation
+## 5. Design Decisions
+## 6. TDD and Tests
+## 7. Important Fixes and Edge Cases
+## 8. Commit
+## 9. Acceptance
+## 10. Scope Boundary Confirmation
+## 11. Follow-up
+```
+
+The `Changed Files` section uses a `File | Change | Purpose` table. The `TDD
+and Tests` section records RED, GREEN, any necessary refactor or corrective
+iteration, commands, targeted results, and cumulative-suite results. The
+record captures completed engineering facts, not agent dispatches, review-diff
+bodies, or temporary debugging narration.
+
+After each phase commit, create or update both the Phase Completion Record and
+the milestone `progress.md`. The completion record contains the phase detail;
+`progress.md` is a concise milestone index with phase status, commit, record
+link, current phase, next incomplete phase, and milestone-level reconciliation
+items. Neither document redefines requirements, architecture, or sequencing.
+
+Do not generate Superpowers briefs, review diffs, rereview diffs, or agent
+execution reports by default. New architecture decisions belong in ADRs,
+requirement changes in OpenSpec, and sequencing changes in the canonical
+implementation plan.
+
+After updating the completion record and progress index, provide a concise
+summary and stop for user confirmation. Do not automatically begin the next
+phase.
 
 ### 14.8 Translation Policy
 
