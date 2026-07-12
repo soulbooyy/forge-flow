@@ -35,6 +35,7 @@ from .matching import MatchOutput, match_scanned_files
 from .normalization import NormalizedQuery, normalize_issue_text, normalize_query
 from .profile import M1_DEFAULTS, RepositoryContextProfile
 from .scanner import ScanReport, ScannedFile, scan_workspace
+from .service import inspect_repository
 from .workspace import WorkspaceBoundary, WorkspaceBoundaryError
 
 __all__ = (
@@ -71,6 +72,7 @@ __all__ = (
     "canonical_bytes",
     "contract_id_for",
     "error_id_for",
+    "inspect_repository",
     "evidence_id_for",
     "match_scanned_files",
     "normalize_issue_text",
