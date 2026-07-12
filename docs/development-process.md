@@ -40,12 +40,114 @@ These principles apply especially while the project is still in foundation and p
 | `rfcs/` | Major architecture decisions such as Agent Architecture, State Model, Tool/MCP Integration, Sandbox Governance, Evaluation Framework, and DeerFlow Extension Strategy. |
 | `openspec/` or `specs/changes/` | Feature-level specifications such as Repository Context Service, PatchProposal generation, Validation workflow, ReviewResult generation, and Draft PR creation. |
 | `adr/` | Accepted architecture decision records, usually created after RFC discussion reaches a decision. |
+| `docs/implementation-plans/` | Canonical implementation sequence, file-level work, dependencies, TDD steps, and phase acceptance conditions. |
+| `docs/milestones/<milestone-slug>/` | Milestone status index and formal Phase Completion Records. |
 | `retrospectives/` | Milestone retrospectives that record what worked, what failed, causes of rework, and follow-up improvements. |
 | `README.md` | Project entry point. It should contain only stable high-level information and navigation to current docs. |
 
 Documentation should be treated as part of the product, not as optional commentary.
 
-## 4. Recommended Development Flow
+## 4. ForgeFlow Engineering Workflow
+
+ForgeFlow follows a staged engineering workflow:
+
+```text
+Vision
+-> Architecture
+-> Specification
+-> Planning
+-> Implementation
+-> Verification
+```
+
+This workflow applies to every milestone. The following sections define one
+continuous process; later sections provide detailed rules for individual stages.
+
+### 4.1 Architecture
+
+Architecture starts from the project vision and produces RFCs and ADRs. RFCs
+define architecture boundaries, system responsibilities, trade-offs, and
+long-term technical direction. ADRs record accepted architectural decisions,
+rejected alternatives, and important trade-offs.
+
+Implementation must not begin while required architecture decisions remain
+unresolved.
+
+### 4.2 Specification
+
+Specification takes the relevant RFCs and accepted ADRs as input and produces
+an OpenSpec change. OpenSpec is the authoritative feature contract and must
+include a proposal, design, tasks, and feature specifications. Each change must
+state scope, acceptance criteria, non-goals, and constraints.
+
+### 4.3 Grill-Me Design Review
+
+Important features must receive a Grill-Me design challenge before planning.
+Grill-Me exposes hidden assumptions, unclear boundaries, scope creep, and
+architecture violations. It does not alter architecture decisions; final
+decisions remain recorded in RFCs, ADRs, and OpenSpec.
+
+### 4.4 Planning
+
+Planning takes an accepted OpenSpec change as input and produces the canonical
+Implementation Plan. The plan is the sole authority for execution order and
+must define milestone scope, phase ordering, dependencies, expected file
+changes, TDD strategy, and phase acceptance criteria.
+
+Implementation phases must come from the canonical plan. Chat prompts do not
+redefine a phase's scope, interface, file list, or acceptance criteria.
+
+### 4.5 Implementation
+
+Implementation uses Lightweight Implementation Execution and follows this
+sequence for each phase:
+
+```text
+Read Phase Requirement
+-> Write Tests (RED)
+-> Implement Minimal Solution (GREEN)
+-> Refactor
+-> Run Verification
+-> Commit
+-> Create Phase Completion Record
+-> Update Milestone Progress
+```
+
+### 4.6 Verification
+
+Every completed phase verifies that tests pass, scope is respected, the Git diff
+has been reviewed, and documentation is updated. Before committing, run targeted
+tests, cumulative implemented tests, `git diff --check`, and `git status`.
+
+### 4.7 Documentation Authority Hierarchy
+
+```text
+Vision
+-> RFC
+-> ADR
+-> OpenSpec
+-> Implementation Plan
+-> Phase Completion Record
+-> Milestone Progress
+```
+
+- Vision explains why the work exists.
+- RFCs define the architecture.
+- ADRs record settled architectural choices.
+- OpenSpec defines the feature contract.
+- The Implementation Plan defines how to execute the work.
+- Phase Completion Records state what a phase actually completed.
+- Milestone Progress states where the milestone currently stands.
+
+### 4.8 AI-assisted Development Tools
+
+Superpowers and other AI-assisted development tools are execution aids. They may
+help with task decomposition, implementation planning, or review assistance,
+but they are not authoritative sources. They must not define architecture,
+requirements, or acceptance criteria. Repository documentation remains the
+source of truth.
+
+### 4.9 Recommended Development Flow
 
 ### Phase 0: Project Foundation
 
@@ -339,21 +441,21 @@ If a proposed change violates one of these rules, defer it or require an RFC bef
 
 ## 14. Lightweight Implementation Execution
 
-This mode applies to narrow, accepted implementation phases after the relevant
-architecture and feature planning work is complete. It preserves TDD, scope
-control, focused commits, and durable progress without treating AI execution
+This mode applies to narrowly scoped, accepted implementation phases in every
+ForgeFlow milestone. It preserves TDD, scope control, focused commits, formal
+completion records, and durable progress without treating AI execution
 artifacts as long-term engineering documentation.
 
 ### 14.1 Authoritative Inputs
 
-Before starting a phase, read the current OpenSpec change, relevant RFCs,
+Before starting a phase, read the current feature specification, relevant RFCs,
 accepted ADRs, the canonical implementation plan, and the milestone
 `progress.md`. Chat prompts may provide context, but they do not define phase
 interfaces, file lists, acceptance criteria, or scope.
 
 The authority order for conflicts is:
 
-1. OpenSpec for feature requirements, acceptance criteria, and exclusions.
+1. OpenSpec or the accepted feature specification for requirements, acceptance criteria, and exclusions.
 2. Accepted ADRs for binding architecture decisions.
 3. RFCs for architecture boundaries and deferred decisions.
 4. The canonical implementation plan for implementation sequence and task detail.
@@ -366,8 +468,8 @@ or silently revise an authoritative source.
 ### 14.2 Phase Identification
 
 Identify the next phase from the canonical implementation plan and the last
-completed entry in milestone `progress.md`. The phase must be explicitly
-reconciled when execution numbering and the canonical plan differ.
+completed entry in milestone `progress.md`. Reconcile any mismatch between
+execution numbering and the canonical plan before implementation begins.
 
 ### 14.3 Test-Driven Development
 
@@ -385,14 +487,14 @@ sequence.
 ### 14.4 Scope Control
 
 Implement exactly one canonical-plan phase at a time. Do not add future-phase
-abstractions, modify unrelated modules, or expand OpenSpec scope. Missing or
+abstractions, modify unrelated modules, or expand feature scope. Missing or
 conflicting authority is a stop condition, not permission to fill the gap.
 
 ### 14.5 Git and Commit Strategy
 
-Milestone 1 uses branch `feature/m1-repository-context-foundation` and
-worktree `.worktrees/m1-repository-context-foundation`. Do not create a new
-branch or worktree for each phase.
+Use the branch and worktree assigned to the milestone. Do not create a new
+branch or worktree for each phase unless the canonical plan or an accepted
+workflow decision explicitly requires it.
 
 Create one focused commit per phase. Before committing, run targeted tests,
 the complete implemented test suite, `git diff --check`, and `git status
@@ -404,22 +506,22 @@ The default lightweight review is a self-review of the current diff, passing
 tests, and scope boundaries. Do not generate subagent briefs, review diffs,
 rereview diffs, or long checkpoint reports by default.
 
-Escalate to independent review when a change modifies an OpenSpec contract,
+Escalate to independent review when a change modifies a feature contract,
 security boundary, canonical identity algorithm, external dependency, or
 cross-platform security behavior; when it diverges from the canonical plan; or
 when explicitly requested by the user.
 
 ### 14.7 Phase Completion Records and Progress
 
-Every Milestone 1 phase, including Phases 1 through 8, must have one formal
-Phase Completion Record at
-`docs/milestones/m1-repository-context-foundation/phase-X-<phase-name>.md`.
-The file name is derived from the reconciled canonical implementation-plan
-phase name in stable kebab-case; established completion-record file names are
-preserved. Do not derive future file names from a chat prompt.
+Every implementation phase in every milestone must have one formal Phase
+Completion Record at
+`docs/milestones/<milestone-slug>/phase-<number>-<phase-name>.md`. Derive the
+file name from the reconciled canonical implementation-plan phase name in stable
+kebab-case; preserve established completion-record file names. Do not derive
+future file names from a chat prompt.
 
-All Phase Completion Records use exactly this template. Phases 4 through 8 may
-not use a shortened or different structure:
+All Phase Completion Records use exactly this template. No later phase may use
+a shortened or different structure:
 
 ```text
 # Phase X: <Phase Name>
@@ -450,6 +552,9 @@ the milestone `progress.md`. The completion record contains the phase detail;
 `progress.md` is a concise milestone index with phase status, commit, record
 link, current phase, next incomplete phase, and milestone-level reconciliation
 items. Neither document redefines requirements, architecture, or sequencing.
+
+`progress.md` does not replace a Phase Completion Record, record detailed
+implementation, or define requirements or architecture.
 
 Do not generate Superpowers briefs, review diffs, rereview diffs, or agent
 execution reports by default. New architecture decisions belong in ADRs,

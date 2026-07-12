@@ -40,12 +40,92 @@ ForgeFlow 开发遵循以下原则：
 | `rfcs/`                               | 重大架构决策，例如 Agent Architecture、State Model、Tool/MCP Integration、Sandbox Governance、Evaluation Framework 和 DeerFlow Extension Strategy。 |
 | `openspec/` 或 `specs/changes/`        | 功能级规格，例如 Repository Context Service、PatchProposal 生成、Validation 工作流、ReviewResult 生成和 Draft PR 创建。                                    |
 | `adr/`                                | 已接受的架构决策记录，通常在 RFC 讨论达成决策后创建。                                                                                                        |
+| `docs/implementation-plans/`          | Canonical implementation sequence、文件级工作、依赖、TDD 步骤和 Phase 验收条件。                                                                              |
+| `docs/milestones/<milestone-slug>/`   | Milestone 状态索引和正式的 Phase Completion Record。                                                                                                      |
 | `retrospectives/`                     | 里程碑复盘，记录哪些有效、哪些失败、返工原因和后续改进。                                                                                                         |
 | `README.md`                           | 项目入口。它应该只包含稳定的高层信息，以及指向当前文档的导航。                                                                                                      |
 
 文档应该被视为产品的一部分，而不是可选的说明文字。
 
-## 4. 推荐开发流程
+## 4. ForgeFlow Engineering Workflow
+
+ForgeFlow 遵循分阶段的工程工作流：
+
+```text
+Vision
+-> Architecture
+-> Specification
+-> Planning
+-> Implementation
+-> Verification
+```
+
+该工作流适用于每一个 Milestone。以下章节共同定义一条连续流程；后续章节提供各阶段的详细规则。
+
+### 4.1 Architecture
+
+Architecture 以项目 Vision 为输入，并产出 RFC 和 ADR。RFC 定义 architecture boundaries、system responsibilities、trade-offs 和 long-term technical direction。ADR 记录已接受的架构决策、被否决的替代方案和重要 trade-offs。
+
+在必要的架构决策尚未明确前，不得开始 Implementation。
+
+### 4.2 Specification
+
+Specification 以相关 RFC 和已接受 ADR 为输入，并产出 OpenSpec change。OpenSpec 是 feature contract 的权威来源，必须包括 proposal、design、tasks 和 feature specifications。每个 change 必须明确 scope、acceptance criteria、non-goals 和 constraints。
+
+### 4.3 Grill-Me Design Review
+
+重要 feature 在 Planning 前必须通过 Grill-Me 设计质询。Grill-Me 用于发现 hidden assumptions、unclear boundaries、scope creep 和 architecture violations。它不修改架构决策；最终决策仍由 RFC、ADR 和 OpenSpec 记录。
+
+### 4.4 Planning
+
+Planning 以已接受的 OpenSpec change 为输入，并产出 canonical Implementation Plan。该 plan 是执行顺序的唯一权威来源，必须定义 milestone scope、phase ordering、dependencies、expected file changes、TDD strategy 和 phase acceptance criteria。
+
+Implementation Phase 必须来自 canonical plan。聊天提示词不得重新定义 Phase 的 scope、interface、file list 或 acceptance criteria。
+
+### 4.5 Implementation
+
+Implementation 使用 Lightweight Implementation Execution，并对每个 Phase 遵循以下顺序：
+
+```text
+Read Phase Requirement
+-> Write Tests (RED)
+-> Implement Minimal Solution (GREEN)
+-> Refactor
+-> Run Verification
+-> Commit
+-> Create Phase Completion Record
+-> Update Milestone Progress
+```
+
+### 4.6 Verification
+
+每个完成的 Phase 都必须验证 tests passed、scope respected、Git diff 已审查且 documentation 已更新。提交前至少运行 targeted tests、cumulative implemented tests、`git diff --check` 和 `git status`。
+
+### 4.7 Documentation Authority Hierarchy
+
+```text
+Vision
+-> RFC
+-> ADR
+-> OpenSpec
+-> Implementation Plan
+-> Phase Completion Record
+-> Milestone Progress
+```
+
+- Vision 说明为什么做。
+- RFC 定义架构。
+- ADR 记录已确定的架构选择。
+- OpenSpec 定义 feature contract。
+- Implementation Plan 定义如何实施。
+- Phase Completion Record 记录一个 Phase 实际完成什么。
+- Milestone Progress 记录 Milestone 当前在哪里。
+
+### 4.8 AI-assisted Development Tools
+
+Superpowers 和其他 AI-assisted development tools 是执行辅助工具。它们可以用于 task decomposition、implementation planning 或 review assistance，但不是权威来源。它们不得定义 architecture、requirements 或 acceptance criteria。仓库文档仍是 source of truth。
+
+### 4.9 推荐开发流程
 
 ### Phase 0：Project Foundation
 
@@ -339,15 +419,15 @@ Done 意味着该功能已经实现、测试、评估、记录，并且可以追
 
 ## 14. 轻量实现执行
 
-该模式适用于相关架构和功能规划已经完成后的狭窄实现阶段。它保留 TDD、范围控制、聚焦提交和持久进度记录，但不将 AI 执行过程产物视为长期工程文档。
+该模式适用于 ForgeFlow 每个 Milestone 中范围明确、已接受的实现阶段。它保留 TDD、范围控制、聚焦提交、正式完成记录和持久进度，但不将 AI 执行过程产物视为长期工程文档。
 
 ### 14.1 权威输入
 
-开始一个阶段前，必须阅读当前 OpenSpec change、相关 RFC、已接受 ADR、canonical implementation plan 和 milestone `progress.md`。聊天提示词可以提供上下文，但不能定义本阶段的接口、文件清单、验收标准或范围。
+开始一个阶段前，必须阅读当前 feature specification、相关 RFC、已接受 ADR、canonical implementation plan 和 milestone `progress.md`。聊天提示词可以提供上下文，但不能定义本阶段的接口、文件清单、验收标准或范围。
 
 发生冲突时，权威顺序为：
 
-1. OpenSpec：功能需求、验收标准和排除项。
+1. OpenSpec 或已接受 feature specification：需求、验收标准和排除项。
 2. 已接受 ADR：有约束力的架构决策。
 3. RFC：架构边界和延期决策。
 4. Canonical implementation plan：实施顺序和任务细节。
@@ -357,7 +437,7 @@ Done 意味着该功能已经实现、测试、评估、记录，并且可以追
 
 ### 14.2 阶段识别
 
-根据 canonical implementation plan 和 milestone `progress.md` 最后完成状态识别下一阶段。执行编号与 canonical plan 不一致时，必须先完成明确的 reconciliation。
+根据 canonical implementation plan 和 milestone `progress.md` 最后完成状态识别下一阶段。执行编号与 canonical plan 不一致时，必须在实现开始前完成 reconciliation。
 
 ### 14.3 测试驱动开发
 
@@ -373,11 +453,11 @@ Done 意味着该功能已经实现、测试、评估、记录，并且可以追
 
 ### 14.4 范围控制
 
-每次只执行一个 canonical-plan phase。禁止为未来阶段增加抽象、修改无关模块或扩大 OpenSpec 范围。权威文档缺失或冲突是停止条件，不是自行补齐缺口的许可。
+每次只执行一个 canonical-plan phase。禁止为未来阶段增加抽象、修改无关模块或扩大功能范围。权威文档缺失或冲突是停止条件，不是自行补齐缺口的许可。
 
 ### 14.5 Git 和提交策略
 
-Milestone 1 使用 branch `feature/m1-repository-context-foundation` 和 worktree `.worktrees/m1-repository-context-foundation`。不得为每个 Phase 创建新的 branch 或 worktree。
+使用该 Milestone 指定的 branch 和 worktree。除非 canonical plan 或已接受的 workflow decision 明确要求，否则不得为每个 Phase 创建新的 branch 或 worktree。
 
 每个 Phase 创建一个聚焦 commit。提交前至少运行 targeted tests、完整已实现 test suite、`git diff --check` 和 `git status --short`，并检查生成文件与无关修改。
 
@@ -385,18 +465,18 @@ Milestone 1 使用 branch `feature/m1-repository-context-foundation` 和 worktre
 
 默认轻量审查为当前 diff、通过的测试和范围边界的 self-review。默认不生成 subagent brief、review diff、rereview diff 或长篇 checkpoint report。
 
-当修改 OpenSpec contract、安全边界、canonical identity algorithm、外部依赖或跨平台安全行为；偏离 canonical plan；或用户明确要求 review 时，必须升级为独立审查。
+当修改 feature contract、安全边界、canonical identity algorithm、外部依赖或跨平台安全行为；偏离 canonical plan；或用户明确要求 review 时，必须升级为独立审查。
 
 ### 14.7 Phase Completion Record 和进度索引
 
-Milestone 1 的每一个 Phase（包括 Phase 1 至 Phase 8）都必须在
-`docs/milestones/m1-repository-context-foundation/phase-X-<phase-name>.md`
+每个 Milestone 的每一个实现 Phase 都必须在
+`docs/milestones/<milestone-slug>/phase-<number>-<phase-name>.md`
 保留一份正式的 Phase Completion Record。文件名必须从已完成 reconciliation 的
 canonical implementation plan Phase 名称转换为稳定的 kebab-case；已存在的
 Completion Record 文件名应保持不变。不得根据聊天提示词为后续 Phase 命名。
 
-所有 Phase Completion Record 必须使用完全相同的模板。Phase 4 至 Phase 8
-不得使用简化版或不同结构：
+所有 Phase Completion Record 必须使用完全相同的模板。任何后续 Phase 都不得使用
+简化版或不同结构：
 
 ```text
 # Phase X: <Phase Name>
@@ -426,6 +506,9 @@ milestone `progress.md`。Completion Record 承担该 Phase 的详细记录；`p
 是简洁的 Milestone 索引，只记录 Phase 状态、commit、文档链接、当前阶段、下一个
 未完成 Phase 和 Milestone 级 reconciliation item。两者都不得重新定义需求、架构或
 实施顺序。
+
+`progress.md` 不替代 Phase Completion Record，不记录详细 implementation，也不定义
+requirements 或 architecture。
 
 默认不生成 Superpowers brief、review diff、rereview diff 或 agent execution report。
 新的架构决策进入 ADR，需求变化进入 OpenSpec，实施顺序变化进入 canonical
