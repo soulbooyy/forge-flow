@@ -54,8 +54,8 @@ Scope:
 - preserve initial architecture draft
 - create Project Foundation Proposal
 - create `vision.md`
-- create `milestones.md`
-- create `development-process.md`
+- create milestone roadmap documents
+- create engineering process documents
 - define RFC roadmap
 - clarify DeerFlow integration strategy
 - run Grill-Me architecture review
@@ -74,8 +74,8 @@ Exit criteria:
 
 - Project Foundation Proposal exists
 - `vision.md` exists
-- `milestones.md` exists
-- `development-process.md` exists
+- milestone roadmap documents exist
+- engineering process documents exist
 - initial architecture draft is preserved
 - RFC roadmap is documented
 - Milestone 1 and MVP are clearly separated
@@ -86,8 +86,8 @@ Exit criteria:
 Milestone 1 is not the full MVP.
 
 Status: completed. The implementation and closure evidence are recorded in the
-[Milestone 1 progress index](milestones/m1-repository-context-foundation/progress.md)
-and [retrospective](../retrospectives/milestone-1-repository-context-foundation.md).
+[Milestone 1 progress index](../../milestones/m1-repository-context-foundation/progress.md)
+and [retrospective](../../../retrospectives/milestone-1-repository-context-foundation.md).
 
 Goal: implement ForgeFlow's first deterministic foundation capability: Repository Context Service.
 

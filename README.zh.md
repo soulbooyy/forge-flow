@@ -52,11 +52,12 @@ GitHub Issue
 
 ## 文档
 
-* [愿景](docs/vision.md)
-* [里程碑](docs/milestones.md)
-* [开发流程](docs/development-process.md)
-* [项目基础方案](docs/project-foundation-proposal.md)
-* [初始架构草案](docs/initial-architecture-draft.md)
+* [文档总导航](docs/index.zh.md)
+* [愿景](docs/product/vision.zh.md)
+* [里程碑](docs/product/roadmap/milestones.zh.md)
+* [开发流程](docs/process/index.zh.md)
+* [项目基础方案](docs/architecture/foundation/project-foundation-proposal.zh.md)
+* [初始架构草案](docs/_history/architecture/initial-architecture-draft.md)
 
 ## 方法论
 

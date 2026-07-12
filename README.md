@@ -54,12 +54,13 @@ GitHub Issue
 
 ## Documentation Navigation
 
-- [Vision](docs/vision.md)
-- [Milestones](docs/milestones.md)
-- [Development Process](docs/development-process.md)
-- [Project Foundation Proposal](docs/project-foundation-proposal.md)
-- [Initial Architecture Draft](docs/initial-architecture-draft.md)
-- [DeerFlow Extension Assessment](docs/assessments/deerflow-extension-points.md)
+- [Documentation Index](docs/index.md)
+- [Vision](docs/product/vision.md)
+- [Milestones](docs/product/roadmap/milestones.md)
+- [Development Process](docs/process/index.md)
+- [Project Foundation Proposal](docs/architecture/foundation/project-foundation-proposal.md)
+- [Initial Architecture Draft](docs/_history/architecture/initial-architecture-draft.md)
+- [DeerFlow Extension Assessment](docs/architecture/assessments/deerflow-extension-points.md)
 - [RFC Index](rfcs/README.md)
 - [ADR Index](adr/README.md)
 

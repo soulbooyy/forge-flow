@@ -6,7 +6,7 @@ Accepted
 
 Accepted as the Agent Architecture baseline and Milestone 1 scope guard.
 
-Acceptance was based on RFC-002, RFC-004, and RFC-007 skeleton validation, including the DeerFlow extension-point assessment recorded in `docs/assessments/deerflow-extension-points.md`.
+Acceptance was based on RFC-002, RFC-004, and RFC-007 skeleton validation, including the DeerFlow extension-point assessment recorded in `docs/architecture/assessments/deerflow-extension-points.md`.
 
 ## Current Accepted Decisions
 
@@ -566,7 +566,7 @@ Acceptance validation:
 
 - RFC-002 must confirm that contract schemas, state separation, evidence references, and retry lineage can support the role boundaries defined here. This condition is satisfied at skeleton level by RFC-002's RFC-001 Acceptance Support section.
 - RFC-004 must confirm that sandbox policy, approval policy, retry caps, sensitive file policy, diff policy, and security governance can enforce the side-effect and authority boundaries defined here. This condition is satisfied at skeleton level by RFC-004's RFC-001 Security Acceptance Criteria section.
-- RFC-007 must confirm that DeerFlow graph/runtime extension points can support the runtime and workflow graph responsibility split defined here. This condition is satisfied at skeleton level by RFC-007's recorded DeerFlow revision and `docs/assessments/deerflow-extension-points.md`.
+- RFC-007 must confirm that DeerFlow graph/runtime extension points can support the runtime and workflow graph responsibility split defined here. This condition is satisfied at skeleton level by RFC-007's recorded DeerFlow revision and `docs/architecture/assessments/deerflow-extension-points.md`.
 
 RFC-001 acceptance does not accept RFC-002, RFC-004, or RFC-007 themselves. Those RFCs remain independently reviewed documents and may still require their own acceptance reviews.
 
@@ -586,7 +586,7 @@ Acceptance inputs:
 - RFC-004: sandbox, security, policy, approval, and side-effect boundary validation
 - RFC-007: DeerFlow / ForgeFlow ownership and runtime extension boundary validation
 - DeerFlow recorded revision: `c0b917cce2cd8b8644a3ed17d58ddb31adc5299a`
-- DeerFlow assessment: `docs/assessments/deerflow-extension-points.md`
+- DeerFlow assessment: `docs/architecture/assessments/deerflow-extension-points.md`
 
 RFC-001 is accepted as an architecture baseline and Milestone 1 scope guard. Future RFCs, ADRs, or accepted OpenSpec changes may refine, amend, or supersede this RFC, but must record the change explicitly.
 

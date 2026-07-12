@@ -54,8 +54,8 @@ ForgeFlow 应该通过有意设计、可审查的阶段逐步推进。
 * 保留初始架构草案
 * 创建 Project Foundation Proposal
 * 创建 `vision.md`
-* 创建 `milestones.md`
-* 创建 `development-process.md`
+* 创建里程碑路线图文档
+* 创建工程流程文档
 * 定义 RFC 路线图
 * 明确 DeerFlow 集成策略
 * 运行 Grill-Me 架构审查
@@ -74,8 +74,8 @@ ForgeFlow 应该通过有意设计、可审查的阶段逐步推进。
 
 * Project Foundation Proposal 已存在
 * `vision.md` 已存在
-* `milestones.md` 已存在
-* `development-process.md` 已存在
+* 里程碑路线图文档已存在
+* 工程流程文档已存在
 * 初始架构草案已保留
 * RFC 路线图已记录
 * Milestone 1 和 MVP 已清晰分离
@@ -85,8 +85,8 @@ ForgeFlow 应该通过有意设计、可审查的阶段逐步推进。
 
 Milestone 1 不是完整 MVP。
 
-状态：已完成。实现和 closure 证据见 [Milestone 1 进度索引](milestones/m1-repository-context-foundation/progress.md)
-和 [复盘](../retrospectives/milestone-1-repository-context-foundation.md)。
+状态：已完成。实现和 closure 证据见 [Milestone 1 进度索引](../../milestones/m1-repository-context-foundation/progress.md)
+和 [复盘](../../../retrospectives/milestone-1-repository-context-foundation.md)。
 
 目标：实现 ForgeFlow 的第一个确定性基础能力：Repository Context Service。
 
@@ -393,8 +393,8 @@ Status: In progress
 下一步：
 
 * finalize `vision.md`
-* finalize `milestones.md`
-* finalize `development-process.md`
+* finalize milestone roadmap documents
+* finalize engineering process documents
 * create RFC-001 Agent Architecture
 * run Grill-Me review on RFC-001
 * proceed to RFC-002, RFC-004, and RFC-007

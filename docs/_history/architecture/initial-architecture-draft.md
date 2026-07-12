@@ -9,10 +9,10 @@
 它不是当前权威架构规范。
 
 当前项目方向以后续文档为准：
-- `docs/vision.md`
-- `docs/milestones.md`
-- `docs/development-process.md`
-- `docs/project-foundation-proposal.md`
+- `docs/product/vision.md`
+- `docs/product/roadmap/milestones.md`
+- `docs/process/index.md`
+- `docs/architecture/foundation/project-foundation-proposal.md`
 - `rfcs/`
 
 本文档中的部分设计可能已经被后续 RFC 或项目文档收敛、修正或取代。

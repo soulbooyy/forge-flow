@@ -12,8 +12,8 @@ This is the Milestone 1 status index. It does not define requirements, architect
 - [RFC-004: Sandbox and Security Governance](../../../rfcs/RFC-004-sandbox-and-security-governance.md)
 - [RFC-007: DeerFlow Extension Strategy](../../../rfcs/RFC-007-deerflow-extension-strategy.md)
 - [ADR index](../../../adr/README.md)
-- [Canonical Milestone 1 implementation plan](../../implementation-plans/milestone-1-repository-context-foundation.md)
-- [Development process](../../development-process.md#14-lightweight-implementation-execution)
+- [Canonical Milestone 1 implementation plan](implementation-plan.md)
+- [Implementation execution](../../process/implementation-execution.md)
 - [Milestone 1 retrospective](../../../retrospectives/milestone-1-repository-context-foundation.md)
 
 ## Execution Environment
@@ -38,19 +38,19 @@ This is the Milestone 1 status index. It does not define requirements, architect
 
 | Phase | Name | Status | Commit | Completion Record |
 | --- | --- | --- | --- | --- |
-| 1 | Contract Foundation | Accepted | `fd9813f1a62eead8d87a88de2f6592590783ab75` | [Phase 1 record](phase-1-contract-foundation.md) |
-| 2 | Canonical Identity | Accepted | `9fa68b8db27f785829221c7b3a6994229fbe693f` | [Phase 2 record](phase-2-canonical-identity.md) |
-| 3 | Workspace Security | Accepted | `4b77b81971c9390e41f4a2beec50508c5919e4ea` | [Phase 3 record](phase-3-workspace-security.md) |
-| 4 | Deterministic Scanner | Accepted | `14e9bae890e2a5102fedc959d88e2cb27a76d769` | [Phase 4 record](phase-4-deterministic-scanner.md) |
-| 5 | Matcher, Ranking, and Evidence | Accepted | `aba1e3dd59e14e029a1e78f5f9e0bf5efb63d240` | [Phase 5 record](phase-5-matcher-ranking-evidence.md) |
-| 6 | Result Envelope and Service | Accepted | `d43e2e56cf3feac17209d8c4e5c9b82049c2986f` | [Phase 6 record](phase-6-result-envelope-service.md) |
-| 7 | Acceptance Tests | Accepted | `2744b25dbddcda955892a79b0011940455b113b7` | [Phase 7 record](phase-7-acceptance-tests.md) |
-| 8 | Hardening | Accepted | `362d626bb7feae55fab0f5e8df79f8fd8f10aa9c` | [Phase 8 record](phase-8-hardening.md) |
+| 1 | Contract Foundation | Accepted | `fd9813f1a62eead8d87a88de2f6592590783ab75` | [Phase 1 record](phases/phase-1-contract-foundation.md) |
+| 2 | Canonical Identity | Accepted | `9fa68b8db27f785829221c7b3a6994229fbe693f` | [Phase 2 record](phases/phase-2-canonical-identity.md) |
+| 3 | Workspace Security | Accepted | `4b77b81971c9390e41f4a2beec50508c5919e4ea` | [Phase 3 record](phases/phase-3-workspace-security.md) |
+| 4 | Deterministic Scanner | Accepted | `14e9bae890e2a5102fedc959d88e2cb27a76d769` | [Phase 4 record](phases/phase-4-deterministic-scanner.md) |
+| 5 | Matcher, Ranking, and Evidence | Accepted | `aba1e3dd59e14e029a1e78f5f9e0bf5efb63d240` | [Phase 5 record](phases/phase-5-matcher-ranking-evidence.md) |
+| 6 | Result Envelope and Service | Accepted | `d43e2e56cf3feac17209d8c4e5c9b82049c2986f` | [Phase 6 record](phases/phase-6-result-envelope-service.md) |
+| 7 | Acceptance Tests | Accepted | `2744b25dbddcda955892a79b0011940455b113b7` | [Phase 7 record](phases/phase-7-acceptance-tests.md) |
+| 8 | Hardening | Accepted | `362d626bb7feae55fab0f5e8df79f8fd8f10aa9c` | [Phase 8 record](phases/phase-8-hardening.md) |
 
 ## Reconciliation Items
 
 - `README` status may be out of date.
-- `docs/milestones.md` and `docs/milestones.zh.md` status may be out of date.
+- Project-level roadmap status is maintained in `docs/product/roadmap/`.
 - OpenSpec task checkboxes remain unchecked.
 - The historical Phase 4 scanner commit has no standalone RED transcript;
   independent Phase 1-4 regression verification passed during reconciliation.

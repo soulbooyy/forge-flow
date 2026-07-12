@@ -55,5 +55,5 @@ Follow-up implications:
 - [RFC-001: Agent Architecture](../rfcs/RFC-001-agent-architecture.md)
 - [RFC-002: Contracts and State Model](../rfcs/RFC-002-contracts-and-state-model.md)
 - [RFC-004: Sandbox and Security Governance](../rfcs/RFC-004-sandbox-and-security-governance.md)
-- [Vision](../docs/vision.md)
-- [Milestones](../docs/milestones.md)
+- [Vision](../docs/product/vision.md)
+- [Milestones](../docs/product/roadmap/milestones.md)

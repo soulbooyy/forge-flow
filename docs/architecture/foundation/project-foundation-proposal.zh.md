@@ -10,9 +10,9 @@
 最终架构决策以后将以 `rfcs/` 目录下的 RFC 文档为准。
 
 相关文档：
-- `docs/vision.md`
-- `docs/milestones.md`
-- `docs/development-process.md`
+- `docs/product/vision.md`
+- `docs/product/roadmap/milestones.md`
+- `docs/process/index.md`
 - `rfcs/`
 
 ## 1. 定位

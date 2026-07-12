@@ -10,9 +10,9 @@ It is not the final architecture specification.
 Authoritative architectural decisions will be defined in the RFC documents under `rfcs/`.
 
 Related documents:
-- `docs/vision.md`
-- `docs/milestones.md`
-- `docs/development-process.md`
+- `docs/product/vision.md`
+- `docs/product/roadmap/milestones.md`
+- `docs/process/index.md`
 - `rfcs/`
 
 ## 1. Positioning
