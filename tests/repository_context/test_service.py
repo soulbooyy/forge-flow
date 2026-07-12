@@ -13,6 +13,7 @@ from forgeflow.repository_context.assembly import assemble_result
 from forgeflow.repository_context.matching import match_scanned_files
 from forgeflow.repository_context.models import (
     BoundedOptionalInput,
+    Limitation,
     NormalizedInput,
     RepositoryContextRequest,
     RepositoryContextValidationError,
@@ -132,6 +133,74 @@ class RepositoryContextServiceTests(unittest.TestCase):
                 for file in result.relevant_files
                 for reference_id in file.evidence_ref_ids
             )
+        )
+
+    def test_assembly_sorts_related_evidence_ids_in_limitations(self) -> None:
+        boundary = WorkspaceBoundary.create(self.workspace_root, "service-fixture")
+        scan_report = scan_workspace(boundary, M1_DEFAULTS)
+        matches = match_scanned_files(
+            scan_report.files, normalize_query("payment"), M1_DEFAULTS
+        )
+
+        result = assemble_result(
+            workspace_ref=WorkspaceRef(root_id="service-fixture"),
+            query=NormalizedInput(normalized="payment"),
+            issue_text=BoundedOptionalInput(False, "", False),
+            scan_report=scan_report,
+            matches=matches,
+            hints=(),
+            hint_evidence_refs=(),
+            profile=M1_DEFAULTS,
+            limitations=(
+                Limitation(
+                    code="malformed_metadata",
+                    scope="file",
+                    detail="metadata was malformed",
+                    path="package.json",
+                    related_evidence_ref_ids=("ev_sha256:z", "ev_sha256:a"),
+                ),
+            ),
+        )
+
+        malformed = next(
+            limitation
+            for limitation in result.limitations
+            if limitation.code == "malformed_metadata"
+        )
+        self.assertEqual(
+            malformed.related_evidence_ref_ids,
+            ("ev_sha256:a", "ev_sha256:z"),
+        )
+
+    def test_assembly_uses_detail_to_break_remaining_limitation_ties(self) -> None:
+        boundary = WorkspaceBoundary.create(self.workspace_root, "service-fixture")
+        scan_report = scan_workspace(boundary, M1_DEFAULTS)
+        matches = match_scanned_files(
+            scan_report.files, normalize_query("payment"), M1_DEFAULTS
+        )
+
+        result = assemble_result(
+            workspace_ref=WorkspaceRef(root_id="service-fixture"),
+            query=NormalizedInput(normalized="payment"),
+            issue_text=BoundedOptionalInput(False, "", False),
+            scan_report=scan_report,
+            matches=matches,
+            hints=(),
+            hint_evidence_refs=(),
+            profile=M1_DEFAULTS,
+            limitations=(
+                Limitation("malformed_metadata", "file", "z detail", path="package.json"),
+                Limitation("malformed_metadata", "file", "a detail", path="package.json"),
+            ),
+        )
+
+        self.assertEqual(
+            [
+                limitation.detail
+                for limitation in result.limitations
+                if limitation.code == "malformed_metadata"
+            ],
+            ["a detail", "z detail"],
         )
 
 

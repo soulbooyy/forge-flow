@@ -114,7 +114,31 @@ def assemble_result(
                 count=len(affected_arrays),
             )
         )
-    ordered_limitations = tuple(sorted(all_limitations, key=_limitation_key))
+    ordered_limitations = tuple(
+        sorted(
+            (
+                replace(
+                    limitation,
+                    related_evidence_ref_ids=tuple(
+                        sorted(limitation.related_evidence_ref_ids)
+                    ),
+                )
+                for limitation in all_limitations
+            ),
+            key=_limitation_key,
+        )
+    )
+    limitation_codes_by_path: dict[str, list[str]] = {}
+    for limitation in ordered_limitations:
+        if limitation.scope == "file" and limitation.path is not None:
+            limitation_codes_by_path.setdefault(limitation.path, []).append(limitation.code)
+    relevant_files = tuple(
+        replace(
+            relevant_file,
+            limitation_codes=tuple(sorted(limitation_codes_by_path.get(relevant_file.path, ()))),
+        )
+        for relevant_file in relevant_files
+    )
     returned_counts = ReturnedCounts(
         relevant_files=len(relevant_files),
         search_results=len(search_results),
@@ -187,7 +211,7 @@ def assemble_with_hints(
         hints=discovery.hints,
         hint_evidence_refs=discovery.evidence_refs,
         profile=profile,
-        limitations=discovery.limitations,
+        limitations=(*scan_report.limitations, *discovery.limitations),
     )
 
 
@@ -217,4 +241,11 @@ def _limitation_key(limitation: Limitation) -> tuple[object, ...]:
         limitation.path is not None,
         limitation.path or "",
         limitation.count if limitation.count is not None else -1,
+        _limitation_detail_key(limitation.detail),
     )
+
+
+def _limitation_detail_key(detail: object) -> str:
+    if isinstance(detail, ResultSetTruncatedDetail):
+        return ",".join(detail.affected_arrays)
+    return str(detail)

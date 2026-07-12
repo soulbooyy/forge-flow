@@ -183,6 +183,10 @@ class RepositoryContextAcceptanceTests(unittest.TestCase):
         self.assertTrue(
             all(reference.content_hash is None for reference in result.evidence_refs)
         )
+        self.assertEqual(
+            [limitation.code for limitation in result.limitations],
+            ["binary_file_skipped", "unsupported_encoding"],
+        )
 
     def test_line_matches_collapse_and_score_ties_use_canonical_paths(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
@@ -228,6 +232,10 @@ class RepositoryContextAcceptanceTests(unittest.TestCase):
         self.assertEqual(result.relevant_files, ())
         self.assertEqual(result.search_results, ())
         self.assertEqual(result.run_summary.counts.scanned_text_files, 1)
+        self.assertEqual(
+            [limitation.code for limitation in result.limitations],
+            ["file_scan_truncated", "no_matches"],
+        )
 
 
 if __name__ == "__main__":

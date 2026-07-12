@@ -5,6 +5,7 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
@@ -64,6 +65,19 @@ class DeterministicScannerTests(unittest.TestCase):
         self.assertEqual(candidate.text, "abcd")
         self.assertTrue(candidate.text_truncated)
 
+    def test_line_limit_retains_a_complete_prefix_and_marks_the_scan_truncated(self) -> None:
+        self.write_bytes("notes.txt", b"first\npayment\nuninspected\n")
+        profile = replace(M1_DEFAULTS, max_lines_per_file=2)
+
+        report = scan_workspace(self.boundary, profile)
+
+        self.assertEqual(report.files[0].text, "first\npayment\n")
+        self.assertTrue(report.files[0].text_truncated)
+        self.assertEqual(
+            [(limitation.code, limitation.path) for limitation in report.limitations],
+            [("file_scan_truncated", "notes.txt")],
+        )
+
     def test_invalid_utf8_is_classified_without_lossy_decoding(self) -> None:
         self.write_bytes("invalid.txt", b"\xff\xfe")
 
@@ -71,6 +85,36 @@ class DeterministicScannerTests(unittest.TestCase):
 
         self.assertEqual(candidate.file_kind, "unsupported_encoding")
         self.assertIsNone(candidate.text)
+
+    def test_binary_and_unsupported_encoding_are_reported_as_file_limitations(self) -> None:
+        self.write_bytes("binary.dat", b"\x00binary")
+        self.write_bytes("invalid.txt", b"\xff\xfe")
+
+        report = scan_workspace(self.boundary, M1_DEFAULTS)
+
+        self.assertEqual(
+            [(limitation.code, limitation.path) for limitation in report.limitations],
+            [
+                ("binary_file_skipped", "binary.dat"),
+                ("unsupported_encoding", "invalid.txt"),
+            ],
+        )
+
+    def test_unreadable_file_is_skipped_and_reported_without_aborting_the_scan(self) -> None:
+        self.write_bytes("unreadable.txt", b"payment\n")
+
+        with patch(
+            "forgeflow.repository_context.scanner._scan_file",
+            side_effect=PermissionError("not readable"),
+        ):
+            report = scan_workspace(self.boundary, M1_DEFAULTS)
+
+        self.assertEqual(report.files, ())
+        self.assertEqual(report.skipped_files, 1)
+        self.assertEqual(
+            [(limitation.code, limitation.path) for limitation in report.limitations],
+            [("unreadable_file", "unreadable.txt")],
+        )
 
     def test_symlink_is_not_followed_or_returned_as_a_candidate(self) -> None:
         outside = Path(self.temporary_directory.name) / "outside.txt"
@@ -85,6 +129,25 @@ class DeterministicScannerTests(unittest.TestCase):
 
         self.assertEqual(report.files, ())
         self.assertEqual(report.skipped_files, 1)
+        self.assertEqual(
+            [(limitation.code, limitation.path) for limitation in report.limitations],
+            [("symlink_escape", "link.txt")],
+        )
+
+    def test_symlink_loop_is_reported_without_following_the_link(self) -> None:
+        link = self.workspace_root / "loop.txt"
+        try:
+            link.symlink_to("loop.txt")
+        except OSError as error:
+            self.skipTest(f"platform cannot create symlinks: {error}")
+
+        report = scan_workspace(self.boundary, M1_DEFAULTS)
+
+        self.assertEqual(report.files, ())
+        self.assertEqual(
+            [(limitation.code, limitation.path) for limitation in report.limitations],
+            [("symlink_loop", "loop.txt")],
+        )
 
     def test_fixed_ignore_policy_does_not_honor_gitignore_or_dependency_defaults(self) -> None:
         self.write_bytes(".gitignore", b"node_modules/\n")
