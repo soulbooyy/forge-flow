@@ -22,6 +22,12 @@
 
 根据 canonical implementation plan 和 milestone `progress.md` 最后完成状态识别下一阶段。执行编号与 canonical plan 不一致时，必须在实现开始前完成 reconciliation。
 
+新的 Milestone 进入 implementation 时，必须初始化 `document-governance.md`
+定义的标准 Milestone 文档结构：`index.md`、canonical
+`implementation-plan.md`、`progress.md` 和空的 `phases/` 目录。只有在一个
+Phase 被接受后才创建其 Completion Record；文件名必须来自 canonical plan。
+该结构对每个 Milestone 和每个 Phase 都是强制要求，不允许使用简化版或替代结构。
+
 ### 1.3 测试驱动开发
 
 每个阶段遵循 RED -> GREEN -> REFACTOR：

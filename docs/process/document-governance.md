@@ -38,7 +38,37 @@ Vision
 - Phase Completion Records state what a phase actually completed.
 - Milestone Progress states where the milestone currently stands.
 
-## 3. Phase Completion Records and Progress
+## 3. Milestone Documentation Structure
+
+Every milestone uses the same documentation structure. Create the milestone
+directory when the milestone's canonical implementation plan is established:
+
+```text
+docs/milestones/
+├── index.md
+└── m<NUMBER>-<milestone-slug>/
+    ├── index.md
+    ├── implementation-plan.md
+    ├── progress.md
+    └── phases/
+        ├── phase-1-<canonical-phase-name>.md
+        ├── phase-2-<canonical-phase-name>.md
+        └── ...
+```
+
+The milestone `index.md` is the entry point and contains a concise scope
+summary, the authoritative-reference links, and navigation to the plan,
+progress index, and completion records. `implementation-plan.md` is the one
+canonical plan for the milestone. `progress.md` is the milestone-level status
+index. `phases/` contains formal completion records only for phases that have
+actually completed.
+
+Do not create milestone-local copies of OpenSpec, RFCs, ADRs, or the
+retrospective. Link to those authoritative records instead. The retrospective
+is created after milestone closure at
+`retrospectives/m<NUMBER>-<milestone-slug>.md`.
+
+## 4. Phase Completion Records and Progress
 
 Every implementation phase in every milestone must have one formal Phase Completion Record at `docs/milestones/<milestone-slug>/phases/phase-<number>-<phase-name>.md`. Derive the file name from the reconciled canonical implementation-plan phase name in stable kebab-case; preserve established completion-record file names. Do not derive future file names from a chat prompt.
 
@@ -72,6 +102,6 @@ Do not generate Superpowers briefs, review diffs, rereview diffs, or agent execu
 
 After updating the completion record and progress index, provide a concise summary and stop for user confirmation. Do not automatically begin the next phase.
 
-## 4. Translation Policy
+## 5. Translation Policy
 
 English process documents are canonical. Existing `.zh.md` process documents are maintained translations for stable, durable process rules. Rolling progress records and temporary execution artifacts are not translated by default.

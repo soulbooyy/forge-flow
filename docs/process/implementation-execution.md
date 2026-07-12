@@ -22,6 +22,14 @@ If these sources conflict or do not identify a safe next phase, stop implementat
 
 Identify the next phase from the canonical implementation plan and the last completed entry in the milestone `progress.md`. Reconcile any mismatch between execution numbering and the canonical plan before implementation begins.
 
+When a new milestone enters implementation, initialize the standard milestone
+documentation structure defined in `document-governance.md`: `index.md`, the
+canonical `implementation-plan.md`, `progress.md`, and an empty `phases/`
+directory. Create a Phase Completion Record only when its phase is accepted;
+its file name must be derived from the canonical plan. This structure is
+mandatory for every milestone and every phase; no abbreviated alternative is
+permitted.
+
 ### 1.3 Test-Driven Development
 
 Each phase follows RED -> GREEN -> REFACTOR:

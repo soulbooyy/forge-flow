@@ -38,7 +38,34 @@ Vision
 - Milestone Progress 记录 Milestone 当前在哪里。
 
 
-## 3. Phase Completion Record 和进度索引
+## 3. Milestone 文档结构
+
+每个 Milestone 必须使用相同的文档结构。在该 Milestone 的 canonical
+implementation plan 建立后创建对应目录：
+
+```text
+docs/milestones/
+├── index.md
+└── m<NUMBER>-<milestone-slug>/
+    ├── index.md
+    ├── implementation-plan.md
+    ├── progress.md
+    └── phases/
+        ├── phase-1-<canonical-phase-name>.md
+        ├── phase-2-<canonical-phase-name>.md
+        └── ...
+```
+
+Milestone `index.md` 是入口，包含简洁的范围摘要、权威来源链接，以及对
+plan、progress 索引和 Completion Record 的导航。`implementation-plan.md`
+是该 Milestone 唯一的 canonical plan。`progress.md` 是 Milestone 级状态
+索引。`phases/` 只包含实际已完成 Phase 的正式 Completion Record。
+
+不得在 Milestone 目录中复制 OpenSpec、RFC、ADR 或 retrospective；应链接至
+它们各自的权威记录。Milestone closure 后，retrospective 创建在
+`retrospectives/m<NUMBER>-<milestone-slug>.md`。
+
+## 4. Phase Completion Record 和进度索引
 
 每个 Milestone 的每一个实现 Phase 都必须在 `docs/milestones/<milestone-slug>/phases/phase-<number>-<phase-name>.md` 保留一份正式的 Phase Completion Record。文件名必须从已完成 reconciliation 的 canonical implementation plan Phase 名称转换为稳定的 kebab-case；已存在的 Completion Record 文件名应保持不变。不得根据聊天提示词为后续 Phase 命名。
 
@@ -72,6 +99,6 @@ Vision
 
 完成 Completion Record 和 progress 索引更新后，输出简短总结并停止等待用户确认。不得自动进入下一阶段。
 
-## 4. 翻译策略
+## 5. 翻译策略
 
 英文流程文档是 canonical。既有 `.zh.md` 流程文档是稳定、持久流程规则的维护性翻译。滚动 progress 和临时执行产物默认不创建翻译。
