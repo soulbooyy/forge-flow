@@ -79,6 +79,7 @@ This phase did not introduce a scanner, ignore rules, file traversal, content re
 
 ## 11. Follow-up
 
-Next Phase: Deterministic Scanner, subject to reconciling execution numbering with the canonical implementation plan.
+Next Phase: Deterministic Scanner.
 
-Reconciliation item: the canonical plan phase labels and historical execution labels must be resolved before further implementation.
+Reconciliation status: phase numbering was aligned with the canonical plan on
+2026-07-12.

@@ -28,10 +28,10 @@ This is the Milestone 1 status index. It does not define requirements, architect
 | Field | Value |
 | --- | --- |
 | Milestone | Repository Context Foundation |
-| Completed through | Phase 3 |
-| Next incomplete phase | Phase 4 |
-| Overall state | Active; paused after Phase 3 documentation reconciliation |
-| Latest cumulative test result | Phase 1-3 unittest suite: 34 passed |
+| Completed through | Phase 4 |
+| Next incomplete phase | Phase 5 |
+| Overall state | Active; paused after numbering reconciliation |
+| Latest cumulative test result | Phase 1-4 unittest suite: 40 passed |
 
 ## Phase Index
 
@@ -40,19 +40,23 @@ This is the Milestone 1 status index. It does not define requirements, architect
 | 1 | Contract Foundation | Accepted | `fd9813f1a62eead8d87a88de2f6592590783ab75` | [Phase 1 record](phase-1-contract-foundation.md) |
 | 2 | Canonical Identity | Accepted | `9fa68b8db27f785829221c7b3a6994229fbe693f` | [Phase 2 record](phase-2-canonical-identity.md) |
 | 3 | Workspace Security | Accepted | `4b77b81971c9390e41f4a2beec50508c5919e4ea` | [Phase 3 record](phase-3-workspace-security.md) |
-| 4 | See canonical implementation plan | Pending |  | Not created |
-| 5 | See canonical implementation plan | Pending |  | Not created |
-| 6 | See canonical implementation plan | Pending |  | Not created |
-| 7 | See canonical implementation plan | Pending |  | Not created |
-| 8 | See canonical implementation plan | Pending |  | Not created |
+| 4 | Deterministic Scanner | Accepted | `14e9bae890e2a5102fedc959d88e2cb27a76d769` | [Phase 4 record](phase-4-deterministic-scanner.md) |
+| 5 | Matcher, Ranking, and Evidence | Pending |  | Not created |
+| 6 | Result Envelope and Service | Pending |  | Not created |
+| 7 | Acceptance Tests | Pending |  | Not created |
+| 8 | Hardening | Pending |  | Not created |
 
 ## Reconciliation Items
 
 - `README` status may be out of date.
 - `docs/milestones.md` and `docs/milestones.zh.md` status may be out of date.
 - OpenSpec task checkboxes remain unchecked.
-- Canonical-plan phase numbering and historical execution/Git history may differ; reconcile this before beginning the next implementation phase.
+- The historical Phase 4 scanner commit has no standalone RED transcript;
+  independent Phase 1-4 regression verification passed during reconciliation.
 
 ## Change Log
 
 - 2026-07-12: Restored formal Phase 1-3 Completion Records and reduced this file to the Milestone-level status index.
+- 2026-07-12: Reconciled the canonical plan with accepted Phase 1-4 execution
+  history; restored the Phase 4 completion record and advanced the next
+  incomplete phase to Phase 5.
