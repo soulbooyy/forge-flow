@@ -31,6 +31,8 @@ from .models import (
     ValidationErrorSummary,
     WorkspaceRef,
 )
+from .matching import MatchOutput, match_scanned_files
+from .normalization import NormalizedQuery, normalize_issue_text, normalize_query
 from .profile import M1_DEFAULTS, RepositoryContextProfile
 from .scanner import ScanReport, ScannedFile, scan_workspace
 from .workspace import WorkspaceBoundary, WorkspaceBoundaryError
@@ -43,6 +45,8 @@ __all__ = (
     "InputSummary",
     "Limitation",
     "M1_DEFAULTS",
+    "MatchOutput",
+    "NormalizedQuery",
     "NormalizedInput",
     "RankingInputs",
     "RelevantFile",
@@ -68,6 +72,9 @@ __all__ = (
     "contract_id_for",
     "error_id_for",
     "evidence_id_for",
+    "match_scanned_files",
+    "normalize_issue_text",
+    "normalize_query",
     "sha256_hex",
     "scan_workspace",
 )

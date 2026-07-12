@@ -1,0 +1,43 @@
+{
+  "query_normalized": "PAYMENT",
+  "relevant_files": [
+    {
+      "match_reasons": [
+        "filename_match",
+        "path_match",
+        "text_match"
+      ],
+      "match_score": 175,
+      "path": "src/payment.py",
+      "ranking_inputs": {
+        "filename_match": true,
+        "path_match": true,
+        "text_match_count": 1
+      }
+    },
+    {
+      "match_reasons": [
+        "text_match"
+      ],
+      "match_score": 25,
+      "path": "docs/notes.txt",
+      "ranking_inputs": {
+        "filename_match": false,
+        "path_match": false,
+        "text_match_count": 1
+      }
+    }
+  ],
+  "search_results": [
+    {
+      "end_line": 1,
+      "path": "docs/notes.txt",
+      "start_line": 1
+    },
+    {
+      "end_line": 1,
+      "path": "src/payment.py",
+      "start_line": 1
+    }
+  ]
+}
