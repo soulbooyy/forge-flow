@@ -19,7 +19,7 @@ Review stage: Grill-Me feedback has been incorporated as current draft decisions
 - Milestone 1 DeerFlow work must stay minimal and limited to read-only Repository Context assumptions, pinning/reference, no-core-modification proof, and documented limitations.
 - Full workflow graph integration, role runtime implementation, write/test sandbox integration, approval pause/resume, PR side effects, and full checkpoint mapping are deferred to later milestones.
 - RFC-007 must define RFC-001 DeerFlow Extension Acceptance Criteria and remain Draft until those criteria are documented.
-- RFC-007 records its current DeerFlow revision and Milestone 1 extension-point assessment in `docs/assessments/deerflow-extension-points.md`.
+- RFC-007 records its current DeerFlow revision and Milestone 1 extension-point assessment in `docs/architecture/assessments/deerflow-extension-points.md`.
 
 ## Context
 
@@ -263,7 +263,7 @@ Current recorded DeerFlow reference:
 | Recorded revision | `c0b917cce2cd8b8644a3ed17d58ddb31adc5299a` |
 | Recorded date | 2026-07-10 |
 | Usage mode | Immutable upstream commit reference; no submodule is currently present. |
-| Assessment document | `docs/assessments/deerflow-extension-points.md` |
+| Assessment document | `docs/architecture/assessments/deerflow-extension-points.md` |
 
 This recorded revision is sufficient to remove RFC-001's DeerFlow revision blocker for Milestone 1 scope guarding. It does not make RFC-007 Accepted, and it does not authorize implementation that depends on undocumented DeerFlow internals.
 
@@ -465,7 +465,7 @@ If a DeerFlow hook is insufficient for a required ForgeFlow policy gate, the gap
 
 RFC-007 must include a documented DeerFlow extension-point capability assessment before RFC-001 acceptance or before Milestone 1 implementation relies on DeerFlow integration assumptions.
 
-The current Milestone 1 assessment is recorded in `docs/assessments/deerflow-extension-points.md`.
+The current Milestone 1 assessment is recorded in `docs/architecture/assessments/deerflow-extension-points.md`.
 
 The assessment must identify whether the pinned DeerFlow revision provides usable documented extension points, adapters, or wrappers for the ForgeFlow governance boundaries required by RFC-004.
 
@@ -561,7 +561,7 @@ Workflow roles are ForgeFlow concepts. DeerFlow runtime may execute graph nodes 
 
 Planner output remains advisory. Repository Context Service is a ForgeFlow-owned deterministic service. Human approval semantics are ForgeFlow-owned policy behavior. PR role behavior is ForgeFlow-owned and policy-gated.
 
-RFC-007 now records the concrete DeerFlow revision/reference assumption and links to `docs/assessments/deerflow-extension-points.md`. For RFC-001 acceptance purposes, this resolves the DeerFlow revision and Milestone 1 extension-point assessment blockers at skeleton level.
+RFC-007 now records the concrete DeerFlow revision/reference assumption and links to `docs/architecture/assessments/deerflow-extension-points.md`. For RFC-001 acceptance purposes, this resolves the DeerFlow revision and Milestone 1 extension-point assessment blockers at skeleton level.
 
 This does not promote RFC-007 to Accepted. RFC-007 remains Draft until its own acceptance review confirms that its broader extension strategy is complete.
 
@@ -737,7 +737,7 @@ RFC-007 now records the DeerFlow upstream reference and Milestone 1 extension-po
 Current acceptance note for RFC-001:
 
 - DeerFlow revision is immutably recorded as `c0b917cce2cd8b8644a3ed17d58ddb31adc5299a`.
-- The assessment document is `docs/assessments/deerflow-extension-points.md`.
+- The assessment document is `docs/architecture/assessments/deerflow-extension-points.md`.
 - Milestone 1 does not depend on adding a DeerFlow submodule.
 - Milestone 1 does not depend on local DeerFlow core modifications, temporary patches, or unmerged upstream patches.
 - Milestone 1 can keep Repository Context Service ForgeFlow-owned and deterministic.
@@ -761,5 +761,5 @@ RFC-007 should become Accepted only after:
 - Workflow role interpretation is compatible with RFC-001.
 - Milestone 1 no-core-modification rule is accepted.
 - Minimal Milestone 1 DeerFlow integration scope is accepted.
-- Milestone 1 constraints are consistent with `docs/milestones.md`.
+- Milestone 1 constraints are consistent with `docs/product/roadmap/milestones.md`.
 - No conflict with Repository Context Service OpenSpec readiness is found.

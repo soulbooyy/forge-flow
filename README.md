@@ -24,15 +24,21 @@ ForgeFlow is not a general coding assistant, chatbot, or toy agent demo. It is i
 ForgeFlow is currently in:
 
 ```text
-Current phase: transitioning from RFC-driven Architecture to OpenSpec Feature Planning
-Milestone 0: Project Foundation near complete
+Current phase: Milestone 1 closure complete
+Next stage: architecture and specification preparation for Milestone 2
 ```
 
-The project foundation documentation, first accepted architecture baseline, DeerFlow extension assessment, and initial ADRs are now in place. Production implementation has not started.
+The project foundation documentation, accepted architecture baseline, DeerFlow
+extension assessment, and initial ADRs are in place. Milestone 1 implemented
+the deterministic Repository Context Foundation Slice and completed its
+contract, fixtures, acceptance coverage, and hardening verification.
 
-Milestone 1 will be the Repository Context Foundation Slice. It is not the full MVP.
-
-Milestone 1 is limited to a deterministic Repository Context Service that can provide repository context such as relevant files, evidence references, file/text search results, and simple test command hints. It will not generate patches, edit code, create pull requests, or run an autonomous repair loop.
+Milestone 1 was limited to a deterministic Repository Context Service that
+provides relevant files, evidence references, file/text search results, and
+descriptive test command hints. It did not generate patches, edit code, create
+pull requests, or run an autonomous repair loop. See the [Milestone 1 progress
+index](docs/milestones/m1-repository-context-foundation/progress.md) and
+[retrospective](retrospectives/milestone-1-repository-context-foundation.md).
 
 The later MVP is the GitHub Issue to Draft PR vertical slice:
 
@@ -48,12 +54,13 @@ GitHub Issue
 
 ## Documentation Navigation
 
-- [Vision](docs/vision.md)
-- [Milestones](docs/milestones.md)
-- [Development Process](docs/development-process.md)
-- [Project Foundation Proposal](docs/project-foundation-proposal.md)
-- [Initial Architecture Draft](docs/initial-architecture-draft.md)
-- [DeerFlow Extension Assessment](docs/assessments/deerflow-extension-points.md)
+- [Documentation Index](docs/index.md)
+- [Vision](docs/product/vision.md)
+- [Milestones](docs/product/roadmap/milestones.md)
+- [Development Process](docs/process/index.md)
+- [Project Foundation Proposal](docs/architecture/foundation/project-foundation-proposal.md)
+- [Initial Architecture Draft](docs/_history/architecture/initial-architecture-draft.md)
+- [DeerFlow Extension Assessment](docs/architecture/assessments/deerflow-extension-points.md)
 - [RFC Index](rfcs/README.md)
 - [ADR Index](adr/README.md)
 
@@ -92,8 +99,7 @@ The project should not move from architecture to implementation until the releva
 
 ## Next Steps
 
-1. Initialize OpenSpec.
-2. Create the Repository Context Service change spec.
-3. Run Grill-Me review on the OpenSpec change.
-4. Prepare the Milestone 1 implementation plan.
-5. Do not implement patch generation, validation repair loop, or PR creation in Milestone 1.
+1. Review the Milestone 1 retrospective and closure evidence.
+2. Establish the architecture and OpenSpec scope for Milestone 2.
+3. Keep patch generation, validation execution, and PR behavior outside work
+   until their own contracts and governance are accepted.

@@ -1,0 +1,8 @@
+{
+  "query_normalized": "payment",
+  "relevant_paths": ["src/payment.py", "docs/notes.txt"],
+  "search_paths": ["docs/notes.txt", "src/payment.py"],
+  "test_commands": ["make test", "npm test"],
+  "discovered_files": 8,
+  "skipped_directories": 1
+}

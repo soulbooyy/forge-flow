@@ -1,0 +1,82 @@
+"""Immutable Repository Context contracts."""
+
+from .canonical import (
+    canonical_bytes,
+    contract_id_for,
+    error_id_for,
+    evidence_id_for,
+    sha256_hex,
+)
+from .models import (
+    BoundedOptionalInput,
+    CandidateCounts,
+    ContentHash,
+    EvidenceRef,
+    InputSummary,
+    Limitation,
+    NormalizedInput,
+    RankingInputs,
+    RelevantFile,
+    ResultSetTruncatedDetail,
+    RepositoryContextEnvelope,
+    RepositoryContextRequest,
+    RepositoryContextResult,
+    RepositoryContextValidationError,
+    ReturnedCounts,
+    RunCounts,
+    RunSummary,
+    SearchResult,
+    TestCommandHint,
+    TextLocator,
+    ValidationErrorSummary,
+    WorkspaceRef,
+)
+from .matching import MatchOutput, match_scanned_files
+from .normalization import NormalizedQuery, normalize_issue_text, normalize_query
+from .profile import M1_DEFAULTS, RepositoryContextProfile
+from .scanner import ScanReport, ScannedFile, scan_workspace
+from .service import inspect_repository
+from .workspace import WorkspaceBoundary, WorkspaceBoundaryError
+
+__all__ = (
+    "BoundedOptionalInput",
+    "CandidateCounts",
+    "ContentHash",
+    "EvidenceRef",
+    "InputSummary",
+    "Limitation",
+    "M1_DEFAULTS",
+    "MatchOutput",
+    "NormalizedQuery",
+    "NormalizedInput",
+    "RankingInputs",
+    "RelevantFile",
+    "ResultSetTruncatedDetail",
+    "RepositoryContextEnvelope",
+    "RepositoryContextProfile",
+    "RepositoryContextRequest",
+    "RepositoryContextResult",
+    "RepositoryContextValidationError",
+    "ReturnedCounts",
+    "RunCounts",
+    "RunSummary",
+    "ScanReport",
+    "ScannedFile",
+    "SearchResult",
+    "TestCommandHint",
+    "TextLocator",
+    "ValidationErrorSummary",
+    "WorkspaceRef",
+    "WorkspaceBoundary",
+    "WorkspaceBoundaryError",
+    "canonical_bytes",
+    "contract_id_for",
+    "error_id_for",
+    "inspect_repository",
+    "evidence_id_for",
+    "match_scanned_files",
+    "normalize_issue_text",
+    "normalize_query",
+    "sha256_hex",
+    "scan_workspace",
+)

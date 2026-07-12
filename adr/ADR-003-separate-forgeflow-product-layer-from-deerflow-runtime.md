@@ -19,7 +19,7 @@ ForgeFlow owns workflow roles, structured contracts, Repository Context Service,
 
 ForgeFlow should not modify DeerFlow core during Milestone 1 unless a future RFC explicitly justifies it.
 
-DeerFlow revision and extension assumptions are documented in RFC-007 and `docs/assessments/deerflow-extension-points.md`.
+DeerFlow revision and extension assumptions are documented in RFC-007 and `docs/architecture/assessments/deerflow-extension-points.md`.
 
 ## Consequences
 
@@ -54,6 +54,6 @@ Follow-up implications:
 
 - [RFC-001: Agent Architecture](../rfcs/RFC-001-agent-architecture.md)
 - [RFC-007: DeerFlow Extension Strategy](../rfcs/RFC-007-deerflow-extension-strategy.md)
-- [DeerFlow Extension-Point Capability Assessment](../docs/assessments/deerflow-extension-points.md)
-- [Vision](../docs/vision.md)
-- [Milestones](../docs/milestones.md)
+- [DeerFlow Extension-Point Capability Assessment](../docs/architecture/assessments/deerflow-extension-points.md)
+- [Vision](../docs/product/vision.md)
+- [Milestones](../docs/product/roadmap/milestones.md)

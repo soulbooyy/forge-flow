@@ -760,5 +760,5 @@ RFC-004 should become Accepted only after:
 - command, path, diff, and secret policies are defined at skeleton level
 - human approval gates are agreed
 - relationship with RFC-001 and RFC-002 is validated
-- Milestone 1 constraints are consistent with `docs/milestones.md`
+- Milestone 1 constraints are consistent with `docs/product/roadmap/milestones.md`
 - no conflict with RFC-007 DeerFlow Extension Strategy is found

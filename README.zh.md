@@ -24,14 +24,19 @@ ForgeFlow 不是一个通用代码助手、聊天机器人或玩具级 Agent dem
 ForgeFlow 目前处于：
 
 ```text
-Milestone 0：Project Foundation
+Milestone 1：closure 已完成
+下一阶段：准备 Milestone 2 的架构与规格
 ```
 
-该阶段聚焦于项目边界、架构方法论、文档、RFC 规划和范围控制。生产实现尚未开始。
+项目基础文档、已接受的架构基线、DeerFlow 扩展评估和初始 ADR 已就绪。
+Milestone 1 已完成确定性的 Repository Context Foundation Slice，包括契约、
+fixtures、验收覆盖和 hardening 验证。
 
-Milestone 1 将是 Repository Context Foundation Slice。它不是完整 MVP。
-
-Milestone 1 仅限于一个确定性的 Repository Context Service，用于提供仓库上下文，例如相关文件、证据引用、文件/文本搜索结果，以及简单测试命令提示。它不会生成补丁、编辑代码、创建 Pull Request，或运行自主修复循环。
+Milestone 1 是 Repository Context Foundation Slice，不是完整 MVP。它仅包含
+确定性的 Repository Context Service，用于提供相关文件、证据引用、文件/文本
+搜索结果和描述性的测试命令提示；没有生成补丁、编辑代码、创建 Pull Request 或
+运行自主修复循环。详见 [Milestone 1 进度索引](docs/milestones/m1-repository-context-foundation/progress.md)
+和 [复盘](retrospectives/milestone-1-repository-context-foundation.md)。
 
 后续 MVP 是从 GitHub Issue 到 Draft PR 的垂直切片：
 
@@ -47,11 +52,12 @@ GitHub Issue
 
 ## 文档
 
-* [愿景](docs/vision.md)
-* [里程碑](docs/milestones.md)
-* [开发流程](docs/development-process.md)
-* [项目基础方案](docs/project-foundation-proposal.md)
-* [初始架构草案](docs/initial-architecture-draft.md)
+* [文档总导航](docs/index.zh.md)
+* [愿景](docs/product/vision.zh.md)
+* [里程碑](docs/product/roadmap/milestones.zh.md)
+* [开发流程](docs/process/index.zh.md)
+* [项目基础方案](docs/architecture/foundation/project-foundation-proposal.zh.md)
+* [初始架构草案](docs/_history/architecture/initial-architecture-draft.md)
 
 ## 方法论
 
@@ -64,3 +70,9 @@ ForgeFlow 使用分阶段、文档驱动的开发流程：
 * 从第一天开始评估
 
 在相关 RFC 决策、功能规格、安全约束和评估方法明确之前，项目不应从架构阶段进入实现阶段。
+
+## 下一步
+
+1. 审阅 Milestone 1 复盘和 closure 证据。
+2. 为 Milestone 2 建立架构和 OpenSpec 范围。
+3. 在相应契约和治理决策被接受前，不实现补丁生成、验证执行或 PR 行为。

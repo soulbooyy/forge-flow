@@ -1,0 +1,419 @@
+# ForgeFlow Milestones
+
+## 1. Purpose
+
+This document defines the staged development roadmap for ForgeFlow.
+
+Its purpose is to:
+
+- define ForgeFlow's phased development path
+- distinguish project foundation, foundation slices, vertical MVP, and later expansion
+- prevent scope creep
+- clarify the goal, scope, exclusions, and exit criteria for each milestone
+- give RFCs, OpenSpec changes, implementation work, and evaluation clear stage boundaries
+
+This is not an implementation design document. It does not define APIs, classes, or concrete service implementations.
+
+## 2. Milestone Philosophy
+
+ForgeFlow should progress through deliberate, reviewable stages.
+
+Milestone principles:
+
+- Start with foundation before automation.
+- Build horizontal capabilities before full vertical automation.
+- Keep Milestone 1 intentionally small.
+- Treat the full Draft PR workflow as a later MVP, not the first feature.
+- Use RFCs for architecture decisions.
+- Use OpenSpec for feature-level implementation specs.
+- Keep safety and evaluation present from the beginning.
+- Prefer deterministic services for repository facts.
+- Prefer structured contracts over free-form agent outputs.
+
+The long-term vision is autonomous software maintenance. The first implementation steps must be smaller than that vision.
+
+## 3. Milestone Overview
+
+| Milestone | Name | Goal | Main Deliverable | Status | Depends On |
+|---|---|---|---|---|---|
+| Milestone 0 | Project Foundation | Establish project boundaries, documentation system, RFC roadmap, and scope corrections. | Foundation documents, RFC roadmap, and initial ADRs. | Near Complete | Initial architecture draft |
+| Milestone 1 | Repository Context Foundation Slice | Build the first deterministic repository context capability. | Repository Context Service OpenSpec and `RepositoryContextResult`. | Completed | Milestone 0, RFC-001/002/004/007 skeleton decisions |
+| Milestone 2 | Structured PatchProposal Slice | Produce evidence-backed patch intent from repository context. | `PatchProposal` contract and governed patch proposal flow. | Planned | Milestone 1, RFC-002/003/004 |
+| Milestone 3 | Validation and Review Slice | Validate patches and produce blocking-level review results. | `ValidationResult`, `ReviewResult`, bounded retry policy. | Planned | Milestone 2, RFC-004/005/006 |
+| Milestone 4 | Draft PR MVP Vertical Slice | Complete the first GitHub Issue to Draft PR MVP path. | Controlled draft PR from a fixture or test repository. | Planned | Milestone 3, GitHub/tool policy decisions |
+| Milestone 5 | Evaluation and Observability Hardening | Strengthen trace, run summary, redaction, and evaluation. | Reliable eval metrics and product-level run summaries. | Planned | Milestone 4 |
+| Milestone 6 | Enterprise Integrations and Scaling | Add optional enterprise integrations after the core loop is stable. | Policy-gated integrations and scalable deployment direction. | Future | Milestone 5 |
+
+## 4. Milestone 0: Project Foundation
+
+Goal: establish project boundaries, documentation workflow, development process, and RFC roadmap.
+
+Scope:
+
+- initialize repository structure
+- preserve initial architecture draft
+- create Project Foundation Proposal
+- create `vision.md`
+- create milestone roadmap documents
+- create engineering process documents
+- define RFC roadmap
+- clarify DeerFlow integration strategy
+- run Grill-Me architecture review
+- capture first round of scope corrections
+
+Exclusions:
+
+- production implementation
+- agent classes
+- OpenSpec feature implementation
+- Repository Context Service code
+- sandbox execution code
+- PR automation
+
+Exit criteria:
+
+- Project Foundation Proposal exists
+- `vision.md` exists
+- milestone roadmap documents exist
+- engineering process documents exist
+- initial architecture draft is preserved
+- RFC roadmap is documented
+- Milestone 1 and MVP are clearly separated
+- current documents are committed to Git
+
+## 5. Milestone 1: Repository Context Foundation Slice
+
+Milestone 1 is not the full MVP.
+
+Status: completed. The implementation and closure evidence are recorded in the
+[Milestone 1 progress index](../../milestones/m1-repository-context-foundation/progress.md)
+and [retrospective](../../../retrospectives/milestone-1-repository-context-foundation.md).
+
+Goal: implement ForgeFlow's first deterministic foundation capability: Repository Context Service.
+
+The service provides evidence-backed repository context for later PatchProposal, Validation, Review, and Draft PR workflows.
+
+Scope:
+
+- accept repo workspace input
+- accept query and optional issue text
+- perform file search
+- perform text search
+- return evidence references
+- return relevant files
+- return simple test command hints from project config or conventions
+- produce `RepositoryContextResult`
+- record minimal trace / run summary
+- support small controlled evaluation fixtures
+
+Exclusions:
+
+- patch generation
+- code editing
+- test execution
+- draft PR creation
+- similar issue retrieval
+- full dependency graph
+- GitHub issue / PR history ingestion
+- large-scale embedding index
+- multi-repo support
+- automatic memory write
+- language-specific deep static analysis
+
+Exit criteria:
+
+- `RepositoryContextResult` contract is specified
+- OpenSpec change exists for Repository Context Service
+- minimal file/text search works
+- evidence references are returned
+- controlled evaluation fixtures exist
+- scope exclusions are documented
+- security assumptions are documented
+- no patch generation is introduced in this milestone
+
+## 6. Milestone 2: Structured PatchProposal Slice
+
+Goal: use Repository Context to produce a structured `PatchProposal` that represents minimal code-change intent for later automated repair workflows.
+
+Scope:
+
+- define `PatchProposal` contract
+- use `RepositoryContextResult` as input
+- generate root cause hypothesis
+- generate fix strategy
+- identify candidate changed files
+- produce structured patch intent
+- optionally produce diff in sandbox through governed tools
+- enforce patch boundary policy
+- record risk flags and evidence references
+
+Exclusions:
+
+- full autonomous repair loop
+- PR creation
+- automatic merge
+- multi-round validation repair
+- large-scale refactoring
+- sensitive file modification without approval
+
+Exit criteria:
+
+- `PatchProposal` contract is documented
+- patch proposal is evidence-backed
+- changed files are bounded
+- risk flags are produced
+- patch boundary policy is enforced
+- basic tests or fixtures exist
+
+## 7. Milestone 3: Validation and Review Slice
+
+Goal: introduce `ValidationResult` and `ReviewResult` so ForgeFlow can test patches, explain failures, and perform blocking-level review.
+
+Scope:
+
+- define `ValidationResult` contract
+- define `ReviewResult` contract
+- run user-specified or recommended test commands
+- parse test results
+- explain validation failures
+- produce risk flags
+- detect blocking review issues
+- enforce bounded retry policy
+- escalate to human review when retry limit is reached
+
+Exclusions:
+
+- infinite repair loop
+- full CI integration
+- automatic production deployment
+- automatic merge
+- broad style-only code review comments
+
+Exit criteria:
+
+- `ValidationResult` and `ReviewResult` are documented
+- Validation does not directly fix failures
+- repair loop is controlled by workflow graph
+- retry limits are enforced
+- Review only performs blocking-level review
+- human approval gates are documented
+
+## 8. Milestone 4: Draft PR MVP Vertical Slice
+
+Goal: complete the first true vertical MVP:
+
+```text
+GitHub Issue
+  -> Sandbox
+  -> Repository Context
+  -> PatchProposal
+  -> Validation
+  -> Review
+  -> Draft PR
+```
+
+Scope:
+
+- GitHub Issue input
+- sandbox workspace setup
+- repository context retrieval
+- `PatchProposal` generation
+- governed code modification
+- test validation
+- blocking-level review
+- draft PR creation
+- PR body generated from structured contracts
+- human approval gates for high-risk actions
+- traceable run summary
+
+Exclusions:
+
+- automatic merge
+- automatic deployment
+- Jira integration
+- Slack approval
+- multi-repo orchestration
+- complex enterprise permission system
+- full SWE-bench support
+
+Exit criteria:
+
+- a GitHub Issue can produce a draft PR in a controlled fixture or test repository
+- PR body contains root cause, changes, validation, risk, and trace summary
+- high-risk actions are blocked or require approval
+- validation retry is bounded
+- run summary is persisted
+- evaluation result is recorded
+
+## 9. Milestone 5: Evaluation and Observability Hardening
+
+Goal: strengthen evaluation, trace, run summary, security redaction, and audit capabilities.
+
+Scope:
+
+- expand controlled fixtures
+- track context retrieval precision
+- track test recommendation usefulness
+- track patch size and changed files
+- track validation determinism
+- track run summary completeness
+- add redaction policy for prompts, tool outputs, logs, and diffs
+- improve observability dashboard or trace format
+- add cost and retry metrics
+
+Exclusions:
+
+- large-scale enterprise deployment
+- full SWE-bench automation as mandatory baseline
+- production SRE-level monitoring
+- complex analytics platform
+
+Exit criteria:
+
+- evaluation metrics are consistently recorded
+- redaction policy is documented and applied
+- run summaries are useful for PR review and retrospectives
+- cost, retry, and failure metrics are available
+- known failure modes are documented
+
+## 10. Milestone 6: Enterprise Integrations and Scaling
+
+Goal: expand enterprise integrations and scaling only after the core loop is stable.
+
+Possible scope:
+
+- Jira integration
+- Slack or IM approval
+- deeper GitHub Actions integration
+- similar issue retrieval
+- Git / PR history retrieval
+- multi-repo support
+- repository memory with manual approval
+- role-based permission model
+- deployment in isolated worker infrastructure
+- optional SWE-bench / SWE-bench Verified evaluation
+
+Exclusions:
+
+- anything that compromises safety boundaries
+- automatic merge without explicit approval policy
+- storing source code or secrets in memory
+- unbounded autonomous repair
+
+Exit criteria:
+
+- enterprise integrations are optional and policy-gated
+- security model scales with integrations
+- evaluation covers both offline fixtures and online usage
+- memory writes require clear approval policy
+- system remains auditable and governable
+
+## 11. Relationship Between Milestones and RFCs
+
+Milestones and RFCs serve different purposes.
+
+- Milestones define delivery stages.
+- RFCs define architecture decisions.
+- OpenSpec changes define feature implementation details.
+
+Milestone 0 produces the RFC roadmap.
+
+Required RFCs:
+
+- RFC-001 supports Agent Architecture.
+- RFC-002 supports State Model and Structured Contracts.
+- RFC-003 supports Tool and MCP Integration.
+- RFC-004 supports Sandbox and Security Governance.
+- RFC-005 supports Observability and Trace Model.
+- RFC-006 supports Evaluation Framework.
+- RFC-007 supports DeerFlow Extension Strategy.
+
+RFCs should be written before implementation when a decision affects multiple milestones, contracts, security posture, runtime integration, or evaluation.
+
+## 12. Relationship Between Milestones and OpenSpec
+
+OpenSpec should not be used for the entire MVP at once.
+
+Each milestone may contain one or more OpenSpec changes. Each OpenSpec change should describe a focused feature and include:
+
+- `proposal.md`
+- `design.md`
+- `tasks.md`
+
+The first OpenSpec change should be Repository Context Service.
+
+OpenSpec should be created only after the relevant RFC skeleton decisions exist. For Repository Context Service, the relevant skeleton decisions are:
+
+- RFC-001 Agent Architecture
+- RFC-002 State Model and Structured Contracts
+- RFC-004 Sandbox and Security Governance
+- RFC-007 DeerFlow Extension Strategy
+
+RFC-003, RFC-005, and RFC-006 may be drafted in parallel and referenced by the first OpenSpec, but they do not need to be fully complete before the Repository Context Service spec begins.
+
+## 13. Scope Control Rules
+
+These rules protect ForgeFlow from turning the long-term vision into the first implementation.
+
+- Milestone 1 must not expand into patch generation.
+- Repository Context Service must remain deterministic in Milestone 1.
+- Milestone 1 must not include autonomous code editing.
+- Milestone 1 must not include validation repair loops.
+- Milestone 1 must not include PR creation.
+- Repository Context Service must not use LLM reasoning in Milestone 1.
+- Draft PR is not required before Milestone 4.
+- Similar issue retrieval is not required before Milestone 6.
+- SWE-bench is not required for the first evaluation milestone.
+- Automatic merge is out of scope for the MVP.
+- Jira and Slack are out of scope for the MVP.
+- Memory auto-write is out of scope for early milestones.
+- Security guardrails must not be postponed entirely to later phases.
+
+Any proposal that violates these rules should either be rejected, deferred, or written as an explicit RFC with a clear tradeoff discussion.
+
+## 14. Milestone Exit Checklist
+
+Use this checklist before declaring any milestone complete:
+
+- [ ] Scope completed
+- [ ] Exclusions respected
+- [ ] Relevant RFCs updated
+- [ ] OpenSpec tasks updated
+- [ ] Tests or evaluation fixtures updated
+- [ ] Security implications reviewed
+- [ ] Observability requirements reviewed
+- [ ] Documentation updated
+- [ ] Git history contains meaningful commits
+- [ ] Retrospective created if milestone is complete
+
+## 15. Current Status
+
+Current milestone:
+
+```text
+Milestone 0: Project Foundation
+Status: Near Complete
+Next phase: OpenSpec Feature Planning for Milestone 1
+```
+
+Completed:
+
+- Project foundation documents created.
+- RFC roadmap created.
+- RFC-001 Agent Architecture baselined and accepted as the Milestone 1 scope guard.
+- RFC-002 Contracts and State Model drafted and reviewed.
+- RFC-004 Sandbox and Security Governance drafted and reviewed.
+- RFC-007 DeerFlow Extension Strategy drafted and reviewed.
+- DeerFlow upstream revision recorded.
+- DeerFlow extension-point assessment completed.
+- Initial ADRs recorded.
+- Milestone 1 and full MVP boundary clarified.
+
+Next steps:
+
+- initialize OpenSpec
+- create first OpenSpec change: Repository Context Service
+- keep Milestone 1 limited to Repository Context Foundation Slice
+- define `RepositoryContextResult` feature scope
+- prepare controlled evaluation fixtures for Milestone 1
+- do not start `PatchProposal`, Validation, or PR implementation yet

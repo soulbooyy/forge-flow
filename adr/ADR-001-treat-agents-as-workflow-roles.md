@@ -54,4 +54,4 @@ Follow-up implications:
 - [RFC-002: Contracts and State Model](../rfcs/RFC-002-contracts-and-state-model.md)
 - [RFC-004: Sandbox and Security Governance](../rfcs/RFC-004-sandbox-and-security-governance.md)
 - [RFC-007: DeerFlow Extension Strategy](../rfcs/RFC-007-deerflow-extension-strategy.md)
-- [Milestones](../docs/milestones.md)
+- [Milestones](../docs/product/roadmap/milestones.md)

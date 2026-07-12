@@ -1,0 +1,1 @@
+This ignored file must not appear in repository context results.

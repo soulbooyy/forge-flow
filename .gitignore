@@ -1,1 +1,9 @@
 .worktrees/
+
+# Python generated artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Temporary AI execution artifacts; tracked historical records remain unchanged.
+.superpowers/sdd/
