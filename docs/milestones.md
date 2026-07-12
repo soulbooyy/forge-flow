@@ -37,7 +37,7 @@ The long-term vision is autonomous software maintenance. The first implementatio
 | Milestone | Name | Goal | Main Deliverable | Status | Depends On |
 |---|---|---|---|---|---|
 | Milestone 0 | Project Foundation | Establish project boundaries, documentation system, RFC roadmap, and scope corrections. | Foundation documents, RFC roadmap, and initial ADRs. | Near Complete | Initial architecture draft |
-| Milestone 1 | Repository Context Foundation Slice | Build the first deterministic repository context capability. | Repository Context Service OpenSpec and `RepositoryContextResult`. | Planned | Milestone 0, RFC-001/002/004/007 skeleton decisions |
+| Milestone 1 | Repository Context Foundation Slice | Build the first deterministic repository context capability. | Repository Context Service OpenSpec and `RepositoryContextResult`. | Completed | Milestone 0, RFC-001/002/004/007 skeleton decisions |
 | Milestone 2 | Structured PatchProposal Slice | Produce evidence-backed patch intent from repository context. | `PatchProposal` contract and governed patch proposal flow. | Planned | Milestone 1, RFC-002/003/004 |
 | Milestone 3 | Validation and Review Slice | Validate patches and produce blocking-level review results. | `ValidationResult`, `ReviewResult`, bounded retry policy. | Planned | Milestone 2, RFC-004/005/006 |
 | Milestone 4 | Draft PR MVP Vertical Slice | Complete the first GitHub Issue to Draft PR MVP path. | Controlled draft PR from a fixture or test repository. | Planned | Milestone 3, GitHub/tool policy decisions |
@@ -85,6 +85,10 @@ Exit criteria:
 
 Milestone 1 is not the full MVP.
 
+Status: completed. The implementation and closure evidence are recorded in the
+[Milestone 1 progress index](milestones/m1-repository-context-foundation/progress.md)
+and [retrospective](../retrospectives/milestone-1-repository-context-foundation.md).
+
 Goal: implement ForgeFlow's first deterministic foundation capability: Repository Context Service.
 
 The service provides evidence-backed repository context for later PatchProposal, Validation, Review, and Draft PR workflows.
@@ -95,7 +99,6 @@ Scope:
 - accept query and optional issue text
 - perform file search
 - perform text search
-- perform simple symbol search if cheap and language-agnostic
 - return evidence references
 - return relevant files
 - return simple test command hints from project config or conventions

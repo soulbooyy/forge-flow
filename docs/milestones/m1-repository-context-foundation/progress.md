@@ -14,6 +14,7 @@ This is the Milestone 1 status index. It does not define requirements, architect
 - [ADR index](../../../adr/README.md)
 - [Canonical Milestone 1 implementation plan](../../implementation-plans/milestone-1-repository-context-foundation.md)
 - [Development process](../../development-process.md#14-lightweight-implementation-execution)
+- [Milestone 1 retrospective](../../../retrospectives/milestone-1-repository-context-foundation.md)
 
 ## Execution Environment
 
@@ -30,7 +31,7 @@ This is the Milestone 1 status index. It does not define requirements, architect
 | Milestone | Repository Context Foundation |
 | Completed through | Phase 8 |
 | Next incomplete phase | None |
-| Overall state | Implementation complete; awaiting Milestone 1 closure confirmation |
+| Overall state | Completed; closure verification recorded |
 | Latest cumulative test result | Phase 1-8 unittest suite: 63 passed |
 
 ## Phase Index
@@ -70,3 +71,5 @@ This is the Milestone 1 status index. It does not define requirements, architect
   next incomplete phase to Phase 8.
 - 2026-07-12: Accepted Phase 8 hardening; all Milestone 1 implementation
   phases are complete.
+- 2026-07-12: Completed Milestone 1 closure verification and recorded the
+  retrospective; project-level status now reflects completion.

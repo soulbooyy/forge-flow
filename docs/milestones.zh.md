@@ -37,7 +37,7 @@ ForgeFlow 应该通过有意设计、可审查的阶段逐步推进。
 | 里程碑         | 名称                                     | 目标                                           | 主要交付物                                                            | 状态  | 依赖                                                 |
 | ----------- | -------------------------------------- | -------------------------------------------- | ---------------------------------------------------------------- | --- | -------------------------------------------------- |
 | Milestone 0 | Project Foundation                     | 建立项目边界、文档体系、RFC 路线图和范围修正。                    | 基础文档和 RFC 路线图。                                                   | 进行中 | 初始架构草案                                             |
-| Milestone 1 | Repository Context Foundation Slice    | 构建第一个确定性的仓库上下文能力。                            | Repository Context Service OpenSpec 和 `RepositoryContextResult`。 | 计划中 | Milestone 0，RFC-001/002/004/007 skeleton decisions |
+| Milestone 1 | Repository Context Foundation Slice    | 构建第一个确定性的仓库上下文能力。                            | Repository Context Service OpenSpec 和 `RepositoryContextResult`。 | 已完成 | Milestone 0，RFC-001/002/004/007 skeleton decisions |
 | Milestone 2 | Structured PatchProposal Slice         | 从仓库上下文中产生有证据支撑的补丁意图。                         | `PatchProposal` 契约和受治理的补丁方案流程。                                   | 计划中 | Milestone 1，RFC-002/003/004                        |
 | Milestone 3 | Validation and Review Slice            | 验证补丁并产生阻塞级审查结果。                              | `ValidationResult`、`ReviewResult`、有边界的重试策略。                      | 计划中 | Milestone 2，RFC-004/005/006                        |
 | Milestone 4 | Draft PR MVP Vertical Slice            | 完成第一个从 GitHub Issue 到 Draft PR 的 MVP 路径。     | 从 fixture 或测试仓库中生成受控草稿 PR。                                       | 计划中 | Milestone 3，GitHub/tool policy decisions           |
@@ -85,6 +85,9 @@ ForgeFlow 应该通过有意设计、可审查的阶段逐步推进。
 
 Milestone 1 不是完整 MVP。
 
+状态：已完成。实现和 closure 证据见 [Milestone 1 进度索引](milestones/m1-repository-context-foundation/progress.md)
+和 [复盘](../retrospectives/milestone-1-repository-context-foundation.md)。
+
 目标：实现 ForgeFlow 的第一个确定性基础能力：Repository Context Service。
 
 该服务为后续 `PatchProposal`、Validation、Review 和 Draft PR 工作流提供有证据支撑的仓库上下文。
@@ -95,7 +98,6 @@ Milestone 1 不是完整 MVP。
 * 接收 query 和可选 issue text
 * 执行文件搜索
 * 执行文本搜索
-* 如果成本低且语言无关，则执行简单 symbol 搜索
 * 返回证据引用
 * 返回相关文件
 * 从项目配置或约定中返回简单测试命令提示
