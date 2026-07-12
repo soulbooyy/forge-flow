@@ -336,3 +336,95 @@ These rules apply during early ForgeFlow development:
 - Memory does not automatically write in early versions unless a human explicitly confirms stable engineering knowledge.
 
 If a proposed change violates one of these rules, defer it or require an RFC before proceeding.
+
+## 14. Lightweight Implementation Execution
+
+This mode applies to narrow, accepted implementation phases after the relevant
+architecture and feature planning work is complete. It preserves TDD, scope
+control, focused commits, and durable progress without treating AI execution
+artifacts as long-term engineering documentation.
+
+### 14.1 Authoritative Inputs
+
+Before starting a phase, read the current OpenSpec change, relevant RFCs,
+accepted ADRs, the canonical implementation plan, and the milestone
+`progress.md`. Chat prompts may provide context, but they do not define phase
+interfaces, file lists, acceptance criteria, or scope.
+
+The authority order for conflicts is:
+
+1. OpenSpec for feature requirements, acceptance criteria, and exclusions.
+2. Accepted ADRs for binding architecture decisions.
+3. RFCs for architecture boundaries and deferred decisions.
+4. The canonical implementation plan for implementation sequence and task detail.
+5. Milestone progress for execution state only.
+
+If these sources conflict or do not identify a safe next phase, stop
+implementation and report the conflict. Do not invent an architecture decision
+or silently revise an authoritative source.
+
+### 14.2 Phase Identification
+
+Identify the next phase from the canonical implementation plan and the last
+completed entry in milestone `progress.md`. The phase must be explicitly
+reconciled when execution numbering and the canonical plan differ.
+
+### 14.3 Test-Driven Development
+
+Each phase follows RED -> GREEN -> REFACTOR:
+
+- add or change a test before production behavior;
+- confirm it fails because the current capability is absent or incorrect;
+- implement the smallest code that satisfies the current phase;
+- run targeted tests, then the complete implemented suite;
+- perform only small, phase-scoped refactoring after green.
+
+Tests added after a complete implementation are not a substitute for this
+sequence.
+
+### 14.4 Scope Control
+
+Implement exactly one canonical-plan phase at a time. Do not add future-phase
+abstractions, modify unrelated modules, or expand OpenSpec scope. Missing or
+conflicting authority is a stop condition, not permission to fill the gap.
+
+### 14.5 Git and Commit Strategy
+
+Milestone 1 uses branch `feature/m1-repository-context-foundation` and
+worktree `.worktrees/m1-repository-context-foundation`. Do not create a new
+branch or worktree for each phase.
+
+Create one focused commit per phase. Before committing, run targeted tests,
+the complete implemented test suite, `git diff --check`, and `git status
+--short`; inspect generated files and unrelated modifications.
+
+### 14.6 Review Strategy
+
+The default lightweight review is a self-review of the current diff, passing
+tests, and scope boundaries. Do not generate subagent briefs, review diffs,
+rereview diffs, or long checkpoint reports by default.
+
+Escalate to independent review when a change modifies an OpenSpec contract,
+security boundary, canonical identity algorithm, external dependency, or
+cross-platform security behavior; when it diverges from the canonical plan; or
+when explicitly requested by the user.
+
+### 14.7 Documentation and Stop Condition
+
+After a phase commit, update only the milestone `progress.md` with status,
+goal, implemented outcome, tests, commit, scope confirmation, and the next
+incomplete phase. Do not create phase briefs, phase reports, review diffs,
+rereview diffs, or standalone checkpoint reports by default.
+
+New architecture decisions belong in ADRs, requirement changes in OpenSpec,
+and sequencing changes in the canonical implementation plan. The progress file
+does not redefine any of them.
+
+After updating progress, provide a concise summary and stop for user
+confirmation. Do not automatically begin the next phase.
+
+### 14.8 Translation Policy
+
+English process documents are canonical. Existing `.zh.md` process documents
+are maintained translations for stable, durable process rules. Rolling progress
+records and temporary execution artifacts are not translated by default.
