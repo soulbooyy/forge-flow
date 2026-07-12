@@ -60,3 +60,5 @@ This is the Milestone 1 status index. It does not define requirements, architect
 - 2026-07-12: Reconciled the canonical plan with accepted Phase 1-4 execution
   history; restored the Phase 4 completion record and advanced the next
   incomplete phase to Phase 5.
+- 2026-07-12: Reconciled the Phase 5 plan with the OpenSpec requirement that
+  minimum acceptance fixtures and skeletons precede retrieval implementation.

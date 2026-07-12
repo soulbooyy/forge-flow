@@ -172,6 +172,23 @@ Forbidden:
 
 ### Phase 5: Matcher, Ranking, and Evidence
 
+Before Phase 5 production code, establish the minimum acceptance-fixture
+foundation required by the OpenSpec:
+
+- create one controlled workspace fixture with filename/path, text-only, and
+  non-matching files;
+- create expected matching and evidence contract fragments without raw source
+  payloads;
+- add an acceptance-style matching/evidence skeleton that fails because the
+  Phase 5 public matching surface is absent;
+- keep the skeleton independent of the future service and result-envelope
+  assembly work in Phase 6.
+
+These fixture and skeleton artifacts are a Phase 5 TDD precondition. They make
+retrieval behavior contract-testable before matcher, ranking, and evidence
+production code is introduced. Phase 7 expands this foundation into complete
+end-to-end acceptance coverage.
+
 Implement:
 
 - query normalization:
@@ -248,7 +265,8 @@ Forbidden:
 
 ### Phase 7: Acceptance Tests
 
-Implement fixtures and tests for:
+Expand the Phase 5 fixture and skeleton foundation into complete end-to-end
+acceptance coverage for:
 
 - schema validation
 - canonical IDs
@@ -351,6 +369,8 @@ canonical identity
 workspace boundary
     |
 scanner
+    |
+acceptance fixture and matching/evidence skeleton
     |
 normalization / matching / ranking / evidence
     |
