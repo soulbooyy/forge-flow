@@ -28,10 +28,10 @@ This is the Milestone 1 status index. It does not define requirements, architect
 | Field | Value |
 | --- | --- |
 | Milestone | Repository Context Foundation |
-| Completed through | Phase 4 |
-| Next incomplete phase | Phase 5 |
-| Overall state | Active; paused after numbering reconciliation |
-| Latest cumulative test result | Phase 1-4 unittest suite: 40 passed |
+| Completed through | Phase 5 |
+| Next incomplete phase | Phase 6 |
+| Overall state | Active; paused after Phase 5 acceptance |
+| Latest cumulative test result | Phase 1-5 unittest suite: 45 passed |
 
 ## Phase Index
 
@@ -41,7 +41,7 @@ This is the Milestone 1 status index. It does not define requirements, architect
 | 2 | Canonical Identity | Accepted | `9fa68b8db27f785829221c7b3a6994229fbe693f` | [Phase 2 record](phase-2-canonical-identity.md) |
 | 3 | Workspace Security | Accepted | `4b77b81971c9390e41f4a2beec50508c5919e4ea` | [Phase 3 record](phase-3-workspace-security.md) |
 | 4 | Deterministic Scanner | Accepted | `14e9bae890e2a5102fedc959d88e2cb27a76d769` | [Phase 4 record](phase-4-deterministic-scanner.md) |
-| 5 | Matcher, Ranking, and Evidence | Pending |  | Not created |
+| 5 | Matcher, Ranking, and Evidence | Accepted | `aba1e3dd59e14e029a1e78f5f9e0bf5efb63d240` | [Phase 5 record](phase-5-matcher-ranking-evidence.md) |
 | 6 | Result Envelope and Service | Pending |  | Not created |
 | 7 | Acceptance Tests | Pending |  | Not created |
 | 8 | Hardening | Pending |  | Not created |
@@ -62,3 +62,5 @@ This is the Milestone 1 status index. It does not define requirements, architect
   incomplete phase to Phase 5.
 - 2026-07-12: Reconciled the Phase 5 plan with the OpenSpec requirement that
   minimum acceptance fixtures and skeletons precede retrieval implementation.
+- 2026-07-12: Accepted Phase 5 matching, ranking, and evidence implementation;
+  advanced the next incomplete phase to Phase 6.
