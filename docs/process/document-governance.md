@@ -10,6 +10,7 @@
 | `rfcs/` | Major architecture decisions such as Agent Architecture, State Model, Tool/MCP Integration, Sandbox Governance, Evaluation Framework, and DeerFlow Extension Strategy. |
 | `openspec/` or `specs/changes/` | Feature-level specifications such as Repository Context Service, PatchProposal generation, Validation workflow, ReviewResult generation, and Draft PR creation. |
 | `adr/` | Accepted architecture decision records, usually created after RFC discussion reaches a decision. |
+| `docs/_history/ai-assisted/implementation-plans/` | Versioned, non-canonical detailed draft plans generated with Superpowers `writing-plans` after architecture and specification inputs are ready. |
 | `docs/milestones/<milestone-slug>/implementation-plan.md` | Canonical implementation sequence, file-level work, dependencies, TDD steps, and phase acceptance conditions. |
 | `docs/milestones/<milestone-slug>/` | Milestone status index and formal Phase Completion Records. |
 | `retrospectives/` | Milestone retrospectives that record what worked, what failed, causes of rework, and follow-up improvements. |
@@ -67,6 +68,13 @@ Do not create milestone-local copies of OpenSpec, RFCs, ADRs, or the
 retrospective. Link to those authoritative records instead. The retrospective
 is created after milestone closure at
 `retrospectives/m<NUMBER>-<milestone-slug>.md`.
+
+Before creating a canonical implementation plan, create one detailed
+AI-assisted draft plan using Superpowers `writing-plans` and retain it at
+`docs/_history/ai-assisted/implementation-plans/YYYY-MM-DD-<milestone-slug>.md`.
+It is historical planning evidence, not a second canonical plan. The canonical
+plan must explicitly reconcile the draft with the accepted OpenSpec, relevant
+RFCs, and accepted ADRs.
 
 ## 4. Phase Completion Records and Progress
 

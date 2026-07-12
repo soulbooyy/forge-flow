@@ -1,7 +1,14 @@
 # AI-assisted Historical Material
 
-These artifacts preserve prior AI-assisted planning context. They are not
-authoritative inputs for future implementation; use the registry and canonical
-milestone plan instead.
+This directory preserves detailed draft implementation plans generated with
+Superpowers `writing-plans` after the relevant OpenSpec, RFCs, and accepted ADRs
+are ready. Use the stable file name
+`YYYY-MM-DD-<milestone-slug>.md`.
+
+These artifacts are non-canonical planning evidence. Before implementation,
+their useful execution detail must be reconciled into the canonical plan at
+`docs/milestones/<milestone-slug>/implementation-plan.md`. Later phases use
+that canonical plan, rather than this history directory, as their planning
+authority.
 
 - [Repository Context Foundation Draft Plan](implementation-plans/2026-07-11-repository-context-foundation.md)

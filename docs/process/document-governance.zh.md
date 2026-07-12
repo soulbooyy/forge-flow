@@ -10,6 +10,7 @@
 | `rfcs/`                               | 重大架构决策，例如 Agent Architecture、State Model、Tool/MCP Integration、Sandbox Governance、Evaluation Framework 和 DeerFlow Extension Strategy。 |
 | `openspec/` 或 `specs/changes/`        | 功能级规格，例如 Repository Context Service、PatchProposal 生成、Validation 工作流、ReviewResult 生成和 Draft PR 创建。                                    |
 | `adr/`                                | 已接受的架构决策记录，通常在 RFC 讨论达成决策后创建。                                                                                                        |
+| `docs/_history/ai-assisted/implementation-plans/` | 在 architecture 和 specification 输入完备后，通过 Superpowers `writing-plans` 生成、受版本控制的非 canonical 详细 draft plan。 |
 | `docs/milestones/<milestone-slug>/implementation-plan.md` | Canonical implementation sequence、文件级工作、依赖、TDD 步骤和 Phase 验收条件。                                                                              |
 | `docs/milestones/<milestone-slug>/`   | Milestone 状态索引和正式的 Phase Completion Record。                                                                                                      |
 | `retrospectives/`                     | 里程碑复盘，记录哪些有效、哪些失败、返工原因和后续改进。                                                                                                         |
@@ -64,6 +65,12 @@ plan、progress 索引和 Completion Record 的导航。`implementation-plan.md`
 不得在 Milestone 目录中复制 OpenSpec、RFC、ADR 或 retrospective；应链接至
 它们各自的权威记录。Milestone closure 后，retrospective 创建在
 `retrospectives/m<NUMBER>-<milestone-slug>.md`。
+
+创建 canonical implementation plan 前，必须先通过 Superpowers `writing-plans`
+生成一份详细 AI-assisted draft plan，并保存为
+`docs/_history/ai-assisted/implementation-plans/YYYY-MM-DD-<milestone-slug>.md`。
+它是历史 planning evidence，不是第二份 canonical plan。canonical plan 必须将
+该 draft 与已接受 OpenSpec、相关 RFC 和已接受 ADR 明确完成 reconciliation。
 
 ## 4. Phase Completion Record 和进度索引
 

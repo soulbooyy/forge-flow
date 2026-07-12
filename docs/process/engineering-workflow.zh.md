@@ -63,9 +63,21 @@ Specification 以相关 RFC 和已接受 ADR 为输入，并产出 OpenSpec chan
 
 Planning 以已接受的 OpenSpec change 为输入，并产出 canonical Implementation Plan。该 plan 是执行顺序的唯一权威来源，必须定义 milestone scope、phase ordering、dependencies、expected file changes、TDD strategy 和 phase acceptance criteria。
 
-每个即将进入 Implementation 的 Milestone，必须先使用 Superpowers 或等价的 AI-assisted workflow 生成 draft implementation plan。写入 canonical plan 前，必须将该 draft 与已接受 OpenSpec、相关 RFC 和已接受 ADR 对照审查。审查必须协调 phase boundaries、dependencies、scope exclusions、TDD strategy 和 acceptance criteria；当 draft 与仓库权威文档冲突时，以仓库权威文档为准，并在 canonical plan 中解决冲突。
+每个即将进入 Implementation 的 Milestone，在 OpenSpec、相关 RFC 和已接受 ADR
+完备后，必须先使用 Superpowers 的 `writing-plans` skill 生成详细的 draft
+implementation plan。draft 必须保存为
+`docs/_history/ai-assisted/implementation-plans/YYYY-MM-DD-<milestone-slug>.md`，
+并明确 phase order、dependencies、expected file changes、TDD steps、verification
+和 phase acceptance conditions。
 
-最终的 canonical plan 可以吸收 draft 中有价值的执行细节，但它是后续 Phase 唯一可视为权威的 plan。draft 可以作为 non-canonical planning evidence 保留，但不得形成第二份需要同步的 plan。
+写入 canonical plan 前，必须将该 draft 与已接受 OpenSpec、相关 RFC 和已接受 ADR
+对照审查。审查必须协调 phase boundaries、dependencies、scope exclusions、TDD
+strategy 和 acceptance criteria；当 draft 与仓库权威文档冲突时，以仓库权威文档
+为准，并在 canonical plan 中解决冲突。
+
+最终的 canonical plan 可以吸收 draft 中有价值的执行细节，但它是后续 Phase
+唯一可视为权威的 plan。AI-assisted draft 作为 `_history` 中的 non-canonical
+planning evidence 保留，但不得形成第二份需要同步的 plan。
 
 Implementation Phase 必须来自 canonical plan。聊天提示词不得重新定义 Phase 的 scope、interface、file list 或 acceptance criteria。
 

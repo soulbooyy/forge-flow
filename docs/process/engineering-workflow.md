@@ -77,18 +77,23 @@ Implementation Plan. The plan is the sole authority for execution order and
 must define milestone scope, phase ordering, dependencies, expected file
 changes, TDD strategy, and phase acceptance criteria.
 
-For each milestone entering implementation, first use Superpowers or an
-equivalent AI-assisted workflow to generate a draft implementation plan. Review
-the draft against the accepted OpenSpec, relevant RFCs, and accepted ADRs before
-writing the canonical plan. The review must reconcile phase boundaries,
-dependencies, scope exclusions, TDD strategy, and acceptance criteria; when a
-draft conflicts with repository authority, repository authority prevails and the
-conflict is resolved in the canonical plan.
+For each milestone entering implementation, first use the Superpowers
+`writing-plans` skill to generate a detailed draft implementation plan after
+the OpenSpec, relevant RFCs, and accepted ADRs are ready. Store the draft at
+`docs/_history/ai-assisted/implementation-plans/YYYY-MM-DD-<milestone-slug>.md`.
+The draft must identify phase order, dependencies, expected file changes, TDD
+steps, verification, and phase acceptance conditions.
+
+Review the draft against the accepted OpenSpec, relevant RFCs, and accepted
+ADRs before writing the canonical plan. The review must reconcile phase
+boundaries, dependencies, scope exclusions, TDD strategy, and acceptance
+criteria; when a draft conflicts with repository authority, repository
+authority prevails and the conflict is resolved in the canonical plan.
 
 The resulting canonical plan may use useful execution detail from the draft,
-but it is the only plan that later phases may treat as authoritative. The draft
-may be retained as non-canonical planning evidence and must not create a second
-plan that requires synchronization.
+but it is the only plan that later phases may treat as authoritative. The
+AI-assisted draft remains non-canonical planning evidence in `_history`; it
+must not create a second plan that requires synchronization.
 
 Implementation phases must come from the canonical plan. Chat prompts do not
 redefine a phase's scope, interface, file list, or acceptance criteria.
