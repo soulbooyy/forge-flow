@@ -47,7 +47,85 @@ ForgeFlow 开发遵循以下原则：
 
 文档应该被视为产品的一部分，而不是可选的说明文字。
 
-## 4. 推荐开发流程
+## 4. ForgeFlow Engineering Workflow
+
+ForgeFlow 遵循分阶段的工程工作流：
+
+```text
+Vision
+-> Architecture
+-> Specification
+-> Planning
+-> Implementation
+-> Verification
+```
+
+该工作流适用于每一个 Milestone。以下章节共同定义一条连续流程；后续章节提供各阶段的详细规则。
+
+### 4.1 Architecture
+
+Architecture 以项目 Vision 为输入，并产出 RFC 和 ADR。RFC 定义 architecture boundaries、system responsibilities、trade-offs 和 long-term technical direction。ADR 记录已接受的架构决策、被否决的替代方案和重要 trade-offs。
+
+在必要的架构决策尚未明确前，不得开始 Implementation。
+
+### 4.2 Specification
+
+Specification 以相关 RFC 和已接受 ADR 为输入，并产出 OpenSpec change。OpenSpec 是 feature contract 的权威来源，必须包括 proposal、design、tasks 和 feature specifications。每个 change 必须明确 scope、acceptance criteria、non-goals 和 constraints。
+
+### 4.3 Grill-Me Design Review
+
+重要 feature 在 Planning 前必须通过 Grill-Me 设计质询。Grill-Me 用于发现 hidden assumptions、unclear boundaries、scope creep 和 architecture violations。它不修改架构决策；最终决策仍由 RFC、ADR 和 OpenSpec 记录。
+
+### 4.4 Planning
+
+Planning 以已接受的 OpenSpec change 为输入，并产出 canonical Implementation Plan。该 plan 是执行顺序的唯一权威来源，必须定义 milestone scope、phase ordering、dependencies、expected file changes、TDD strategy 和 phase acceptance criteria。
+
+Implementation Phase 必须来自 canonical plan。聊天提示词不得重新定义 Phase 的 scope、interface、file list 或 acceptance criteria。
+
+### 4.5 Implementation
+
+Implementation 使用 Lightweight Implementation Execution，并对每个 Phase 遵循以下顺序：
+
+```text
+Read Phase Requirement
+-> Write Tests (RED)
+-> Implement Minimal Solution (GREEN)
+-> Refactor
+-> Run Verification
+-> Commit
+-> Create Phase Completion Record
+-> Update Milestone Progress
+```
+
+### 4.6 Verification
+
+每个完成的 Phase 都必须验证 tests passed、scope respected、Git diff 已审查且 documentation 已更新。提交前至少运行 targeted tests、cumulative implemented tests、`git diff --check` 和 `git status`。
+
+### 4.7 Documentation Authority Hierarchy
+
+```text
+Vision
+-> RFC
+-> ADR
+-> OpenSpec
+-> Implementation Plan
+-> Phase Completion Record
+-> Milestone Progress
+```
+
+- Vision 说明为什么做。
+- RFC 定义架构。
+- ADR 记录已确定的架构选择。
+- OpenSpec 定义 feature contract。
+- Implementation Plan 定义如何实施。
+- Phase Completion Record 记录一个 Phase 实际完成什么。
+- Milestone Progress 记录 Milestone 当前在哪里。
+
+### 4.8 AI-assisted Development Tools
+
+Superpowers 和其他 AI-assisted development tools 是执行辅助工具。它们可以用于 task decomposition、implementation planning 或 review assistance，但不是权威来源。它们不得定义 architecture、requirements 或 acceptance criteria。仓库文档仍是 source of truth。
+
+### 4.9 推荐开发流程
 
 ### Phase 0：Project Foundation
 
@@ -416,6 +494,8 @@ Done 意味着该功能已经实现、测试、评估、记录，并且可以追
 `Changed Files` 使用 `File | Change | Purpose` 表格。`TDD and Tests` 必须记录 RED、GREEN、必要的重构或修复迭代、命令、targeted result 和 cumulative-suite result。该记录只保留已经完成的工程事实，不包含 agent dispatch、review diff 正文或临时调试叙述。
 
 每个 Phase commit 后，必须同时创建或更新对应的 Phase Completion Record 和 milestone `progress.md`。Completion Record 承担该 Phase 的详细记录；`progress.md` 是简洁的 Milestone 索引，只记录 Phase 状态、commit、文档链接、当前阶段、下一个未完成 Phase 和 Milestone 级 reconciliation item。两者都不得重新定义需求、架构或实施顺序。
+
+`progress.md` 不替代 Phase Completion Record，不记录详细 implementation，也不定义 requirements 或 architecture。
 
 默认不生成 Superpowers brief、review diff、rereview diff 或 agent execution report。新的架构决策进入 ADR，需求变化进入 OpenSpec，实施顺序变化进入 canonical implementation plan。
 

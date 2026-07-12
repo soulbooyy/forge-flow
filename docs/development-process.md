@@ -47,7 +47,107 @@ These principles apply especially while the project is still in foundation and p
 
 Documentation should be treated as part of the product, not as optional commentary.
 
-## 4. Recommended Development Flow
+## 4. ForgeFlow Engineering Workflow
+
+ForgeFlow follows a staged engineering workflow:
+
+```text
+Vision
+-> Architecture
+-> Specification
+-> Planning
+-> Implementation
+-> Verification
+```
+
+This workflow applies to every milestone. The following sections define one
+continuous process; later sections provide detailed rules for individual stages.
+
+### 4.1 Architecture
+
+Architecture starts from the project vision and produces RFCs and ADRs. RFCs
+define architecture boundaries, system responsibilities, trade-offs, and
+long-term technical direction. ADRs record accepted architectural decisions,
+rejected alternatives, and important trade-offs.
+
+Implementation must not begin while required architecture decisions remain
+unresolved.
+
+### 4.2 Specification
+
+Specification takes the relevant RFCs and accepted ADRs as input and produces
+an OpenSpec change. OpenSpec is the authoritative feature contract and must
+include a proposal, design, tasks, and feature specifications. Each change must
+state scope, acceptance criteria, non-goals, and constraints.
+
+### 4.3 Grill-Me Design Review
+
+Important features must receive a Grill-Me design challenge before planning.
+Grill-Me exposes hidden assumptions, unclear boundaries, scope creep, and
+architecture violations. It does not alter architecture decisions; final
+decisions remain recorded in RFCs, ADRs, and OpenSpec.
+
+### 4.4 Planning
+
+Planning takes an accepted OpenSpec change as input and produces the canonical
+Implementation Plan. The plan is the sole authority for execution order and
+must define milestone scope, phase ordering, dependencies, expected file
+changes, TDD strategy, and phase acceptance criteria.
+
+Implementation phases must come from the canonical plan. Chat prompts do not
+redefine a phase's scope, interface, file list, or acceptance criteria.
+
+### 4.5 Implementation
+
+Implementation uses Lightweight Implementation Execution and follows this
+sequence for each phase:
+
+```text
+Read Phase Requirement
+-> Write Tests (RED)
+-> Implement Minimal Solution (GREEN)
+-> Refactor
+-> Run Verification
+-> Commit
+-> Create Phase Completion Record
+-> Update Milestone Progress
+```
+
+### 4.6 Verification
+
+Every completed phase verifies that tests pass, scope is respected, the Git diff
+has been reviewed, and documentation is updated. Before committing, run targeted
+tests, cumulative implemented tests, `git diff --check`, and `git status`.
+
+### 4.7 Documentation Authority Hierarchy
+
+```text
+Vision
+-> RFC
+-> ADR
+-> OpenSpec
+-> Implementation Plan
+-> Phase Completion Record
+-> Milestone Progress
+```
+
+- Vision explains why the work exists.
+- RFCs define the architecture.
+- ADRs record settled architectural choices.
+- OpenSpec defines the feature contract.
+- The Implementation Plan defines how to execute the work.
+- Phase Completion Records state what a phase actually completed.
+- Milestone Progress states where the milestone currently stands.
+
+### 4.8 AI-assisted Development Tools
+
+Superpowers and other AI-assisted development tools are execution aids. They may
+help with task decomposition, implementation planning, or review assistance,
+but they are not authoritative sources. They must not define architecture,
+requirements, or acceptance criteria. Repository documentation remains the
+source of truth.
+
+### 4.9 Recommended Development Flow
 
 ### Phase 0: Project Foundation
 
@@ -416,6 +516,8 @@ All Phase Completion Records use exactly this template. No later phase may use a
 The `Changed Files` section uses a `File | Change | Purpose` table. The `TDD and Tests` section records RED, GREEN, any necessary refactor or corrective iteration, commands, targeted results, and cumulative-suite results. The record captures completed engineering facts, not agent dispatches, review-diff bodies, or temporary debugging narration.
 
 After each phase commit, create or update both the Phase Completion Record and the milestone `progress.md`. The completion record contains phase detail; `progress.md` is a concise milestone index with phase status, commit, record link, current phase, next incomplete phase, and milestone-level reconciliation items. Neither document redefines requirements, architecture, or sequencing.
+
+`progress.md` does not replace a Phase Completion Record, record detailed implementation, or define requirements or architecture.
 
 Do not generate Superpowers briefs, review diffs, rereview diffs, or agent execution reports by default. New architecture decisions belong in ADRs, requirement changes in OpenSpec, and sequencing changes in the canonical implementation plan.
 
