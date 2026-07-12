@@ -28,10 +28,10 @@ This is the Milestone 1 status index. It does not define requirements, architect
 | Field | Value |
 | --- | --- |
 | Milestone | Repository Context Foundation |
-| Completed through | Phase 7 |
-| Next incomplete phase | Phase 8 |
-| Overall state | Active; paused after Phase 7 acceptance |
-| Latest cumulative test result | Phase 1-7 unittest suite: 57 passed |
+| Completed through | Phase 8 |
+| Next incomplete phase | None |
+| Overall state | Implementation complete; awaiting Milestone 1 closure confirmation |
+| Latest cumulative test result | Phase 1-8 unittest suite: 63 passed |
 
 ## Phase Index
 
@@ -44,7 +44,7 @@ This is the Milestone 1 status index. It does not define requirements, architect
 | 5 | Matcher, Ranking, and Evidence | Accepted | `aba1e3dd59e14e029a1e78f5f9e0bf5efb63d240` | [Phase 5 record](phase-5-matcher-ranking-evidence.md) |
 | 6 | Result Envelope and Service | Accepted | `d43e2e56cf3feac17209d8c4e5c9b82049c2986f` | [Phase 6 record](phase-6-result-envelope-service.md) |
 | 7 | Acceptance Tests | Accepted | `2744b25dbddcda955892a79b0011940455b113b7` | [Phase 7 record](phase-7-acceptance-tests.md) |
-| 8 | Hardening | Pending |  | Not created |
+| 8 | Hardening | Accepted | `362d626bb7feae55fab0f5e8df79f8fd8f10aa9c` | [Phase 8 record](phase-8-hardening.md) |
 
 ## Reconciliation Items
 
@@ -68,3 +68,5 @@ This is the Milestone 1 status index. It does not define requirements, architect
   advanced the next incomplete phase to Phase 7.
 - 2026-07-12: Accepted Phase 7 end-to-end acceptance coverage; advanced the
   next incomplete phase to Phase 8.
+- 2026-07-12: Accepted Phase 8 hardening; all Milestone 1 implementation
+  phases are complete.
