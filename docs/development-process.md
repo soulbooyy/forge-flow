@@ -94,6 +94,19 @@ Implementation Plan. The plan is the sole authority for execution order and
 must define milestone scope, phase ordering, dependencies, expected file
 changes, TDD strategy, and phase acceptance criteria.
 
+For each milestone entering implementation, first use Superpowers or an
+equivalent AI-assisted workflow to generate a draft implementation plan. Review
+the draft against the accepted OpenSpec, relevant RFCs, and accepted ADRs before
+writing the canonical plan. The review must reconcile phase boundaries,
+dependencies, scope exclusions, TDD strategy, and acceptance criteria; when a
+draft conflicts with repository authority, repository authority prevails and the
+conflict is resolved in the canonical plan.
+
+The resulting canonical plan may use useful execution detail from the draft,
+but it is the only plan that later phases may treat as authoritative. The draft
+may be retained as non-canonical planning evidence and must not create a second
+plan that requires synchronization.
+
 Implementation phases must come from the canonical plan. Chat prompts do not
 redefine a phase's scope, interface, file list, or acceptance criteria.
 
@@ -146,6 +159,10 @@ help with task decomposition, implementation planning, or review assistance,
 but they are not authoritative sources. They must not define architecture,
 requirements, or acceptance criteria. Repository documentation remains the
 source of truth.
+
+An AI-generated draft plan is a planning input, not a replacement for the
+canonical Implementation Plan. Its role is to improve completeness and
+executability before the canonical plan is written and reviewed.
 
 ### 4.9 Recommended Development Flow
 

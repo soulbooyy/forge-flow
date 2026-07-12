@@ -80,6 +80,10 @@ Specification 以相关 RFC 和已接受 ADR 为输入，并产出 OpenSpec chan
 
 Planning 以已接受的 OpenSpec change 为输入，并产出 canonical Implementation Plan。该 plan 是执行顺序的唯一权威来源，必须定义 milestone scope、phase ordering、dependencies、expected file changes、TDD strategy 和 phase acceptance criteria。
 
+每个即将进入 Implementation 的 Milestone，必须先使用 Superpowers 或等价的 AI-assisted workflow 生成 draft implementation plan。写入 canonical plan 前，必须将该 draft 与已接受 OpenSpec、相关 RFC 和已接受 ADR 对照审查。审查必须协调 phase boundaries、dependencies、scope exclusions、TDD strategy 和 acceptance criteria；当 draft 与仓库权威文档冲突时，以仓库权威文档为准，并在 canonical plan 中解决冲突。
+
+最终的 canonical plan 可以吸收 draft 中有价值的执行细节，但它是后续 Phase 唯一可视为权威的 plan。draft 可以作为 non-canonical planning evidence 保留，但不得形成第二份需要同步的 plan。
+
 Implementation Phase 必须来自 canonical plan。聊天提示词不得重新定义 Phase 的 scope、interface、file list 或 acceptance criteria。
 
 ### 4.5 Implementation
@@ -124,6 +128,8 @@ Vision
 ### 4.8 AI-assisted Development Tools
 
 Superpowers 和其他 AI-assisted development tools 是执行辅助工具。它们可以用于 task decomposition、implementation planning 或 review assistance，但不是权威来源。它们不得定义 architecture、requirements 或 acceptance criteria。仓库文档仍是 source of truth。
+
+AI 生成的 draft plan 是 Planning 输入，不替代 canonical Implementation Plan。它的作用是在 canonical plan 编写和审查前提高完整性与可执行性。
 
 ### 4.9 推荐开发流程
 
