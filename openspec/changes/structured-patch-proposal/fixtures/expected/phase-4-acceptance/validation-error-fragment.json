@@ -1,0 +1,14 @@
+{
+  "completion_status": "validation_error",
+  "error_code": "raw_payload_forbidden",
+  "error_id": "ppe_sha256:e028f47c29479ee54ffa68e38f0ac0fac31341fad8c4a85db9cd83a7f0542e76",
+  "input_category": "proposal_draft",
+  "message": "fixture draft contains a forbidden payload field",
+  "result_type": "patch_proposal_validation_error",
+  "schema_version": "patch-proposal-validation-error/v1",
+  "summary": {
+    "policy_profile_id": "patch-proposal/m2-conservative-v1",
+    "repository_context_contract_id": "rcr_sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "task_ref": "M2-004"
+  }
+}

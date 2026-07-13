@@ -14,8 +14,11 @@ diff, command, test, Git, PR, network, or memory capability.
 - [ADR-007: Provider-Neutral Deterministic Fixture Synthesis](../../../adr/ADR-007-use-provider-neutral-deterministic-fixture-synthesis-for-m2.md)
 - [Canonical implementation plan](implementation-plan.md)
 - [Progress](progress.md)
+- [Retrospective](../../../retrospectives/m2-structured-patchproposal.md)
 
 ## Phase Completion Records
 
-No implementation phase has completed. Records are created under `phases/`
-only after an accepted phase commit.
+- [Phase 1: Contract Foundation and Fixtures](phases/phase-1-contract-foundation-and-fixtures.md)
+- [Phase 2: Patch-Boundary Assessment Adapter](phases/phase-2-patch-boundary-assessment-adapter.md)
+- [Phase 3: Deterministic Fixture Proposal-Source Adapter](phases/phase-3-deterministic-fixture-proposal-source-adapter.md)
+- [Phase 4: Acceptance and Hardening](phases/phase-4-acceptance-and-hardening.md)

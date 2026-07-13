@@ -14,9 +14,10 @@
 
 ## Implementation
 
-Implementation is blocked pending explicit authorization to start canonical
-Phase 1; the architecture readiness gate is closed.
+Implementation completed through all four accepted canonical phases. The
+architecture readiness gate remains closed to any scope beyond this accepted
+fixture-only change.
 
-- [ ] Add contract and validation-envelope tests before production code.
-- [ ] Implement only the accepted canonical-plan phases using lightweight execution.
-- [ ] Record phase completion, update milestone progress, and verify scope after each phase.
+- [x] Add contract and validation-envelope tests before production code.
+- [x] Implement only the accepted canonical-plan phases using lightweight execution.
+- [x] Record phase completion, update milestone progress, and verify scope after each phase.

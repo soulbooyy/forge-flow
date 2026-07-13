@@ -24,8 +24,8 @@ ForgeFlow is not a general coding assistant, chatbot, or toy agent demo. It is i
 ForgeFlow is currently in:
 
 ```text
-Current phase: Milestone 1 closure complete
-Next stage: architecture and specification preparation for Milestone 2
+Current phase: Milestone 2 closure complete
+Next stage: architecture and specification preparation for Milestone 3
 ```
 
 The project foundation documentation, accepted architecture baseline, DeerFlow
@@ -39,6 +39,14 @@ descriptive test command hints. It did not generate patches, edit code, create
 pull requests, or run an autonomous repair loop. See the [Milestone 1 progress
 index](docs/milestones/m1-repository-context-foundation/progress.md) and
 [retrospective](retrospectives/milestone-1-repository-context-foundation.md).
+
+Milestone 2 added a deterministic, fixture-only `PatchProposal` contract that
+binds bounded root-cause and candidate-change intent to M1 evidence and the
+versioned conservative policy profile. It produces declarative proposals or
+safe validation envelopes only; it does not call a provider, create a diff,
+read or mutate a workspace, run commands/tests, or perform Git/PR actions. See
+the [Milestone 2 progress index](docs/milestones/m2-structured-patchproposal/progress.md)
+and [retrospective](retrospectives/m2-structured-patchproposal.md).
 
 The later MVP is the GitHub Issue to Draft PR vertical slice:
 
@@ -70,7 +78,7 @@ ForgeFlow uses three levels of architecture and delivery documentation:
 
 - RFCs are used for architecture proposals and review.
 - ADRs are used for accepted architecture decisions.
-- OpenSpec will be used for feature-level implementation specifications.
+- OpenSpec defines feature-level implementation specifications.
 
 Core RFCs:
 
@@ -99,7 +107,7 @@ The project should not move from architecture to implementation until the releva
 
 ## Next Steps
 
-1. Review the Milestone 1 retrospective and closure evidence.
-2. Establish the architecture and OpenSpec scope for Milestone 2.
-3. Keep patch generation, validation execution, and PR behavior outside work
-   until their own contracts and governance are accepted.
+1. Review the Milestone 2 retrospective and closure evidence.
+2. Establish the architecture and OpenSpec scope for Milestone 3.
+3. Keep provider integration, code mutation, validation execution, and PR
+   behavior outside work until their own contracts and governance are accepted.

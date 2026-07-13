@@ -14,13 +14,14 @@ RFCs/ADRs, or the canonical implementation plan.
 - [RFC-004](../../../rfcs/RFC-004-sandbox-and-security-governance.md)
 - [Accepted ADRs](../../../adr/README.md)
 - [Implementation execution](../../process/implementation-execution.md)
+- [Milestone 2 retrospective](../../../retrospectives/m2-structured-patchproposal.md)
 
 ## Execution Environment
 
 | Field | Value |
 | --- | --- |
-| Branch | Pending assignment; expected `feature/m2-structured-patchproposal` |
-| Worktree | Pending assignment; expected `.worktrees/m2-structured-patchproposal` |
+| Branch | `feature/m2-structured-patchproposal` |
+| Worktree | `.worktrees/m2-structured-patchproposal` |
 | Execution mode | Lightweight Implementation Execution |
 
 ## Current Status
@@ -28,19 +29,19 @@ RFCs/ADRs, or the canonical implementation plan.
 | Field | Value |
 | --- | --- |
 | Milestone | Structured PatchProposal Slice |
-| State | Planning complete; Phase 1 authorized, pending execution-environment assignment |
-| Completed through | No implementation phase |
-| Next phase | Phase 1 — Contract Foundation and Fixtures |
-| Implementation authorization | Phase 1 is authorized but blocked until its branch/worktree assignment is recorded |
+| State | Completed; closure verification recorded |
+| Completed through | Phase 4 — Acceptance and Hardening |
+| Next phase | None |
+| Implementation authorization | No further M2 implementation is authorized; closure recorded |
 
 ## Phase Index
 
 | Phase | Name | Status | Commit | Completion Record |
 | --- | --- | --- | --- | --- |
-| 1 | Contract Foundation and Fixtures | Blocked by execution-environment assignment | None | None |
-| 2 | Patch-Boundary Assessment Adapter | Blocked by Phase 1 | None | None |
-| 3 | Deterministic Fixture Proposal-Source Adapter | Blocked by Phase 2 | None | None |
-| 4 | Acceptance and Hardening | Blocked by Phases 1–3 | None | None |
+| 1 | Contract Foundation and Fixtures | Accepted | `968da29` | [Phase 1 record](phases/phase-1-contract-foundation-and-fixtures.md) |
+| 2 | Patch-Boundary Assessment Adapter | Accepted | `6f1f6e3` | [Phase 2 record](phases/phase-2-patch-boundary-assessment-adapter.md) |
+| 3 | Deterministic Fixture Proposal-Source Adapter | Accepted | `669f861` | [Phase 3 record](phases/phase-3-deterministic-fixture-proposal-source-adapter.md) |
+| 4 | Acceptance and Hardening | Accepted | `cb7caa6` | [Phase 4 record](phases/phase-4-acceptance-and-hardening.md) |
 
 ## Change Log
 
@@ -51,3 +52,23 @@ RFCs/ADRs, or the canonical implementation plan.
   phase has started.
 - 2026-07-13: Phase 1 authorization was received, but implementation remains
   blocked until the required milestone branch/worktree is assigned and recorded.
+- 2026-07-13: Assigned `feature/m2-structured-patchproposal` and
+  `.worktrees/m2-structured-patchproposal`; baseline verification passed with
+  63 `unittest` tests. No Phase 1 implementation has started.
+- 2026-07-13: Accepted Phase 1 contract foundation and fixtures in `968da29`.
+  Targeted contract/canonical tests passed 11/11; cumulative suite passed
+  74/74. No Phase 2 implementation has started.
+- 2026-07-13: Accepted Phase 2 patch-boundary assessment in `6f1f6e3`.
+  Targeted policy tests passed 10/10; cumulative suite passed 84/84. No Phase
+  3 implementation has started.
+- 2026-07-14: Accepted Phase 3 deterministic fixture proposal-source adapter
+  in `669f861`, following the fixture-draft boundary supplement in `5017382`.
+  Targeted source/service tests passed 8/8; cumulative suite passed 92/92. No
+  Phase 4 implementation has started.
+- 2026-07-14: Accepted Phase 4 acceptance and hardening in `cb7caa6`.
+  Targeted public-service acceptance tests passed 6/6; strict OpenSpec
+  validation passed; the static prohibited-import search returned no matches;
+  and the cumulative suite passed 98/98. M2 implementation is complete;
+  milestone closure activities remain separately authorized.
+- 2026-07-14: Completed M2 closure verification, reconciled OpenSpec task
+  status and project-level navigation, and recorded the milestone retrospective.

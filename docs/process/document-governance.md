@@ -10,7 +10,7 @@
 | `rfcs/` | Major architecture decisions such as Agent Architecture, State Model, Tool/MCP Integration, Sandbox Governance, Evaluation Framework, and DeerFlow Extension Strategy. |
 | `openspec/` or `specs/changes/` | Feature-level specifications such as Repository Context Service, PatchProposal generation, Validation workflow, ReviewResult generation, and Draft PR creation. |
 | `adr/` | Accepted architecture decision records, usually created after RFC discussion reaches a decision. |
-| `docs/_history/ai-assisted/implementation-plans/` | Versioned, non-canonical detailed draft plans generated with Superpowers `writing-plans` after architecture and specification inputs are ready. |
+| `docs/_history/ai-assisted/implementation-plans/` | Versioned, non-canonical detailed AI-assisted draft plans created after architecture and specification inputs are ready. Superpowers `writing-plans` is recommended, not required. |
 | `docs/templates/` | Reusable lifecycle-document templates. They fix document responsibilities and required structure, not milestone-specific conclusions. |
 | `openspec/templates/change/` | Reusable feature-change templates for OpenSpec proposal, design, tasks, and specification documents. |
 | `docs/milestones/<milestone-directory-slug>/implementation-plan.md` | Canonical implementation sequence, file-level work, dependencies, TDD steps, and phase acceptance conditions. |
@@ -88,11 +88,12 @@ is created after milestone closure at
 `retrospectives/m<NUMBER>-<milestone-topic-slug>.md`.
 
 Before creating a canonical implementation plan, create one detailed
-AI-assisted draft plan using Superpowers `writing-plans` and retain it at
+AI-assisted draft plan and retain it at
 `docs/_history/ai-assisted/implementation-plans/YYYY-MM-DD-<milestone-topic-slug>.md`.
-It is historical planning evidence, not a second canonical plan. The canonical
-plan must explicitly reconcile the draft with the accepted OpenSpec, relevant
-RFCs, and accepted ADRs.
+Superpowers `writing-plans` is the recommended aid; an equivalent framework
+may produce the draft. It is historical planning evidence, not a second
+canonical plan. The canonical plan must explicitly reconcile the draft with
+the accepted OpenSpec, relevant RFCs, and accepted ADRs.
 
 Both the draft and canonical plan use `Phase 1`, `Phase 2`, and so on as their
 top-level execution structure. A phase is the unit of authorization, focused
@@ -123,7 +124,10 @@ After each phase commit, create or update both the Phase Completion Record and t
 
 `progress.md` does not replace a Phase Completion Record, record detailed implementation, or define requirements or architecture.
 
-Do not generate Superpowers briefs, review diffs, rereview diffs, or agent execution reports by default. New architecture decisions belong in ADRs, requirement changes in OpenSpec, and sequencing changes in the canonical implementation plan.
+Do not generate tool-specific briefs, review diffs, rereview diffs, or agent
+execution reports by default. New architecture decisions belong in ADRs,
+requirement changes in OpenSpec, and sequencing changes in the canonical
+implementation plan.
 
 After updating the completion record and progress index, provide a concise summary and stop for user confirmation. Do not automatically begin the next phase.
 
@@ -145,7 +149,7 @@ Use the following templates when their lifecycle condition is met:
 | Template | Lifecycle condition | Authority and purpose |
 |---|---|---|
 | `docs/templates/milestone/index.template.md` | Create when the canonical plan is established. | Milestone entry point and links only. |
-| `docs/templates/ai-assisted/implementation-draft.template.md` | Create after OpenSpec and any relevant accepted RFCs/ADRs are ready, before the canonical plan. | Non-authoritative Superpowers `writing-plans` evidence; must be reconciled. |
+| `docs/templates/ai-assisted/implementation-draft.template.md` | Create after OpenSpec and any relevant accepted RFCs/ADRs are ready, before the canonical plan. | Non-authoritative AI-assisted planning evidence; must be reconciled. |
 | `docs/templates/milestone/implementation-plan.template.md` | Create after draft review and reconciliation. | The one canonical execution plan. |
 | `docs/templates/milestone/progress.template.md` | Create with the canonical plan; update after every accepted phase. | Execution state only. |
 | `docs/templates/milestone/phase-completion-record.template.md` | Create only after an accepted phase commit. | Completed engineering facts for that phase. |
@@ -175,6 +179,9 @@ copying its content into the milestone directory.
 
 Instantiate templates manually for M2 and M3 and improve them only when actual
 use exposes a stable gap. Do not add document-generation scripts, scaffolding
-commands, or automatic synchronization during this validation period. Any
-future tooling must preserve the authority chain and must not make an
-AI-assisted draft authoritative.
+commands, or automatic synchronization during this validation period.
+Superpowers is a recommended, replaceable execution aid rather than a
+ForgeFlow architecture or governance dependency. Any future tooling must
+preserve the authority chain and must not make an AI-assisted draft
+authoritative; replacing an execution framework must not affect RFCs, ADRs,
+OpenSpec, the canonical plan, or milestone lifecycle records.

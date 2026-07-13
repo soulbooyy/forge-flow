@@ -84,3 +84,17 @@ Create one focused commit per phase. Before committing, run targeted tests, the 
 The default lightweight review is a self-review of the current diff, passing tests, and scope boundaries. Do not generate subagent briefs, review diffs, rereview diffs, or long checkpoint reports by default.
 
 Escalate to independent review when a change modifies a feature contract, security boundary, canonical identity algorithm, external dependency, or cross-platform security behavior; when it diverges from the canonical plan; or when explicitly requested by the user.
+
+### 1.8 Execution-Assistance Boundary
+
+Superpowers is a recommended execution-assistance framework. It may help apply
+the existing plan through TDD, verification, focused review, and other
+engineering discipline, but it is not a ForgeFlow architecture dependency or a
+required implementation framework. An equivalent framework or disciplined
+manual practice may replace it.
+
+The Lightweight Implementation Execution rules above remain mandatory
+regardless of the assistant or framework selected. Tool choice must not change
+the authority of RFCs, ADRs, OpenSpec, the canonical implementation plan, or
+the milestone lifecycle; it must not create a runtime, package, provider, or
+repository dependency on the selected tool.

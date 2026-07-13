@@ -77,3 +77,15 @@ Phase 被接受后才创建其 Completion Record；文件名必须来自 canonic
 默认轻量审查为当前 diff、通过的测试和范围边界的 self-review。默认不生成 subagent brief、review diff、rereview diff 或长篇 checkpoint report。
 
 当修改 feature contract、安全边界、canonical identity algorithm、外部依赖或跨平台安全行为；偏离 canonical plan；或用户明确要求 review 时，必须升级为独立审查。
+
+### 1.8 执行辅助边界
+
+Superpowers 是推荐使用的实施执行辅助框架。它可以通过 TDD、verification、聚焦
+review 及其他工程纪律帮助执行既有计划，但它不是 ForgeFlow 的架构依赖，也不是
+强制使用的 implementation framework。可以使用等价的执行框架或遵守相同纪律的
+手工实践替代它。
+
+无论选择何种 assistant 或 framework，上述 Lightweight Implementation Execution
+规则仍然强制有效。工具选择不得改变 RFC、ADR、OpenSpec、canonical
+implementation plan 或 milestone lifecycle 的权威性；也不得使所选工具成为运行时、
+package、provider 或 repository 依赖。
