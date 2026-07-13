@@ -38,7 +38,7 @@ The long-term vision is autonomous software maintenance. The first implementatio
 |---|---|---|---|---|---|
 | Milestone 0 | Project Foundation | Establish project boundaries, documentation system, RFC roadmap, and scope corrections. | Foundation documents, RFC roadmap, and initial ADRs. | Near Complete | Initial architecture draft |
 | Milestone 1 | Repository Context Foundation Slice | Build the first deterministic repository context capability. | Repository Context Service OpenSpec and `RepositoryContextResult`. | Completed | Milestone 0, RFC-001/002/004/007 skeleton decisions |
-| Milestone 2 | Structured PatchProposal Slice | Produce evidence-backed patch intent from repository context. | `PatchProposal` contract and governed patch proposal flow. | Phase 0 accepted; Phase 1 pending | Milestone 1, RFC-002/003/004 |
+| Milestone 2 | Structured PatchProposal Slice | Produce evidence-backed patch intent from repository context. | Fixture-only `PatchProposal` contract and governed policy boundary. | Completed | Milestone 1, RFC-002/003/004 |
 | Milestone 3 | Validation and Review Slice | Validate patches and produce blocking-level review results. | `ValidationResult`, `ReviewResult`, bounded retry policy. | Planned | Milestone 2, RFC-004/005/006 |
 | Milestone 4 | Draft PR MVP Vertical Slice | Complete the first GitHub Issue to Draft PR MVP path. | Controlled draft PR from a fixture or test repository. | Planned | Milestone 3, GitHub/tool policy decisions |
 | Milestone 5 | Evaluation and Observability Hardening | Strengthen trace, run summary, redaction, and evaluation. | Reliable eval metrics and product-level run summaries. | Planned | Milestone 4 |
@@ -133,22 +133,27 @@ Exit criteria:
 
 ## 6. Milestone 2: Structured PatchProposal Slice
 
+Status: completed. The implementation and closure evidence are recorded in the
+[Milestone 2 progress index](../../milestones/m2-structured-patchproposal/progress.md)
+and [retrospective](../../../retrospectives/m2-structured-patchproposal.md).
+
 Goal: use Repository Context to produce a structured `PatchProposal` that represents minimal code-change intent for later automated repair workflows.
 
 Scope:
 
 - define `PatchProposal` contract
 - use `RepositoryContextResult` as input
-- generate root cause hypothesis
-- generate fix strategy
-- identify candidate changed files
-- produce structured patch intent
-- optionally produce diff in sandbox through governed tools
+- derive deterministic fixture root-cause hypotheses and a fix strategy
+- identify bounded candidate changed files
+- produce structured, declarative patch intent without a diff
 - enforce patch boundary policy
 - record risk flags and evidence references
 
 Exclusions:
 
+- real LLM, MCP, DeerFlow runtime, or other provider integration
+- source-code edits, diff generation, sandbox mutation, command execution, or
+  test execution
 - full autonomous repair loop
 - PR creation
 - automatic merge
@@ -392,8 +397,8 @@ Current milestone:
 
 ```text
 Milestone 2: Structured PatchProposal Slice
-Status: Phase 0 accepted; Phase 1 not started
-Next phase: Contract Foundation and Fixtures on explicit authorization
+Status: Completed; closure verification recorded
+Next stage: architecture and specification preparation for Milestone 3
 ```
 
 Completed:
@@ -408,9 +413,12 @@ Completed:
 - DeerFlow extension-point assessment completed.
 - Initial ADRs recorded.
 - Milestone 1 and full MVP boundary clarified.
+- Milestone 2 fixture-only PatchProposal contract and conservative policy
+  boundary completed and closure-verified.
 
 Next steps:
 
-- execute Phase 1 only when explicitly authorized by the maintainer
-- keep M2 limited to the accepted deterministic fixture source and conservative policy profile
-- do not introduce a real provider, MCP, DeerFlow runtime, sandbox edit, diff, command, test, Git, or PR behavior without a new accepted OpenSpec
+- retain M2's fixture-only contract and conservative policy profile as the
+  dependency boundary for Milestone 3
+- do not introduce a real provider, MCP, DeerFlow runtime, sandbox edit, diff,
+  command, test, Git, or PR behavior without a new accepted OpenSpec

@@ -14,6 +14,7 @@ RFCs/ADRs, or the canonical implementation plan.
 - [RFC-004](../../../rfcs/RFC-004-sandbox-and-security-governance.md)
 - [Accepted ADRs](../../../adr/README.md)
 - [Implementation execution](../../process/implementation-execution.md)
+- [Milestone 2 retrospective](../../../retrospectives/m2-structured-patchproposal.md)
 
 ## Execution Environment
 
@@ -28,10 +29,10 @@ RFCs/ADRs, or the canonical implementation plan.
 | Field | Value |
 | --- | --- |
 | Milestone | Structured PatchProposal Slice |
-| State | M2 implementation complete; awaiting milestone closure activities |
+| State | Completed; closure verification recorded |
 | Completed through | Phase 4 — Acceptance and Hardening |
 | Next phase | None |
-| Implementation authorization | No further M2 implementation is authorized |
+| Implementation authorization | No further M2 implementation is authorized; closure recorded |
 
 ## Phase Index
 
@@ -69,3 +70,5 @@ RFCs/ADRs, or the canonical implementation plan.
   validation passed; the static prohibited-import search returned no matches;
   and the cumulative suite passed 98/98. M2 implementation is complete;
   milestone closure activities remain separately authorized.
+- 2026-07-14: Completed M2 closure verification, reconciled OpenSpec task
+  status and project-level navigation, and recorded the milestone retrospective.

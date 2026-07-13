@@ -14,6 +14,7 @@ diff, command, test, Git, PR, network, or memory capability.
 - [ADR-007: Provider-Neutral Deterministic Fixture Synthesis](../../../adr/ADR-007-use-provider-neutral-deterministic-fixture-synthesis-for-m2.md)
 - [Canonical implementation plan](implementation-plan.md)
 - [Progress](progress.md)
+- [Retrospective](../../../retrospectives/m2-structured-patchproposal.md)
 
 ## Phase Completion Records
 
