@@ -28,10 +28,10 @@ RFCs/ADRs, or the canonical implementation plan.
 | Field | Value |
 | --- | --- |
 | Milestone | Structured PatchProposal Slice |
-| State | Phase 3 accepted; awaiting Phase 4 authorization |
-| Completed through | Phase 3 — Deterministic Fixture Proposal-Source Adapter |
-| Next phase | Phase 4 — Acceptance and Hardening |
-| Implementation authorization | Phase 4 requires explicit authorization before it starts |
+| State | M2 implementation complete; awaiting milestone closure activities |
+| Completed through | Phase 4 — Acceptance and Hardening |
+| Next phase | None |
+| Implementation authorization | No further M2 implementation is authorized |
 
 ## Phase Index
 
@@ -40,7 +40,7 @@ RFCs/ADRs, or the canonical implementation plan.
 | 1 | Contract Foundation and Fixtures | Accepted | `968da29` | [Phase 1 record](phases/phase-1-contract-foundation-and-fixtures.md) |
 | 2 | Patch-Boundary Assessment Adapter | Accepted | `6f1f6e3` | [Phase 2 record](phases/phase-2-patch-boundary-assessment-adapter.md) |
 | 3 | Deterministic Fixture Proposal-Source Adapter | Accepted | `669f861` | [Phase 3 record](phases/phase-3-deterministic-fixture-proposal-source-adapter.md) |
-| 4 | Acceptance and Hardening | Pending explicit start | None | None |
+| 4 | Acceptance and Hardening | Accepted | `cb7caa6` | [Phase 4 record](phases/phase-4-acceptance-and-hardening.md) |
 
 ## Change Log
 
@@ -64,3 +64,8 @@ RFCs/ADRs, or the canonical implementation plan.
   in `669f861`, following the fixture-draft boundary supplement in `5017382`.
   Targeted source/service tests passed 8/8; cumulative suite passed 92/92. No
   Phase 4 implementation has started.
+- 2026-07-14: Accepted Phase 4 acceptance and hardening in `cb7caa6`.
+  Targeted public-service acceptance tests passed 6/6; strict OpenSpec
+  validation passed; the static prohibited-import search returned no matches;
+  and the cumulative suite passed 98/98. M2 implementation is complete;
+  milestone closure activities remain separately authorized.
