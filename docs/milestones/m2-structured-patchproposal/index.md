@@ -19,3 +19,4 @@ diff, command, test, Git, PR, network, or memory capability.
 
 - [Phase 1: Contract Foundation and Fixtures](phases/phase-1-contract-foundation-and-fixtures.md)
 - [Phase 2: Patch-Boundary Assessment Adapter](phases/phase-2-patch-boundary-assessment-adapter.md)
+- [Phase 3: Deterministic Fixture Proposal-Source Adapter](phases/phase-3-deterministic-fixture-proposal-source-adapter.md)
