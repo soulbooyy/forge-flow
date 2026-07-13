@@ -19,25 +19,25 @@ RFCs/ADRs, or the canonical implementation plan.
 
 | Field | Value |
 | --- | --- |
-| Branch | Unassigned; creation is not authorized before Phase 1 authorization. |
-| Worktree | Unassigned; creation is not authorized before Phase 1 authorization. |
-| Execution mode | Lightweight Implementation Execution, once assigned. |
+| Branch | `feature/m3-validation-review-slice` |
+| Worktree | `.worktrees/m3-validation-review-slice` |
+| Execution mode | Lightweight Implementation Execution |
 
 ## Current Status
 
 | Field | Value |
 | --- | --- |
 | Milestone | Validation and Review Slice |
-| State | Planning complete; implementation has not started. |
-| Completed through | None |
-| Next phase | Phase 1 — Contract Foundation and Canonical Fixtures |
-| Implementation authorization | Not authorized; branch/worktree assignment and explicit Phase 1 authorization are required. |
+| State | Phase 1 accepted; implementation paused. |
+| Completed through | Phase 1 — Contract Foundation and Canonical Fixtures |
+| Next phase | Phase 2 — Deterministic Policy and Attempt Fixtures |
+| Implementation authorization | Phase 2 and later phases are not authorized. |
 
 ## Phase Index
 
 | Phase | Name | Status | Commit | Completion Record |
 | --- | --- | --- | --- | --- |
-| 1 | Contract Foundation and Canonical Fixtures | Not started | — | — |
+| 1 | Contract Foundation and Canonical Fixtures | Accepted | `d7b84f6` | [Phase 1 record](phases/phase-1-contract-foundation-and-canonical-fixtures.md) |
 | 2 | Deterministic Policy and Attempt Fixtures | Not started | — | — |
 | 3 | Validation and Review Assembly Service | Not started | — | — |
 | 4 | Acceptance and Hardening | Not started | — | — |
@@ -47,3 +47,10 @@ RFCs/ADRs, or the canonical implementation plan.
 - 2026-07-14: Completed M3 architecture, OpenSpec, Grill-Me review, AI-assisted
   draft-plan reconciliation, and canonical planning. No branch, worktree, or
   implementation phase is authorized.
+- 2026-07-14: Assigned `feature/m3-validation-review-slice` and
+  `.worktrees/m3-validation-review-slice`. Phase 1 is authorized; no Phase 1
+  implementation has been accepted.
+- 2026-07-14: Accepted Phase 1 contract foundation in `d7b84f6`. Targeted
+  contract/canonical tests passed 7/7; the cumulative suite passed 105/105;
+  strict OpenSpec validation and static side-effect checks passed. Phase 2 is
+  not authorized.
