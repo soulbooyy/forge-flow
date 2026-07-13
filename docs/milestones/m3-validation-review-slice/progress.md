@@ -54,3 +54,8 @@ RFCs/ADRs, or the canonical implementation plan.
   contract/canonical tests passed 7/7; the cumulative suite passed 105/105;
   strict OpenSpec validation and static side-effect checks passed. Phase 2 is
   not authorized.
+- 2026-07-14: Independent review identified an outcome-restricting review PDR
+  check and missing fixture-lock coverage. Corrected them in `fee0d30`;
+  targeted tests passed 9/9, the cumulative suite passed 107/107, and the
+  follow-up independent review found no remaining issue. Phase 2 remains
+  unauthorized.

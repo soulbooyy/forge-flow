@@ -77,6 +77,12 @@ references only; they contain no raw payloads.
 - Static boundary verification found no `subprocess`, network, or filesystem
   execution imports in `src/forgeflow/validation_review`.
 - Specification and diff verification: `openspec validate validation-review-slice --strict` and `git diff --check` passed.
+- Independent-review correction: added RED coverage proving that a review may
+  reference `blocked` or `requires_human_approval` policy outcomes, then
+  removed the incorrect `allowed`-only restriction while retaining subject
+  lineage. Added complete fixture reconstruction and identity assertions for
+  all four expected JSON fragments. The targeted suite passed 9/9 and the
+  cumulative suite passed 107/107 after the correction.
 
 ## 7. Important Fixes and Edge Cases
 
@@ -87,18 +93,27 @@ references only; they contain no raw payloads.
   policy record.
 - Canonical serialization preserves ordered tuples and rejects floats rather
   than silently coercing identity inputs.
+- Review outcome remains policy-owned: `ReviewResult` validates that a PDR
+  references its validation-result lineage but does not prescribe the PDR
+  decision.
+- Expected fixture JSON is now reconstructed into typed contracts and checked
+  against both complete payload shape and recomputed identities.
 
 ## 8. Commit
 
 - Full commit hash: `d7b84f66d60205ac0346fb0058827b39f437cc8b`
 - Commit message: `feat(validation-review): add contract foundation`
+- Follow-up correction commit: `fee0d30320200996bf26a9af9ce6123db5d67489`
+  (`fix(validation-review): preserve review policy lineage`)
 
 ## 9. Acceptance
 
 The targeted tests verified immutable/slotted models, envelope separation,
 controlled values, terminal-policy compatibility, forbidden execution fields,
-and deterministic identities. The full suite passed 105 tests. Expected
-fixtures use computed canonical IDs, not placeholders.
+and deterministic identities. Independent review corrected review-policy
+lineage and added fixture locking. The full suite passed 107 tests. Expected
+fixtures use computed canonical IDs and are checked against reconstructed
+contracts, not placeholders.
 
 Status: **Accepted**.
 
