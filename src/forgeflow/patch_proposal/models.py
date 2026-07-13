@@ -113,6 +113,34 @@ class CandidateChange:
 
 
 @dataclass(frozen=True, slots=True)
+class FixtureRootCauseDraft:
+    """Transient fixture-only root-cause intent before contract validation."""
+
+    statement: str
+    uncertainty: str
+    supporting_evidence_ref_ids: tuple[str, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class FixtureCandidateChangeDraft:
+    """Transient fixture-only candidate intent before contract validation."""
+
+    path: str
+    change_kind: str
+    rationale: str
+    supporting_evidence_ref_ids: tuple[str, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class FixtureProposalDraft:
+    """Transient, provider-neutral M2 fixture intent with no policy authority."""
+
+    root_cause_hypotheses: tuple[FixtureRootCauseDraft, ...]
+    fix_strategy_summary: str
+    candidate_changes: tuple[FixtureCandidateChangeDraft, ...]
+
+
+@dataclass(frozen=True, slots=True)
 class PolicyDecisionRef:
     decision_id: str
     decision: PolicyDecision
