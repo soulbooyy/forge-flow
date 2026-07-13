@@ -1,0 +1,21 @@
+# Change: <CHANGE_NAME>
+
+## Why
+
+<PROBLEM_AND_VALUE>
+
+## Scope
+
+- <IN_SCOPE_BEHAVIOR>
+
+## Non-goals
+
+- <EXCLUDED_BEHAVIOR>
+
+## Architecture Readiness Gate
+
+<RELEVANT_RFCS_ADRS_AND_UNRESOLVED_DECISIONS>
+
+## Impact
+
+<CONTRACT_SYSTEM_OR_ROADMAP_IMPACT>

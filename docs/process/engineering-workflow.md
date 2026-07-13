@@ -80,7 +80,8 @@ changes, TDD strategy, and phase acceptance criteria.
 For each milestone entering implementation, first use the Superpowers
 `writing-plans` skill to generate a detailed draft implementation plan after
 the OpenSpec, relevant RFCs, and accepted ADRs are ready. Store the draft at
-`docs/_history/ai-assisted/implementation-plans/YYYY-MM-DD-<milestone-slug>.md`.
+`docs/_history/ai-assisted/implementation-plans/YYYY-MM-DD-<milestone-topic-slug>.md`,
+where the topic slug excludes the `m<NUMBER>-` directory prefix.
 The draft must identify phase order, dependencies, expected file changes, TDD
 steps, verification, and phase acceptance conditions.
 
@@ -90,7 +91,8 @@ boundaries, dependencies, scope exclusions, TDD strategy, and acceptance
 criteria; when a draft conflicts with repository authority, repository
 authority prevails and the conflict is resolved in the canonical plan.
 
-The resulting canonical plan may use useful execution detail from the draft,
+Both plans use phases as their top-level execution structure; tasks or steps
+are subordinate work items within a phase. The resulting canonical plan may use useful execution detail from the draft,
 but it is the only plan that later phases may treat as authoritative. The
 AI-assisted draft remains non-canonical planning evidence in `_history`; it
 must not create a second plan that requires synchronization.

@@ -66,7 +66,8 @@ Planning 以已接受的 OpenSpec change 为输入，并产出 canonical Impleme
 每个即将进入 Implementation 的 Milestone，在 OpenSpec、相关 RFC 和已接受 ADR
 完备后，必须先使用 Superpowers 的 `writing-plans` skill 生成详细的 draft
 implementation plan。draft 必须保存为
-`docs/_history/ai-assisted/implementation-plans/YYYY-MM-DD-<milestone-slug>.md`，
+`docs/_history/ai-assisted/implementation-plans/YYYY-MM-DD-<milestone-topic-slug>.md`，
+其中 topic slug 不含目录使用的 `m<NUMBER>-` 前缀，
 并明确 phase order、dependencies、expected file changes、TDD steps、verification
 和 phase acceptance conditions。
 
@@ -75,7 +76,8 @@ implementation plan。draft 必须保存为
 strategy 和 acceptance criteria；当 draft 与仓库权威文档冲突时，以仓库权威文档
 为准，并在 canonical plan 中解决冲突。
 
-最终的 canonical plan 可以吸收 draft 中有价值的执行细节，但它是后续 Phase
+draft 与 canonical plan 都必须以 Phase 作为一级执行结构；Task 或 step 只能是
+Phase 内部的工作项。最终的 canonical plan 可以吸收 draft 中有价值的执行细节，但它是后续 Phase
 唯一可视为权威的 plan。AI-assisted draft 作为 `_history` 中的 non-canonical
 planning evidence 保留，但不得形成第二份需要同步的 plan。
 
