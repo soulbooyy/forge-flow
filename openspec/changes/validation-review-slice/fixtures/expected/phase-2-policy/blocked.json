@@ -1,0 +1,1 @@
+{"decision":"blocked","decision_id":"pdr_sha256:4885ee5db152f4ff448e97e2c89d482e1dbfdfb1a3b923b9b33ae454a856788d","evaluator_id":"m3/deterministic-policy-fixture-v1","policy_profile_id":"validation-review/m3-fixture-v1","policy_version":1,"risk_flags":["blocked_by_policy"],"subject_contract_id":"pp_sha256:1111111111111111111111111111111111111111111111111111111111111111"}

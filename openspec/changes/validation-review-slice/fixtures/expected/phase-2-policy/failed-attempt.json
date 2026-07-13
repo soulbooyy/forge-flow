@@ -1,0 +1,1 @@
+{"artifact_ids":["artifact_sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"],"attempt_id":"m3a_sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd","case_id":"failed-default","evidence_ref_ids":["ev_sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"],"finding_codes":["fixture_assertion_failed"],"outcome":"failed"}
