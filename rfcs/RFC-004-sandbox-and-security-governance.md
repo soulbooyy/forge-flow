@@ -18,6 +18,9 @@ Review stage: Grill-Me feedback has been incorporated as current draft decisions
 - Every policy-evaluated action must produce a structured Policy Decision Record.
 - Secret scanning and redaction must happen before artifact persistence, commit creation, draft PR packaging, or external publication.
 - RFC-004 must define explicit RFC-001 Security Acceptance Criteria before it can unblock RFC-001 acceptance.
+- Milestone 3 uses deterministic fixtures or a fake executor only to verify
+  contract and policy-state transitions; it does not authorize real command
+  execution, sandbox operation, dependency installation, or retry runtime.
 
 ## Context
 
@@ -333,6 +336,49 @@ Blocked or approval-required examples include:
 - credential access commands
 
 This RFC gives command-policy direction, not an implementation parser.
+
+### Milestone 3 Validation and Review Readiness
+
+Milestone 3 may not interpret a `PatchProposal`, including a proposal's
+candidate paths or any future validation-command hint, as an executable
+instruction. If M3 introduces validation execution, each concrete command must
+first have a structured Command Intent and a fresh Policy Decision Record;
+neither a prior M2 boundary decision nor a `PatchProposal` policy reference is
+reusable execution authority.
+
+The following decisions remain open and must be resolved in this RFC, an
+accepted ADR where a durable choice is made, or an explicitly bounded M3
+OpenSpec before implementation begins:
+
+- the authoritative source and versioning model for allowed validation command
+  definitions;
+- the minimum sandbox boundary and executor identity, including workspace
+  lifecycle and isolation guarantees;
+- default network, dependency-installation, working-directory, and environment
+  policies for validation;
+- command allowlist/profile semantics, argument constraints, timeout, output,
+  and artifact-size limits;
+- redaction before command output or reports become evidence or persisted
+  artifacts, including artifact retention and access boundaries;
+- the policy outcome and terminal semantics for command denial, approval
+  requirement, timeout, cancellation, sandbox failure, parser failure, and
+  non-zero exit status; and
+- retry eligibility, caps, resource budgets, stop conditions, and human
+  approval escalation.
+
+Review remains an evidence-producing recommendation capability. A blocking
+review finding may inform a new Policy Decision Record or Human Approval
+Request, but it must not itself authorize a command, retry, commit, or PR
+action.
+
+For M3, fixture or fake-executor outputs are simulated attempt evidence only.
+They must remain deterministic, bounded, and side-effect-free, and they must
+not be mistaken for a sandbox implementation or an authorization path. M3
+policy fixtures may model both `blocked` and `requires_human_approval` review
+outcomes. `blocked` means the platform must not continue the modeled flow;
+`requires_human_approval` means the modeled flow is not eligible to continue
+without a separately governed approval decision. The governing policy profile
+selects between those outcomes.
 
 ## Path Policy
 

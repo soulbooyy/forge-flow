@@ -52,12 +52,35 @@ Because M2 invokes no DeerFlow or MCP execution mechanism, it does not depend
 on a DeerFlow tool-registry or middleware attachment point. Those concerns
 remain future integration decisions rather than assumed M2 behavior.
 
+## M3 Integration Boundary
+
+Milestone 3 extends the contract-first approach to `ValidationResult` and
+`ReviewResult`, artifact lineage, and policy-decision handoffs. It may use
+only deterministic fixtures or a fake executor to produce bounded simulated
+attempt facts. This is test infrastructure for ForgeFlow-owned contracts, not
+a command-execution capability.
+
+The M3 fixture or fake-executor boundary must not spawn a process, inspect or
+mutate a workspace, read repository configuration as authority, access a
+network, install dependencies, access credentials, invoke a provider, MCP
+server, or DeerFlow runtime, or create Git/PR side effects. Its transient
+inputs and outputs must not become raw durable contract payloads.
+
+Any future command execution requires a separate accepted OpenSpec. Its sole
+authorization source must be a versioned ForgeFlow policy profile; repository
+configuration may supply declarative hints such as a test-entry suggestion but
+cannot grant execution authority. That future change must define a governed
+executor, Command Intent, fresh Policy Decision Record, artifact/redaction
+handling, and failure semantics before it invokes a command.
+
 ## Non-goals
 
 - Selecting or integrating a production model provider.
 - Implementing MCP servers or adapters.
 - Defining sandbox technology.
 - Enabling filesystem mutation, test execution, Git, network, commits, or PRs.
+- Treating a deterministic fixture or fake executor as a sandbox or command
+  execution implementation.
 - Modifying DeerFlow core.
 
 ## Future Acceptance Preconditions

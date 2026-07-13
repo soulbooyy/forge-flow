@@ -15,6 +15,12 @@ Review stage: Grill-Me feedback has been incorporated as current draft decisions
 - `evidence_refs` must identify evidence location and verification metadata; raw source snippets must not be embedded by default.
 - Long-term Memory is entirely out of scope for Milestone 1, including both reads and writes.
 - RFC-002 must define minimum contract/state criteria required to unblock RFC-001 acceptance.
+- Milestone 3 is a contract-first, deterministic-fixture slice for
+  `ValidationResult`, `ReviewResult`, artifact lineage, and policy-decision
+  handoffs; it does not introduce real command execution or repair retries.
+- A future execution attempt is distinct from a validation or review contract;
+  retry policy belongs to future execution-runtime governance and must not
+  mutate an otherwise immutable validation contract.
 
 ## Context
 
@@ -418,6 +424,52 @@ It may include:
 Review recommends; policy decides.
 
 `ReviewResult` must not contain final authorization fields that bypass policy, such as treating `approved_for_pr` as sufficient for PR creation. Final PR eligibility belongs to workflow graph / policy middleware using `ReviewResult`, security policy, validation results, human approval state, and PR action policy.
+
+### Milestone 3 Contract Readiness
+
+Milestone 3 is the first proposed slice to make the `PatchProposal` handoff
+observable through validation and blocking-level review. Its contract work must
+preserve the M2 boundary: a `PatchProposal` is declarative, immutable, and
+non-authorizing. In particular, a candidate change, limitation code, or
+policy-decision reference in a proposal does not authorize command execution,
+workspace access, result persistence, retry, or a later side effect.
+
+Before a Milestone 3 OpenSpec can authorize implementation, this RFC and
+RFC-004 must resolve or explicitly constrain the following contract questions:
+
+- the tagged-envelope and schema-version boundaries for successful validation,
+  validation failure, review findings, and terminal stop outcomes;
+- which fields are contract facts, which are artifact or evidence references,
+  and the redaction, bounds, and retention rules for command output and parsed
+  reports;
+- identity and immutable lineage among `PatchProposal`, Command Intent, Policy
+  Decision Record, `ValidationResult`, `ReviewResult`, and a Durable Run
+  Summary;
+- the distinction among a command not being authorized, not being started,
+  being cancelled or timed out, failing in the sandbox, returning a non-zero
+  exit code, and producing output that cannot be safely parsed;
+- the blocking-review finding shape and its relationship to policy escalation,
+  without creating an authorization or PR-approval field; and
+- retry-lineage fields, while leaving retry budgets, eligibility, and
+  enforcement to RFC-004 policy and workflow runtime.
+
+These are architecture readiness questions, not permission for M3 execution
+or a default schema. The Milestone 3 OpenSpec must select only the decisions
+accepted through the relevant RFC or ADR authority.
+
+For M3, this readiness direction is now bounded as follows:
+
+- fixtures or a fake executor may produce only deterministic, bounded,
+  non-side-effecting attempt facts for contract and state-transition tests;
+- they must not spawn a process, inspect or mutate a workspace, access a
+  network, install dependencies, access credentials, or invoke a provider,
+  MCP server, DeerFlow runtime, Git, or PR integration;
+- a validation or review result records observed or simulated facts and their
+  evidence/artifact lineage; it cannot contain repair instructions or change
+  the referenced `PatchProposal`; and
+- retry is not an M3 capability. A future execution-runtime design may attach
+  bounded retry lineage to immutable attempt results, but it must define its
+  own policy and terminal semantics.
 
 ## PRResult
 

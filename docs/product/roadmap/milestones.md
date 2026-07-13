@@ -172,23 +172,27 @@ Exit criteria:
 
 ## 7. Milestone 3: Validation and Review Slice
 
-Goal: introduce `ValidationResult` and `ReviewResult` so ForgeFlow can test patches, explain failures, and perform blocking-level review.
+Goal: establish auditable, immutable `ValidationResult`, `ValidationTerminal`,
+and `ReviewResult` contracts so ForgeFlow can model validation facts, terminal
+governance, and blocking-level review before it introduces command execution.
 
 Scope:
 
 - define `ValidationResult` contract
+- define separate `ValidationTerminal` contract
 - define `ReviewResult` contract
-- run user-specified or recommended test commands
-- parse test results
-- explain validation failures
-- produce risk flags
-- detect blocking review issues
-- enforce bounded retry policy
-- escalate to human review when retry limit is reached
+- define artifact/evidence and Policy Decision Record lineage
+- use deterministic fixtures/fake executor inputs to model passed/failed
+  attempt facts, governance terminals, and review findings
+- detect fixture-mode blocking review issues and reference policy outcomes
 
 Exclusions:
 
 - infinite repair loop
+- real command execution, test execution, command parsing, or sandbox platform
+- workspace access/mutation, network, dynamic dependency installation, or
+  provider/DeerFlow runtime integration
+- retry policy or runtime retry enforcement
 - full CI integration
 - automatic production deployment
 - automatic merge
@@ -196,12 +200,14 @@ Exclusions:
 
 Exit criteria:
 
-- `ValidationResult` and `ReviewResult` are documented
-- Validation does not directly fix failures
-- repair loop is controlled by workflow graph
-- retry limits are enforced
-- Review only performs blocking-level review
-- human approval gates are documented
+- `ValidationResult`, `ValidationTerminal`, and `ReviewResult` are documented
+  as separate immutable contracts
+- no unexecuted flow can claim command, exit-code, or output facts
+- policy terminals and review findings have auditable evidence/artifact lineage
+- Review only records findings; policy decides `blocked` or
+  `requires_human_approval`
+- no M3 implementation introduces an execution, sandbox, retry, or side-effect
+  capability
 
 ## 8. Milestone 4: Draft PR MVP Vertical Slice
 
@@ -396,9 +402,9 @@ Use this checklist before declaring any milestone complete:
 Current milestone:
 
 ```text
-Milestone 2: Structured PatchProposal Slice
-Status: Completed; closure verification recorded
-Next stage: architecture and specification preparation for Milestone 3
+Milestone 3: Validation and Review Slice
+Status: Architecture, specification, and canonical planning complete; implementation not authorized
+Next stage: await explicit Phase 1 authorization and required execution-environment assignment
 ```
 
 Completed:
@@ -419,6 +425,6 @@ Completed:
 Next steps:
 
 - retain M2's fixture-only contract and conservative policy profile as the
-  dependency boundary for Milestone 3
-- do not introduce a real provider, MCP, DeerFlow runtime, sandbox edit, diff,
-  command, test, Git, or PR behavior without a new accepted OpenSpec
+  dependency boundary for M3
+- do not introduce a real provider, MCP, DeerFlow runtime, sandbox, command,
+  test, Git, or PR behavior during M3
