@@ -19,8 +19,8 @@ RFCs/ADRs, or the canonical implementation plan.
 
 | Field | Value |
 | --- | --- |
-| Branch | Pending assignment; expected `feature/m2-structured-patchproposal` |
-| Worktree | Pending assignment; expected `.worktrees/m2-structured-patchproposal` |
+| Branch | `feature/m2-structured-patchproposal` |
+| Worktree | `.worktrees/m2-structured-patchproposal` |
 | Execution mode | Lightweight Implementation Execution |
 
 ## Current Status
@@ -28,16 +28,16 @@ RFCs/ADRs, or the canonical implementation plan.
 | Field | Value |
 | --- | --- |
 | Milestone | Structured PatchProposal Slice |
-| State | Planning complete; Phase 1 authorized, pending execution-environment assignment |
+| State | Planning complete; Phase 1 authorized; execution environment and baseline verification complete |
 | Completed through | No implementation phase |
 | Next phase | Phase 1 — Contract Foundation and Fixtures |
-| Implementation authorization | Phase 1 is authorized but blocked until its branch/worktree assignment is recorded |
+| Implementation authorization | Phase 1 is authorized; no Phase 1 implementation has started |
 
 ## Phase Index
 
 | Phase | Name | Status | Commit | Completion Record |
 | --- | --- | --- | --- | --- |
-| 1 | Contract Foundation and Fixtures | Blocked by execution-environment assignment | None | None |
+| 1 | Contract Foundation and Fixtures | Ready to begin | None | None |
 | 2 | Patch-Boundary Assessment Adapter | Blocked by Phase 1 | None | None |
 | 3 | Deterministic Fixture Proposal-Source Adapter | Blocked by Phase 2 | None | None |
 | 4 | Acceptance and Hardening | Blocked by Phases 1–3 | None | None |
@@ -51,3 +51,6 @@ RFCs/ADRs, or the canonical implementation plan.
   phase has started.
 - 2026-07-13: Phase 1 authorization was received, but implementation remains
   blocked until the required milestone branch/worktree is assigned and recorded.
+- 2026-07-13: Assigned `feature/m2-structured-patchproposal` and
+  `.worktrees/m2-structured-patchproposal`; baseline verification passed with
+  63 `unittest` tests. No Phase 1 implementation has started.
