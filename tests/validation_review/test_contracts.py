@@ -120,6 +120,39 @@ class ValidationReviewContractTests(unittest.TestCase):
             & {item.name for item in fields(result)}
         )
 
+    def test_review_result_can_reference_downstream_blocked_or_approval_policy(self) -> None:
+        finding = ReviewFinding(
+            finding_code="validation_failure_requires_review",
+            severity="blocking",
+            evidence_ref_ids=(EVIDENCE_ID,),
+        )
+        for decision, risk_flag in (
+            ("blocked", "review_blocking_finding"),
+            ("requires_human_approval", "human_approval_required"),
+        ):
+            with self.subTest(decision=decision):
+                result = ReviewResult(
+                    contract_id="rr_sha256:" + "8" * 64,
+                    patch_proposal_contract_id=PATCH_PROPOSAL_ID,
+                    validation_result_contract_id="vr_sha256:" + "6" * 64,
+                    findings=(finding,),
+                    policy_decision_refs=(
+                        PolicyDecisionRecordRef(
+                            decision_id=POLICY_DECISION_ID,
+                            decision=decision,
+                            policy_profile_id="validation-review/m3-fixture-v1",
+                            policy_version=1,
+                            evaluator_id="m3/deterministic-policy-fixture-v1",
+                            subject_contract_id="vr_sha256:" + "6" * 64,
+                            risk_flags=(risk_flag,),
+                        ),
+                    ),
+                    evidence_ref_ids=(EVIDENCE_ID,),
+                    artifact_ids=(),
+                )
+
+                self.assertEqual(result.policy_decision_refs[0].decision, decision)
+
     def test_error_is_separate_from_terminal_result_and_review(self) -> None:
         error = ValidationReviewError(
             error_id="vre_sha256:" + "9" * 64,

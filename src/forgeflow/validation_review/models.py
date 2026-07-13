@@ -209,7 +209,7 @@ class ReviewResult:
             sorted(self.findings, key=lambda item: (item.finding_code, item.severity, item.evidence_ref_ids))
         ):
             raise ValueError("findings must use canonical ordering")
-        _require_policy_refs(self.policy_decision_refs, self.validation_result_contract_id, "allowed")
+        _require_policy_refs(self.policy_decision_refs, self.validation_result_contract_id)
         _require_sorted_unique_ids(
             "evidence_ref_ids", self.evidence_ref_ids, "ev_sha256:", M3_FIXTURE_V1.max_evidence_refs
         )
@@ -278,7 +278,9 @@ ValidationEnvelope: TypeAlias = ValidationResult | ValidationTerminal
 
 
 def _require_policy_refs(
-    values: tuple[PolicyDecisionRecordRef, ...], subject_contract_id: str, required_decision: str
+    values: tuple[PolicyDecisionRecordRef, ...],
+    subject_contract_id: str,
+    required_decision: str | None = None,
 ) -> None:
     if not isinstance(values, tuple) or not values:
         raise ValueError("policy_decision_refs must be a non-empty tuple")
@@ -288,7 +290,10 @@ def _require_policy_refs(
         raise ValueError("policy_decision_refs must use canonical decision-ID ordering")
     if len({value.decision_id for value in values}) != len(values):
         raise ValueError("policy_decision_refs must be unique")
-    if not any(
+    if required_decision is None:
+        if not any(value.subject_contract_id == subject_contract_id for value in values):
+            raise ValueError("policy_decision_refs must contain the required subject")
+    elif not any(
         value.subject_contract_id == subject_contract_id and value.decision == required_decision
         for value in values
     ):
