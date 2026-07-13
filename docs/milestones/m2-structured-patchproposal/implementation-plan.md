@@ -113,6 +113,8 @@ invalidates the decision ID.
 
 **Files:**
 
+- Modify: `src/forgeflow/patch_proposal/models.py`
+- Modify: `src/forgeflow/patch_proposal/__init__.py`
 - Create: `src/forgeflow/patch_proposal/fixture_source.py`
 - Create: `src/forgeflow/patch_proposal/service.py`
 - Create: `tests/patch_proposal/test_fixture_source.py`
@@ -122,11 +124,17 @@ invalidates the decision ID.
 
 **Interfaces:** `load_fixture_draft(case_id) -> FixtureProposalDraft` and
 `build_patch_proposal(context, task_input, draft) -> PatchProposalEnvelope`.
+`FixtureProposalDraft` is transient and contains only root-cause drafts,
+`fix_strategy_summary`, and candidate-change drafts. The service owns fixed
+constraint codes, limitation codes, source/profile identity, policy evaluation,
+and terminal-envelope assembly. M2 source lookup supports `valid-default`
+only; unknown cases are lookup failures, while malformed or forbidden-payload
+service input maps to the contract-defined validation envelope.
 
-- [ ] Write failing tests for deterministic in-memory fixture lookup and all
-  terminal error conditions: unsupported M1 context, dangling evidence,
-  malformed draft, oversize fields, forbidden raw payload, invalid profile, and
-  policy block.
+- [ ] Write failing tests for deterministic in-memory `valid-default` lookup
+  and all terminal error conditions: unsupported M1 context, dangling
+  evidence, malformed draft, oversize fields, forbidden raw payload, invalid
+  profile, and policy block.
 - [ ] Run `uv run --no-sync python -m unittest tests.patch_proposal.test_fixture_source tests.patch_proposal.test_service -v`; expect import failure.
 - [ ] Implement only fixture lookup, validation, policy orchestration, and final
   terminal-envelope assembly; calculate final proposal identity last.

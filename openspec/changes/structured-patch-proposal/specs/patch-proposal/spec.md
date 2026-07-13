@@ -92,6 +92,30 @@ design.
 - **THEN** the capability returns a patch-proposal validation error
 - **AND** it does not reread the workspace or emit a partial proposal
 
+### Requirement: Fixture synthesis SHALL use a bounded transient draft only
+
+The capability SHALL use only the contract-defined, in-memory
+`m2/deterministic-fixture-v1` `FixtureProposalDraft` source. The draft SHALL
+carry only root-cause intent, fix-strategy summary, candidate intent, and
+evidence IDs. The service SHALL own fixed limitation codes, fixed strategy
+constraints, profile selection, policy evaluation, public envelope assembly,
+and final identity calculation.
+
+The source SHALL support only `valid-default` in M2 and SHALL perform no
+filesystem, workspace, provider, DeerFlow, MCP, command, network, memory,
+Git, PR, or mutation operation. A malformed draft SHALL return the separate
+validation envelope; a forbidden payload field name SHALL return
+`raw_payload_forbidden` without copying or echoing its associated value.
+
+#### Scenario: A fixture draft cannot leak or choose policy
+
+- **GIVEN** a controlled in-memory fixture draft
+- **WHEN** the service converts it into a proposal
+- **THEN** only the draft's declared intent and evidence IDs are used
+- **AND** fixed constraints, limitations, source identity, and policy decision
+  are service-owned
+- **AND** no raw source or provider payload occurs in the terminal envelope
+
 ### Requirement: Fixtures SHALL precede implementation and prove boundary preservation
 
 Before implementation, controlled fixtures SHALL cover successful evidence

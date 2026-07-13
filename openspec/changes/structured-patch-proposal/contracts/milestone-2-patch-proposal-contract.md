@@ -16,6 +16,41 @@ Success has `result_type: "patch_proposal"`. Validation failure has
 `result_type: "patch_proposal_validation_error"`; it never contains a partial
 proposal, candidate changes, risk flags, or policy decision reference.
 
+## Deterministic Fixture Draft Boundary
+
+`FixtureProposalDraft` is a transient, provider-neutral source input. It is
+not a successful envelope, does not have an identity, and has no policy,
+profile, limitation, source-identity, context, diff, payload, tool, or
+authorization field. It contains only:
+
+- one or more `FixtureRootCauseDraft` values, each with `statement`,
+  `uncertainty`, and `supporting_evidence_ref_ids`;
+- one `fix_strategy_summary`; and
+- one or more `FixtureCandidateChangeDraft` values, each with `path`,
+  `change_kind`, `rationale`, and `supporting_evidence_ref_ids`.
+
+The source may return only the fixed in-memory case ID `valid-default` in M2.
+Unknown case IDs are source lookup failures and do not cause filesystem,
+provider, command, network, or workspace access. The source never returns a
+raw provider payload, prompt, source content, diff, command, environment
+value, or runtime trace.
+
+The service validates and converts the transient draft into the public
+contract. It supplies the fixed strategy constraint codes and all four sorted
+limitation codes: `fixture_only_source`, `no_diff_generated`,
+`no_source_payload`, and `no_validation_executed`. A draft cannot select or
+omit them, select a policy profile, or create a policy decision.
+
+Service input that is not a `FixtureProposalDraft` is a
+`fixture_draft_malformed` validation error, except an input object or mapping
+whose field names include a forbidden payload field is a
+`raw_payload_forbidden` validation error. The check uses field names only and
+does not copy the associated value. Oversized otherwise well-formed draft
+text is `bounds_exceeded`; an unsupported candidate kind is
+`invalid_change_kind`; other draft shape failures are
+`fixture_draft_malformed`. Error messages are fixed bounded messages and
+never echo draft content.
+
 ## PatchProposal
 
 Required fields:

@@ -9,6 +9,17 @@ environment-file escalation; exact high-risk path-segment matching; and
 approval-required deletion intent. No standalone review artifact is an
 implementation authority.
 
+A targeted Grill-Me review was completed before Phase 3 after the canonical
+plan exposed an unspecified `FixtureProposalDraft`. It challenged draft
+authority, raw-payload leakage through errors, fixture lookup side effects,
+policy/profile injection, evidence bypass, blocked-success conversion, and
+identity ordering. The accepted resolution is the contract-defined transient
+draft boundary: in-memory `valid-default` only; intent fields only; fixed
+service-owned limitations and constraint codes; field-name-only payload
+rejection; evidence closure before policy; blocked-to-validation conversion;
+and final proposal identity calculated last. No RFC or ADR is needed because
+this resolves an M2 implementation contract detail within RFC-003 and ADR-007.
+
 ## Boundaries
 
 `RepositoryContextResult` remains immutable context and evidence. A
@@ -36,6 +47,10 @@ Successful envelopes have `result_type: "patch_proposal"` and contain:
 - ordered `candidate_changes` with canonical workspace-relative paths,
   change-kind enum, rationale, and supporting evidence IDs;
 - controlled `risk_flags`, `limitations`, and a `boundary_assessment_ref`.
+
+The transient fixture draft is not part of the public envelope. Its exact
+allowed fields, source lookup behavior, conversion ownership, and safe error
+mapping are normative in the M2 contract design.
 
 Validation failures use `result_type: "patch_proposal_validation_error"` and
 cannot include partial successful proposal fields. M2 uses the bounded fields,
@@ -70,3 +85,7 @@ unsupported schema versions, malformed task input, unresolved policy profile,
 or any readiness-gate failure produces a structured stop/validation outcome.
 The producer must not infer missing evidence, reread the workspace, fall back
 to uncontrolled tools, or emit a partial success.
+
+Malformed or forbidden-payload fixture input follows the explicit terminal
+mapping in the M2 contract design. The service does not return a source error,
+partial draft, or partial proposal to callers.
