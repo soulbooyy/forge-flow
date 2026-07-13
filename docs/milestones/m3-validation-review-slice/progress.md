@@ -28,17 +28,17 @@ RFCs/ADRs, or the canonical implementation plan.
 | Field | Value |
 | --- | --- |
 | Milestone | Validation and Review Slice |
-| State | Phase 1 accepted; implementation paused. |
-| Completed through | Phase 1 — Contract Foundation and Canonical Fixtures |
-| Next phase | Phase 2 — Deterministic Policy and Attempt Fixtures |
-| Implementation authorization | Phase 2 and later phases are not authorized. |
+| State | Phase 2 accepted; implementation paused. |
+| Completed through | Phase 2 — Deterministic Policy and Attempt Fixtures |
+| Next phase | Phase 3 — Validation and Review Assembly Service |
+| Implementation authorization | Phase 3 and later phases are not authorized. |
 
 ## Phase Index
 
 | Phase | Name | Status | Commit | Completion Record |
 | --- | --- | --- | --- | --- |
 | 1 | Contract Foundation and Canonical Fixtures | Accepted | `d7b84f6` | [Phase 1 record](phases/phase-1-contract-foundation-and-canonical-fixtures.md) |
-| 2 | Deterministic Policy and Attempt Fixtures | Not started | — | — |
+| 2 | Deterministic Policy and Attempt Fixtures | Accepted | `569d1f2` | [Phase 2 record](phases/phase-2-deterministic-policy-and-attempt-fixtures.md) |
 | 3 | Validation and Review Assembly Service | Not started | — | — |
 | 4 | Acceptance and Hardening | Not started | — | — |
 
@@ -59,3 +59,7 @@ RFCs/ADRs, or the canonical implementation plan.
   targeted tests passed 9/9, the cumulative suite passed 107/107, and the
   follow-up independent review found no remaining issue. Phase 2 remains
   unauthorized.
+- 2026-07-14: Accepted Phase 2 deterministic policy and attempt fixtures in
+  `569d1f2`. Targeted tests passed 9/9; the cumulative suite passed 116/116;
+  strict OpenSpec validation, static side-effect checks, and independent review
+  passed. Phase 3 is not authorized.
