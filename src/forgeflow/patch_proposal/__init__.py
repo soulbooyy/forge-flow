@@ -19,6 +19,7 @@ from .models import (
     TaskInput,
     ValidationErrorSummary,
 )
+from .policy import PolicyBlockedError, assess_boundary
 from .profile import M2_CONSERVATIVE_V1, PatchProposalProfile
 
 __all__ = [
@@ -29,11 +30,13 @@ __all__ = [
     "PatchProposalEnvelope",
     "PatchProposalProfile",
     "PatchProposalValidationError",
+    "PolicyBlockedError",
     "PolicyDecisionRef",
     "RootCauseHypothesis",
     "TaskInput",
     "ValidationErrorSummary",
     "candidate_digest_for",
+    "assess_boundary",
     "canonical_bytes",
     "policy_decision_id_for",
     "proposal_error_id_for",
