@@ -28,17 +28,17 @@ RFCs/ADRs, or the canonical implementation plan.
 | Field | Value |
 | --- | --- |
 | Milestone | Structured PatchProposal Slice |
-| State | Planning complete; Phase 1 authorized; execution environment and baseline verification complete |
-| Completed through | No implementation phase |
-| Next phase | Phase 1 — Contract Foundation and Fixtures |
-| Implementation authorization | Phase 1 is authorized; no Phase 1 implementation has started |
+| State | Phase 1 accepted; awaiting Phase 2 authorization |
+| Completed through | Phase 1 — Contract Foundation and Fixtures |
+| Next phase | Phase 2 — Patch-Boundary Assessment Adapter |
+| Implementation authorization | Phase 2 requires explicit authorization before it starts |
 
 ## Phase Index
 
 | Phase | Name | Status | Commit | Completion Record |
 | --- | --- | --- | --- | --- |
-| 1 | Contract Foundation and Fixtures | Ready to begin | None | None |
-| 2 | Patch-Boundary Assessment Adapter | Blocked by Phase 1 | None | None |
+| 1 | Contract Foundation and Fixtures | Accepted | `968da29` | [Phase 1 record](phases/phase-1-contract-foundation-and-fixtures.md) |
+| 2 | Patch-Boundary Assessment Adapter | Pending explicit start | None | None |
 | 3 | Deterministic Fixture Proposal-Source Adapter | Blocked by Phase 2 | None | None |
 | 4 | Acceptance and Hardening | Blocked by Phases 1–3 | None | None |
 
@@ -54,3 +54,6 @@ RFCs/ADRs, or the canonical implementation plan.
 - 2026-07-13: Assigned `feature/m2-structured-patchproposal` and
   `.worktrees/m2-structured-patchproposal`; baseline verification passed with
   63 `unittest` tests. No Phase 1 implementation has started.
+- 2026-07-13: Accepted Phase 1 contract foundation and fixtures in `968da29`.
+  Targeted contract/canonical tests passed 11/11; cumulative suite passed
+  74/74. No Phase 2 implementation has started.

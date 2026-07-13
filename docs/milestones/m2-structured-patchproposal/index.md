@@ -17,5 +17,4 @@ diff, command, test, Git, PR, network, or memory capability.
 
 ## Phase Completion Records
 
-No implementation phase has completed. Records are created under `phases/`
-only after an accepted phase commit.
+- [Phase 1: Contract Foundation and Fixtures](phases/phase-1-contract-foundation-and-fixtures.md)
