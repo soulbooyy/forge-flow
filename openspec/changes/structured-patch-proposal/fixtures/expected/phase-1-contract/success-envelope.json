@@ -1,0 +1,56 @@
+{
+  "candidate_changes": [
+    {
+      "change_kind": "modify_existing_file",
+      "path": "src/payment_handler.py",
+      "rationale": "Add a focused guard for the nullable state.",
+      "supporting_evidence_ref_ids": [
+        "ev_sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      ]
+    }
+  ],
+  "contract_id": "pp_sha256:b3774d07b50cf3aee27e6dcb5902d094605a4419d413f4783a06464f6f5b600f",
+  "fix_strategy": {
+    "constraint_codes": [
+      "evidence_backed",
+      "minimal_change",
+      "no_execution",
+      "policy_bounded"
+    ],
+    "summary": "Add the smallest evidence-backed guard and focused test."
+  },
+  "limitation_codes": [
+    "fixture_only_source",
+    "no_diff_generated",
+    "no_source_payload",
+    "no_validation_executed"
+  ],
+  "policy_decision": {
+    "decision": "allowed",
+    "decision_id": "pdr_sha256:e1296bc063d1fce66440ce9ac753e8b267db4cecf12d7457a3474b6fb1dfadf8",
+    "evaluated_candidate_digest": "sha256:9d22deedb5d5c68f1e5c23c83ddb2ce8e9e24fb3f1f759e65283c88590e91ebe",
+    "evaluator_id": "m2/deterministic-boundary-evaluator-v1",
+    "policy_profile_id": "patch-proposal/m2-conservative-v1",
+    "policy_version": 1,
+    "revalidation_required": true,
+    "risk_flags": []
+  },
+  "proposal_source_id": "m2/deterministic-fixture-v1",
+  "repository_context_contract_id": "rcr_sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "result_type": "patch_proposal",
+  "risk_flags": [],
+  "root_cause_hypotheses": [
+    {
+      "statement": "Payment state can be absent at the handler boundary.",
+      "supporting_evidence_ref_ids": [
+        "ev_sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      ],
+      "uncertainty": "medium"
+    }
+  ],
+  "schema_version": "patch-proposal/v1",
+  "task_input": {
+    "summary": "Guard nullable payment state",
+    "task_ref": "M2-001"
+  }
+}
