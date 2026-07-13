@@ -64,8 +64,9 @@ Specification 以相关 RFC 和已接受 ADR 为输入，并产出 OpenSpec chan
 Planning 以已接受的 OpenSpec change 为输入，并产出 canonical Implementation Plan。该 plan 是执行顺序的唯一权威来源，必须定义 milestone scope、phase ordering、dependencies、expected file changes、TDD strategy 和 phase acceptance criteria。
 
 每个即将进入 Implementation 的 Milestone，在 OpenSpec、相关 RFC 和已接受 ADR
-完备后，必须先使用 Superpowers 的 `writing-plans` skill 生成详细的 draft
-implementation plan。draft 必须保存为
+完备后，必须先生成详细的 AI-assisted draft implementation plan。推荐使用
+Superpowers 的 `writing-plans` skill；等价的执行 framework 也可以产出同等 draft。
+draft 必须保存为
 `docs/_history/ai-assisted/implementation-plans/YYYY-MM-DD-<milestone-topic-slug>.md`，
 其中 topic slug 不含目录使用的 `m<NUMBER>-` 前缀，
 并明确 phase order、dependencies、expected file changes、TDD steps、verification
@@ -104,6 +105,14 @@ Read Phase Requirement
 
 ### 3.7 AI-assisted Development Tools
 
-Superpowers 和其他 AI-assisted development tools 是执行辅助工具。它们可以用于 task decomposition、implementation planning 或 review assistance，但不是权威来源。它们不得定义 architecture、requirements 或 acceptance criteria。仓库文档仍是 source of truth。
+Superpowers 是推荐使用的执行辅助 framework；其他 AI-assisted tools 或等价的纪律化
+实践可以替代它。它们可以用于 task decomposition、plan execution、implementation
+planning、verification 或 review assistance，但不是权威来源，也不是 ForgeFlow 的
+architecture dependency。它们不得定义 architecture、requirements、acceptance
+criteria 或 milestone lifecycle。仓库文档仍是 source of truth。
+
+替换或移除执行辅助 framework 不得影响 RFC、已接受 ADR、OpenSpec、canonical
+Implementation Plan 或 milestone lifecycle record。强制的 workflow outcome 是经过
+审校与 reconciliation 的 draft 和 canonical plan，而不是使用某个具名工具。
 
 AI 生成的 draft plan 是 Planning 输入，不替代 canonical Implementation Plan。它的作用是在 canonical plan 编写和审查前提高完整性与可执行性。

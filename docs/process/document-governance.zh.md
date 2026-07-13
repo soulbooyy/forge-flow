@@ -10,7 +10,7 @@
 | `rfcs/`                               | 重大架构决策，例如 Agent Architecture、State Model、Tool/MCP Integration、Sandbox Governance、Evaluation Framework 和 DeerFlow Extension Strategy。 |
 | `openspec/` 或 `specs/changes/`        | 功能级规格，例如 Repository Context Service、PatchProposal 生成、Validation 工作流、ReviewResult 生成和 Draft PR 创建。                                    |
 | `adr/`                                | 已接受的架构决策记录，通常在 RFC 讨论达成决策后创建。                                                                                                        |
-| `docs/_history/ai-assisted/implementation-plans/` | 在 architecture 和 specification 输入完备后，通过 Superpowers `writing-plans` 生成、受版本控制的非 canonical 详细 draft plan。 |
+| `docs/_history/ai-assisted/implementation-plans/` | 在 architecture 和 specification 输入完备后创建、受版本控制的非 canonical 详细 AI-assisted draft plan。推荐 Superpowers `writing-plans`，但不强制使用。 |
 | `docs/templates/` | 可复用的生命周期文档模板。它们固定文档职责和必需结构，不固定 Milestone 的具体结论。 |
 | `openspec/templates/change/` | OpenSpec proposal、design、tasks 和 specification 文档的可复用 feature-change 模板。 |
 | `docs/milestones/<milestone-directory-slug>/implementation-plan.md` | Canonical implementation sequence、文件级工作、依赖、TDD 步骤和 Phase 验收条件。                                                                              |
@@ -78,11 +78,12 @@ plan、progress 索引和 Completion Record 的导航。`implementation-plan.md`
 它们各自的权威记录。Milestone closure 后，retrospective 创建在
 `retrospectives/m<NUMBER>-<milestone-topic-slug>.md`。
 
-创建 canonical implementation plan 前，必须先通过 Superpowers `writing-plans`
-生成一份详细 AI-assisted draft plan，并保存为
+创建 canonical implementation plan 前，必须先创建一份详细 AI-assisted draft plan，
+并保存为
 `docs/_history/ai-assisted/implementation-plans/YYYY-MM-DD-<milestone-topic-slug>.md`。
-它是历史 planning evidence，不是第二份 canonical plan。canonical plan 必须将
-该 draft 与已接受 OpenSpec、相关 RFC 和已接受 ADR 明确完成 reconciliation。
+推荐使用 Superpowers `writing-plans`；等价 framework 也可以产出该 draft。它是历史
+planning evidence，不是第二份 canonical plan。canonical plan 必须将该 draft 与
+已接受 OpenSpec、相关 RFC 和已接受 ADR 明确完成 reconciliation。
 
 draft 与 canonical plan 都必须以 `Phase 1`、`Phase 2` 等作为一级执行结构。
 Phase 是授权、focused commit、Completion Record、progress 更新和验收的单位；
@@ -109,7 +110,7 @@ review diff 正文或临时调试叙述。
 
 `progress.md` 不替代 Phase Completion Record，不记录详细 implementation，也不定义 requirements 或 architecture。
 
-默认不生成 Superpowers brief、review diff、rereview diff 或 agent execution report。新的架构决策进入 ADR，需求变化进入 OpenSpec，实施顺序变化进入 canonical implementation plan。
+默认不生成工具特定的 brief、review diff、rereview diff 或 agent execution report。新的架构决策进入 ADR，需求变化进入 OpenSpec，实施顺序变化进入 canonical implementation plan。
 
 完成 Completion Record 和 progress 索引更新后，输出简短总结并停止等待用户确认。不得自动进入下一阶段。
 
@@ -130,7 +131,7 @@ criteria。实例化模板时必须替换所有尖括号占位符。
 | 模板 | 生命周期条件 | 权威性与用途 |
 |---|---|---|
 | `docs/templates/milestone/index.template.md` | canonical plan 建立时创建。 | 仅作为 Milestone 入口和链接。 |
-| `docs/templates/ai-assisted/implementation-draft.template.md` | OpenSpec 及相关已接受 RFC/ADR 完备后、canonical plan 前创建。 | 非权威 Superpowers `writing-plans` 证据，必须完成 reconciliation。 |
+| `docs/templates/ai-assisted/implementation-draft.template.md` | OpenSpec 及相关已接受 RFC/ADR 完备后、canonical plan 前创建。 | 非权威 AI-assisted planning evidence，必须完成 reconciliation。 |
 | `docs/templates/milestone/implementation-plan.template.md` | draft 审校与 reconciliation 后创建。 | 唯一 canonical 执行计划。 |
 | `docs/templates/milestone/progress.template.md` | 与 canonical plan 一起创建；每个 Phase 被接受后更新。 | 仅记录执行状态。 |
 | `docs/templates/milestone/phase-completion-record.template.md` | 一个 Phase commit 被接受后才创建。 | 记录该 Phase 已完成的工程事实。 |
@@ -157,5 +158,8 @@ Milestone index、canonical plan 和 progress index 是进入 Implementation 的
 ### 6.4 采用与工具化边界
 
 在 M2 和 M3 中手动实例化模板，并且只在实际使用暴露出稳定缺口时改进模板。
-在此验证期内不得增加文档生成脚本、scaffolding command 或自动同步。未来若要
-工具化，必须保留权威链路，且不得使 AI-assisted draft 变成权威来源。
+在此验证期内不得增加文档生成脚本、scaffolding command 或自动同步。
+Superpowers 是推荐且可替换的执行辅助工具，不是 ForgeFlow 的 architecture 或
+governance dependency。未来若要工具化，必须保留权威链路，且不得使 AI-assisted
+draft 变成权威来源；替换执行 framework 不得影响 RFC、ADR、OpenSpec、canonical
+plan 或 milestone lifecycle record。

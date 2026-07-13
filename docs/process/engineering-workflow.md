@@ -77,9 +77,10 @@ Implementation Plan. The plan is the sole authority for execution order and
 must define milestone scope, phase ordering, dependencies, expected file
 changes, TDD strategy, and phase acceptance criteria.
 
-For each milestone entering implementation, first use the Superpowers
-`writing-plans` skill to generate a detailed draft implementation plan after
-the OpenSpec, relevant RFCs, and accepted ADRs are ready. Store the draft at
+For each milestone entering implementation, first generate a detailed
+AI-assisted draft implementation plan after the OpenSpec, relevant RFCs, and
+accepted ADRs are ready. Superpowers `writing-plans` is the recommended aid;
+an equivalent execution framework may produce the same draft. Store it at
 `docs/_history/ai-assisted/implementation-plans/YYYY-MM-DD-<milestone-topic-slug>.md`,
 where the topic slug excludes the `m<NUMBER>-` directory prefix.
 The draft must identify phase order, dependencies, expected file changes, TDD
@@ -124,11 +125,18 @@ tests, cumulative implemented tests, `git diff --check`, and `git status`.
 
 ### 3.7 AI-assisted Development Tools
 
-Superpowers and other AI-assisted development tools are execution aids. They may
-help with task decomposition, implementation planning, or review assistance,
-but they are not authoritative sources. They must not define architecture,
-requirements, or acceptance criteria. Repository documentation remains the
-source of truth.
+Superpowers is a recommended execution-assistance framework, and other
+AI-assisted tools or equivalent disciplined practices may replace it. They may
+help with task decomposition, plan execution, implementation planning,
+verification, or review assistance, but they are not authoritative sources or
+ForgeFlow architecture dependencies. They must not define architecture,
+requirements, acceptance criteria, or milestone lifecycle. Repository
+documentation remains the source of truth.
+
+Replacing or removing an execution-assistance framework must not affect RFCs,
+accepted ADRs, OpenSpec, the canonical Implementation Plan, or milestone
+lifecycle records. The mandatory workflow outcome is the reviewed,
+reconciled draft and canonical plan, not use of a named tool.
 
 An AI-generated draft plan is a planning input, not a replacement for the
 canonical Implementation Plan. Its role is to improve completeness and
