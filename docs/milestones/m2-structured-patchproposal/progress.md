@@ -15,21 +15,29 @@ RFCs/ADRs, or the canonical implementation plan.
 - [Accepted ADRs](../../../adr/README.md)
 - [Implementation execution](../../process/implementation-execution.md)
 
+## Execution Environment
+
+| Field | Value |
+| --- | --- |
+| Branch | Pending assignment; expected `feature/m2-structured-patchproposal` |
+| Worktree | Pending assignment; expected `.worktrees/m2-structured-patchproposal` |
+| Execution mode | Lightweight Implementation Execution |
+
 ## Current Status
 
 | Field | Value |
 | --- | --- |
 | Milestone | Structured PatchProposal Slice |
-| State | Planning complete; awaiting Phase 1 authorization |
+| State | Planning complete; Phase 1 authorized, pending execution-environment assignment |
 | Completed through | No implementation phase |
 | Next phase | Phase 1 — Contract Foundation and Fixtures |
-| Implementation authorization | Phase 1 is ready but has not started |
+| Implementation authorization | Phase 1 is authorized but blocked until its branch/worktree assignment is recorded |
 
 ## Phase Index
 
 | Phase | Name | Status | Commit | Completion Record |
 | --- | --- | --- | --- | --- |
-| 1 | Contract Foundation and Fixtures | Pending explicit start | None | None |
+| 1 | Contract Foundation and Fixtures | Blocked by execution-environment assignment | None | None |
 | 2 | Patch-Boundary Assessment Adapter | Blocked by Phase 1 | None | None |
 | 3 | Deterministic Fixture Proposal-Source Adapter | Blocked by Phase 2 | None | None |
 | 4 | Acceptance and Hardening | Blocked by Phases 1–3 | None | None |
@@ -41,3 +49,5 @@ RFCs/ADRs, or the canonical implementation plan.
 - 2026-07-13: Architecture, specification, planning, and Grill-Me review were
   reconciled into RFC-003, ADR-007, and the M2 OpenSpec. No implementation
   phase has started.
+- 2026-07-13: Phase 1 authorization was received, but implementation remains
+  blocked until the required milestone branch/worktree is assigned and recorded.

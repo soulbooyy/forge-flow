@@ -156,4 +156,14 @@ feature/repository-context-service
 fix/...
 ```
 
+For implementation work belonging to a milestone, use the more specific
+milestone-scoped name defined in `implementation-execution.md`:
+
+```text
+feature/m<NUMBER>-<milestone-topic-slug>
+```
+
+That branch remains assigned to the milestone's one worktree through closure;
+individual phases use focused commits rather than new branches.
+
 Merge only when the relevant document, spec, implementation, tests, or review expectations are satisfied.

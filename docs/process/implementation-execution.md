@@ -18,7 +18,32 @@ The authority order for conflicts is:
 
 If these sources conflict or do not identify a safe next phase, stop implementation and report the conflict. Do not invent an architecture decision or silently revise an authoritative source.
 
-### 1.2 Phase Identification
+### 1.2 Milestone Execution Environment Assignment
+
+Before starting Phase 1, assign one isolated branch and worktree to the entire
+milestone. The required names are:
+
+```text
+Branch:    feature/m<NUMBER>-<milestone-topic-slug>
+Worktree:  .worktrees/m<NUMBER>-<milestone-topic-slug>
+```
+
+The worktree directory must be ignored by Git. Record the exact assigned
+branch, worktree, and execution mode in the milestone `progress.md` under
+`Execution Environment` before writing Phase 1 tests or production code. If
+the assignment is absent, Phase 1 is blocked even when its architecture,
+specification, plan, and user authorization are otherwise ready.
+
+The same branch and worktree remain assigned through milestone closure. A
+phase does not create a branch boundary: it uses the assigned environment and
+ends with one focused commit, verification, a Completion Record, and a progress
+update. Create a different branch or worktree only when an accepted workflow
+decision or the canonical plan explicitly requires it.
+
+This model has three distinct boundaries: a milestone owns isolation scope, a
+phase owns execution scope, and a commit owns review scope.
+
+### 1.3 Phase Identification
 
 Identify the next phase from the canonical implementation plan and the last completed entry in the milestone `progress.md`. Reconcile any mismatch between execution numbering and the canonical plan before implementation begins.
 
@@ -30,7 +55,7 @@ its file name must be derived from the canonical plan. This structure is
 mandatory for every milestone and every phase; no abbreviated alternative is
 permitted.
 
-### 1.3 Test-Driven Development
+### 1.4 Test-Driven Development
 
 Each phase follows RED -> GREEN -> REFACTOR:
 
@@ -42,17 +67,19 @@ Each phase follows RED -> GREEN -> REFACTOR:
 
 Tests added after a complete implementation are not a substitute for this sequence.
 
-### 1.4 Scope Control
+### 1.5 Scope Control
 
 Implement exactly one canonical-plan phase at a time. Do not add future-phase abstractions, modify unrelated modules, or expand feature scope. Missing or conflicting authority is a stop condition, not permission to fill the gap.
 
-### 1.5 Git and Commit Strategy
+### 1.6 Git and Commit Strategy
 
-Use the branch and worktree assigned to the milestone. Do not create a new branch or worktree for each phase unless the canonical plan or an accepted workflow decision explicitly requires it.
+Use the branch and worktree assigned to the milestone. Do not create a new
+branch or worktree for each phase unless the canonical plan or an accepted
+workflow decision explicitly requires it.
 
 Create one focused commit per phase. Before committing, run targeted tests, the complete implemented test suite, `git diff --check`, and `git status --short`; inspect generated files and unrelated modifications.
 
-### 1.6 Review Strategy
+### 1.7 Review Strategy
 
 The default lightweight review is a self-review of the current diff, passing tests, and scope boundaries. Do not generate subagent briefs, review diffs, rereview diffs, or long checkpoint reports by default.
 

@@ -12,6 +12,14 @@ RFCs/ADRs, or the canonical implementation plan.
 - [Relevant accepted RFCs and ADRs](<ARCHITECTURE_REFERENCES_LINK>)
 - [Implementation execution](../../process/implementation-execution.md)
 
+## Execution Environment
+
+| Field | Value |
+| --- | --- |
+| Branch | `feature/m<MILESTONE_NUMBER>-<MILESTONE_TOPIC_SLUG>` |
+| Worktree | `.worktrees/m<MILESTONE_NUMBER>-<MILESTONE_TOPIC_SLUG>` |
+| Execution mode | Lightweight Implementation Execution |
+
 ## Current Status
 
 | Field | Value |

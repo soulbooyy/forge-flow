@@ -18,7 +18,29 @@
 
 这些来源发生冲突或无法识别安全的下一阶段时，必须停止实现并报告冲突。不得自行创造架构决策或静默修改权威来源。
 
-### 1.2 阶段识别
+### 1.2 Milestone 执行环境分配
+
+开始 Phase 1 前，必须为整个 Milestone 分配一套隔离的 branch 和 worktree。命名必须为：
+
+```text
+Branch:    feature/m<NUMBER>-<milestone-topic-slug>
+Worktree:  .worktrees/m<NUMBER>-<milestone-topic-slug>
+```
+
+worktree 目录必须被 Git 忽略。在编写 Phase 1 测试或生产代码前，必须在该
+Milestone 的 `progress.md` 的 `Execution Environment` 中记录实际分配的 branch、
+worktree 和 execution mode。即使架构、规格、计划和用户授权均已就绪，若未完成该
+分配，Phase 1 仍处于 blocked 状态。
+
+同一 branch 和 worktree 必须持续使用至 Milestone closure。Phase 不创建 branch
+边界：它在已分配环境中执行，并以一个 focused commit、verification、Completion
+Record 和 progress update 结束。只有已接受的 workflow decision 或 canonical plan
+明确要求时，才创建不同的 branch 或 worktree。
+
+该模型有三个不同边界：Milestone 负责隔离范围，Phase 负责执行范围，Commit 负责
+审查范围。
+
+### 1.3 阶段识别
 
 根据 canonical implementation plan 和 milestone `progress.md` 最后完成状态识别下一阶段。执行编号与 canonical plan 不一致时，必须在实现开始前完成 reconciliation。
 
@@ -28,7 +50,7 @@
 Phase 被接受后才创建其 Completion Record；文件名必须来自 canonical plan。
 该结构对每个 Milestone 和每个 Phase 都是强制要求，不允许使用简化版或替代结构。
 
-### 1.3 测试驱动开发
+### 1.4 测试驱动开发
 
 每个阶段遵循 RED -> GREEN -> REFACTOR：
 
@@ -40,17 +62,17 @@ Phase 被接受后才创建其 Completion Record；文件名必须来自 canonic
 
 在完整实现之后才补测试，不能替代上述顺序。
 
-### 1.4 范围控制
+### 1.5 范围控制
 
 每次只执行一个 canonical-plan phase。禁止为未来阶段增加抽象、修改无关模块或扩大功能范围。权威文档缺失或冲突是停止条件，不是自行补齐缺口的许可。
 
-### 1.5 Git 和提交策略
+### 1.6 Git 和提交策略
 
 使用该 Milestone 指定的 branch 和 worktree。除非 canonical plan 或已接受的 workflow decision 明确要求，否则不得为每个 Phase 创建新的 branch 或 worktree。
 
 每个 Phase 创建一个聚焦 commit。提交前至少运行 targeted tests、完整已实现 test suite、`git diff --check` 和 `git status --short`，并检查生成文件与无关修改。
 
-### 1.6 审查策略
+### 1.7 审查策略
 
 默认轻量审查为当前 diff、通过的测试和范围边界的 self-review。默认不生成 subagent brief、review diff、rereview diff 或长篇 checkpoint report。
 

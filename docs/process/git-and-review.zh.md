@@ -156,4 +156,14 @@ feature/repository-context-service
 fix/...
 ```
 
+对于属于某个 Milestone 的 implementation work，必须使用
+`implementation-execution.md` 定义的更具体的 Milestone 范围命名：
+
+```text
+feature/m<NUMBER>-<milestone-topic-slug>
+```
+
+该 branch 在 Milestone closure 前持续分配给同一个 worktree；单个 Phase 使用
+focused commit，而不是创建新的 branch。
+
 只有在相关文档、spec、实现、测试或审查预期满足后才合并。
