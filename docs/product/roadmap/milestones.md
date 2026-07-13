@@ -38,7 +38,7 @@ The long-term vision is autonomous software maintenance. The first implementatio
 |---|---|---|---|---|---|
 | Milestone 0 | Project Foundation | Establish project boundaries, documentation system, RFC roadmap, and scope corrections. | Foundation documents, RFC roadmap, and initial ADRs. | Near Complete | Initial architecture draft |
 | Milestone 1 | Repository Context Foundation Slice | Build the first deterministic repository context capability. | Repository Context Service OpenSpec and `RepositoryContextResult`. | Completed | Milestone 0, RFC-001/002/004/007 skeleton decisions |
-| Milestone 2 | Structured PatchProposal Slice | Produce evidence-backed patch intent from repository context. | `PatchProposal` contract and governed patch proposal flow. | Planned | Milestone 1, RFC-002/003/004 |
+| Milestone 2 | Structured PatchProposal Slice | Produce evidence-backed patch intent from repository context. | `PatchProposal` contract and governed patch proposal flow. | Phase 0 accepted; Phase 1 pending | Milestone 1, RFC-002/003/004 |
 | Milestone 3 | Validation and Review Slice | Validate patches and produce blocking-level review results. | `ValidationResult`, `ReviewResult`, bounded retry policy. | Planned | Milestone 2, RFC-004/005/006 |
 | Milestone 4 | Draft PR MVP Vertical Slice | Complete the first GitHub Issue to Draft PR MVP path. | Controlled draft PR from a fixture or test repository. | Planned | Milestone 3, GitHub/tool policy decisions |
 | Milestone 5 | Evaluation and Observability Hardening | Strengthen trace, run summary, redaction, and evaluation. | Reliable eval metrics and product-level run summaries. | Planned | Milestone 4 |
@@ -391,9 +391,9 @@ Use this checklist before declaring any milestone complete:
 Current milestone:
 
 ```text
-Milestone 0: Project Foundation
-Status: Near Complete
-Next phase: OpenSpec Feature Planning for Milestone 1
+Milestone 2: Structured PatchProposal Slice
+Status: Phase 0 accepted; Phase 1 not started
+Next phase: Contract Foundation and Fixtures on explicit authorization
 ```
 
 Completed:
@@ -411,9 +411,6 @@ Completed:
 
 Next steps:
 
-- initialize OpenSpec
-- create first OpenSpec change: Repository Context Service
-- keep Milestone 1 limited to Repository Context Foundation Slice
-- define `RepositoryContextResult` feature scope
-- prepare controlled evaluation fixtures for Milestone 1
-- do not start `PatchProposal`, Validation, or PR implementation yet
+- execute Phase 1 only when explicitly authorized by the maintainer
+- keep M2 limited to the accepted deterministic fixture source and conservative policy profile
+- do not introduce a real provider, MCP, DeerFlow runtime, sandbox edit, diff, command, test, Git, or PR behavior without a new accepted OpenSpec

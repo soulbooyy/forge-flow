@@ -20,7 +20,7 @@ RFCs are not feature implementation specs. Feature-level implementation plans be
 |---|---|---|---|
 | [RFC-001](RFC-001-agent-architecture.md) | Agent Architecture | Accepted | Define Planner, Software Engineer, Validation, Review, and PR as workflow roles; clarify role boundaries, workflow graph ownership, repair-loop ownership, and human approval separation. |
 | [RFC-002](RFC-002-contracts-and-state-model.md) | Contracts and State Model | Draft | Define Runtime State, Durable Run Summary / Audit Record, Long-term Memory, and the required contract families such as `RepositoryContextResult`, `PatchProposal`, `ValidationResult`, `ReviewResult`, and `PRResult`. |
-| RFC-003 | Tool and MCP Integration | Draft | Define tool capability levels, evidence-returning requirements, MCP integration boundaries, sandbox edit access, and external write policy. |
+| [RFC-003](RFC-003-tool-and-mcp-integration.md) | Tool and MCP Integration | Accepted | Define the fixture-only, provider-neutral M2 boundary and requirements for future governed tool/MCP integration. |
 | [RFC-004](RFC-004-sandbox-and-security-governance.md) | Sandbox and Security Governance | Draft | Define command policy, path policy, network policy, resource limits, diff thresholds, secret scanning, sensitive file policy, cost/retry caps, and human approval gates. |
 | RFC-005 | Observability and Trace Model | Draft | Define product-level run summaries, trace spans, evidence references, redaction, retention, cost metrics, and PR-facing trace summaries. |
 | RFC-006 | Evaluation Framework | Draft | Define first-version evaluation using controlled fixtures, core metrics, failure tracking, and later paths toward broader benchmarks. |

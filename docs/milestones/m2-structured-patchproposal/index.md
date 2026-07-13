@@ -1,0 +1,21 @@
+# Milestone 2: Structured PatchProposal Slice
+
+## Scope
+
+M2 establishes an evidence-backed, declarative `PatchProposal` contract. It is
+limited to the accepted deterministic fixture source and conservative policy
+profile; it does not introduce an LLM, MCP, DeerFlow runtime, sandbox edit,
+diff, command, test, Git, PR, network, or memory capability.
+
+## Authoritative References
+
+- [Structured PatchProposal OpenSpec change](../../../openspec/changes/structured-patch-proposal/)
+- [RFC-003: Tool and MCP Integration](../../../rfcs/RFC-003-tool-and-mcp-integration.md)
+- [ADR-007: Provider-Neutral Deterministic Fixture Synthesis](../../../adr/ADR-007-use-provider-neutral-deterministic-fixture-synthesis-for-m2.md)
+- [Canonical implementation plan](implementation-plan.md)
+- [Progress](progress.md)
+
+## Phase Completion Records
+
+No implementation phase has completed. Records are created under `phases/`
+only after an accepted phase commit.
