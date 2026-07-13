@@ -18,3 +18,4 @@ diff, command, test, Git, PR, network, or memory capability.
 ## Phase Completion Records
 
 - [Phase 1: Contract Foundation and Fixtures](phases/phase-1-contract-foundation-and-fixtures.md)
+- [Phase 2: Patch-Boundary Assessment Adapter](phases/phase-2-patch-boundary-assessment-adapter.md)

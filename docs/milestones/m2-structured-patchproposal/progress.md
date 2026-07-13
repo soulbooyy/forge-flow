@@ -28,19 +28,19 @@ RFCs/ADRs, or the canonical implementation plan.
 | Field | Value |
 | --- | --- |
 | Milestone | Structured PatchProposal Slice |
-| State | Phase 1 accepted; awaiting Phase 2 authorization |
-| Completed through | Phase 1 — Contract Foundation and Fixtures |
-| Next phase | Phase 2 — Patch-Boundary Assessment Adapter |
-| Implementation authorization | Phase 2 requires explicit authorization before it starts |
+| State | Phase 2 accepted; awaiting Phase 3 authorization |
+| Completed through | Phase 2 — Patch-Boundary Assessment Adapter |
+| Next phase | Phase 3 — Deterministic Fixture Proposal-Source Adapter |
+| Implementation authorization | Phase 3 requires explicit authorization before it starts |
 
 ## Phase Index
 
 | Phase | Name | Status | Commit | Completion Record |
 | --- | --- | --- | --- | --- |
 | 1 | Contract Foundation and Fixtures | Accepted | `968da29` | [Phase 1 record](phases/phase-1-contract-foundation-and-fixtures.md) |
-| 2 | Patch-Boundary Assessment Adapter | Pending explicit start | None | None |
-| 3 | Deterministic Fixture Proposal-Source Adapter | Blocked by Phase 2 | None | None |
-| 4 | Acceptance and Hardening | Blocked by Phases 1–3 | None | None |
+| 2 | Patch-Boundary Assessment Adapter | Accepted | `6f1f6e3` | [Phase 2 record](phases/phase-2-patch-boundary-assessment-adapter.md) |
+| 3 | Deterministic Fixture Proposal-Source Adapter | Pending explicit start | None | None |
+| 4 | Acceptance and Hardening | Blocked by Phase 3 | None | None |
 
 ## Change Log
 
@@ -57,3 +57,6 @@ RFCs/ADRs, or the canonical implementation plan.
 - 2026-07-13: Accepted Phase 1 contract foundation and fixtures in `968da29`.
   Targeted contract/canonical tests passed 11/11; cumulative suite passed
   74/74. No Phase 2 implementation has started.
+- 2026-07-13: Accepted Phase 2 patch-boundary assessment in `6f1f6e3`.
+  Targeted policy tests passed 10/10; cumulative suite passed 84/84. No Phase
+  3 implementation has started.
