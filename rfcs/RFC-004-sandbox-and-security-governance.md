@@ -350,6 +350,19 @@ pre-audited, and writes are confined to that workspace. Arbitrary shell input,
 repository configuration as authority, and credentials in the sandbox are
 forbidden.
 
+M4 resource budgets are declared exclusively by the versioned ForgeFlow policy
+profile for the controlled fixture. Repository configuration, Issue content,
+user requests, and agent output cannot override them. The profile must declare
+`max_wall_clock_ms`, `max_sandbox_lifetime_ms`,
+`max_command_output_bytes`, `max_workspace_write_bytes`,
+`max_artifact_bytes`, `max_diff_bytes`, `max_changed_files`,
+`max_tool_calls`, and `max_automatic_retries: 0`. A reached limit produces the
+`resource_limit_exceeded` execution failure reason and blocks every subsequent
+commit, Draft PR, or other mutation. CPU and memory limits are not M4 policy
+guarantees unless the local controlled harness can demonstrate reliable
+enforcement; until then they are future execution-environment capability
+assessment inputs only.
+
 M4 creates a deterministic `PatchIntent` and `PatchArtifact` rather than
 interpreting a `PatchProposal` as write authority. Before a patch is applied,
 the policy profile must evaluate target paths, diff bounds, sensitive paths,

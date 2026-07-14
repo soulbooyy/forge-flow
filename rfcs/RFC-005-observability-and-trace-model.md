@@ -87,6 +87,23 @@ encryption, and multi-tenant access control. Those are enterprise-governance
 requirements for a later OpenSpec and must not be inferred from this local MVP
 store.
 
+### M4 Resource-Budget Audit Boundary
+
+The versioned ForgeFlow policy profile is the only source of M4 resource
+budgets. It must define `max_wall_clock_ms`, `max_sandbox_lifetime_ms`,
+`max_command_output_bytes`, `max_workspace_write_bytes`,
+`max_artifact_bytes`, `max_diff_bytes`, `max_changed_files`,
+`max_tool_calls`, and `max_automatic_retries: 0`. Repository configuration,
+Issue input, user requests, and agent output cannot override these values.
+
+`DurableRunSummary` must reference the policy-profile ID and version, record
+each configured limit and corresponding bounded observed value, and state
+whether a limit was reached. Any reached limit is recorded as
+`resource_limit_exceeded` and prevents a later external mutation. CPU and
+memory values are absent from M4's guaranteed budget contract unless the local
+controlled harness proves their reliable enforcement; they remain a future
+execution-environment assessment concern.
+
 ### M4 Layered Terminal Audit Boundary
 
 `DurableRunSummary` must preserve the distinction between governance decision,
@@ -120,8 +137,6 @@ path.
 
 ## Open Questions
 
-- Which bounded execution/resource fields are required for the first summary
-  schema?
 - Which summary fields are safe to publish in a Draft PR body?
 - What retention, encryption, access-control, and remote-backend policy is
   required before enterprise repository onboarding?

@@ -48,12 +48,18 @@ The M4 readiness suite must prove at least:
 - secret matches, scanner failures, and redaction failures use fail-closed
   policy outcomes;
 - validation and execution terminals produce no implicit retry;
+- only the versioned fixture policy profile can supply resource budgets;
+  repository, Issue, user, and agent inputs cannot override them;
+- every configured M4 resource limit is recorded with its observed value, and
+  every triggered limit produces `resource_limit_exceeded` before any later
+  mutation;
 - idempotency prevents duplicate branch, commit, or Draft PR creation;
 - summaries and PR bodies exclude prohibited raw payloads.
 
 ## Open Questions
 
-- Which measurable limits and pass thresholds define M4 acceptance?
+- Which concrete fixture-profile values and pass thresholds define M4
+  acceptance?
 - How will a real GitHub fixture repository be reset and audited between runs?
 - Which fault-injection mechanisms can prove adapter, sandbox, and persistence
   failure semantics without widening authority?
