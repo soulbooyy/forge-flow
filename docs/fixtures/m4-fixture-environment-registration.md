@@ -150,11 +150,27 @@ expected values. Draft PR bodies, summaries, and artifact references tolerate
 no prohibited or unredacted content. Every scenario with an external side
 effect must complete reset and retain redacted audit evidence.
 
+## Fault-Injection Boundary
+
+M4 fault injection is deterministic and occurs only at ForgeFlow-owned local
+controlled harness and adapter seams. Required cases are sandbox unavailable,
+command failed, timeout, cancellation, parser failure, secret-scan/redaction
+failure, artifact temporary-write/atomic-publish failure, policy/approval/base-
+revision/idempotency conflict, and GitHub adapter pre-mutation or post-request
+ambiguous-result failure.
+
+Every non-allowed path uses a fake or controlled adapter and must produce zero
+external mutations. Only the single registered allowed path may call the real
+GitHub adapter, followed by the registered reset/audit procedure. Fault
+injection must not introduce arbitrary shell, network access, credentials, or
+environment variables; bypass policy; fabricate authorization; or change
+immutable lineage.
+
 ## Registration Status
 
 ```yaml
 status: Registered # Pending | Registered | Approved
-readiness_blocker: Fault-injection approach and Phase 0 closure review approval remain required.
+readiness_blocker: Evaluation-matrix reconciliation and Phase 0 closure review approval remain required.
 ```
 
 `Registered` means that the controlled external environment supplied and the

@@ -85,10 +85,21 @@ The registered fixture profile defines these M4 acceptance thresholds:
 - every external-side-effect scenario completes reset and retains redacted
   audit evidence.
 
-## Open Questions
+### M4 Deterministic Fault Injection
 
-- Which fault-injection mechanisms can prove adapter, sandbox, and persistence
-  failure semantics without widening authority?
+Fault injection is a fixed acceptance requirement at ForgeFlow-owned local
+controlled harness and adapter seams. It must deterministically cover sandbox
+unavailable, command failure, timeout, cancellation, parser failure,
+secret-scan/redaction failure, artifact temporary-write/atomic-publish failure,
+policy/approval/base-revision/idempotency conflicts, and GitHub adapter
+pre-mutation plus post-request ambiguous-result failures.
+
+Every non-allowed fault path uses a fake or controlled adapter and must produce
+zero external mutations. Only the single registered allowed path may invoke the
+real GitHub adapter, and it must complete the registered reset/audit procedure.
+Fault injection must not introduce arbitrary shell execution, network access,
+credentials, or environment variables; bypass policy; fabricate authorization;
+or change immutable lineage.
 
 ## M4 Readiness Preconditions
 
@@ -116,11 +127,11 @@ base revision, fixture-only fine-grained credential mode, reset/audit procedure,
 and versioned budget values in the registration record. No credential value is
 recorded in this RFC or in the registration document.
 
-The registration and acceptance-threshold prerequisites are satisfied. The
-complete evaluation gate remains unapproved until the required fault-injection
-approach, a reconciled evaluation matrix, and Phase 0 closure review approval
-are complete. It therefore does not authorize an M4 OpenSpec, branch/worktree,
-GitHub mutation, or implementation.
+The registration, acceptance-threshold, and fault-injection prerequisites are
+satisfied. The complete evaluation gate remains unapproved until its evaluation
+matrix is reconciled and Phase 0 closure review approval is complete. It
+therefore does not authorize an M4 OpenSpec, branch/worktree, GitHub mutation,
+or implementation.
 
 ## Decision Summary
 
