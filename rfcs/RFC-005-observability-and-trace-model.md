@@ -135,9 +135,27 @@ not persist the raw Issue body or complete GitHub response. This preserves
 input lineage without creating a general external-data ingestion or retention
 path.
 
+### M4 Draft PR Body Publication Boundary
+
+The Draft PR body is a deterministic, redacted view rendered by the
+ForgeFlow-owned GitHub adapter from structured contract references. Its
+publishable whitelist is: redacted task summary and fixture Issue identity;
+base revision and branch/commit identity; `PatchArtifact` ID; bounded change
+summary and policy-allowed changed-file list; `ExecutionAttempt` status and
+validation summary; `SecretScanResult` status; `ReviewResult` finding count
+and severity summary; policy-profile ID/version and final Policy Decision
+Record outcome; an approval reference when present; and `DurableRunSummary` /
+trace references.
+
+The body must exclude raw Issue text, raw diff or source, commands and output,
+complete logs, environment information, temporary paths, credentials, complete
+GitHub payloads, and unredacted findings. It must pass the same versioned
+secret-scan and redaction gate as a persistable artifact before the adapter may
+create a Draft PR. A failed or indeterminate scan, or redaction that cannot be
+proved safe, blocks publication.
+
 ## Open Questions
 
-- Which summary fields are safe to publish in a Draft PR body?
 - What retention, encryption, access-control, and remote-backend policy is
   required before enterprise repository onboarding?
 

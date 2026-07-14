@@ -32,6 +32,12 @@ installation token; a fixture-only fine-grained test token is the limited
 fallback. Merge, default-branch writes, protection-rule changes, and all other
 production GitHub mutations are excluded.
 
+The adapter renders the Draft PR body deterministically from scanned, redacted
+ForgeFlow contracts. Its limited publication whitelist and its pre-publication
+secret-scan/redaction gate are defined by RFC-004 and RFC-005. It must block,
+rather than publish, any raw external payload, unredacted finding, scan failure,
+or indeterminate safety result.
+
 ## Consequences
 
 - M4 validates an auditable external-effect path without granting general

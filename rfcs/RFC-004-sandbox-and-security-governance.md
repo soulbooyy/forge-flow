@@ -442,6 +442,26 @@ action. `PRResult` is likewise an external-side-effect record only: it states
 whether the branch, commit, and Draft PR were created, or why they were not;
 it never authorizes those mutations.
 
+#### M4 Draft PR Body Publication Boundary
+
+The GitHub adapter renders a Draft PR body deterministically from
+ForgeFlow-owned, already scanned and redacted structured contracts. It must not
+concatenate content directly from an agent, provider, or external payload. The
+only publishable fields are a redacted task summary and fixture Issue identity;
+base revision and branch/commit identity; `PatchArtifact` ID; bounded change
+summary and policy-allowed changed-file list; `ExecutionAttempt` status and
+validation summary; `SecretScanResult` status; `ReviewResult` finding count
+and severity summary; policy-profile ID/version and final Policy Decision
+Record outcome; approval reference when present; and `DurableRunSummary` / trace
+references.
+
+The PR body must not include raw Issue text, diff or source content, commands
+or their output, complete logs, environment information, temporary paths,
+credentials, GitHub API payloads, or any unredacted finding. Before Draft PR
+creation, it must pass the same versioned secret-scan and redaction gate as the
+artifact pipeline. A scan failure, indeterminate rule result, or inability to
+prove safe redaction blocks Draft PR creation.
+
 ### Milestone 3 Validation and Review Readiness
 
 Milestone 3 may not interpret a `PatchProposal`, including a proposal's
