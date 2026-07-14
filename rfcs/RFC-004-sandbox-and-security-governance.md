@@ -373,6 +373,20 @@ guarantees unless the local controlled harness can demonstrate reliable
 enforcement; until then they are future execution-environment capability
 assessment inputs only.
 
+M4 permits exactly one fixture-specific structured command capability:
+`fixture-test-runner-v1`, executing `python3 -m unittest discover -s tests`
+from `workspace_root`, with an empty allowed environment, a 120000 ms timeout,
+and a 65536-byte output limit. The executable, argument order, and working
+directory must match exactly; no extra arguments, shell wrapper, environment
+injection, network access, dependency installation, or dynamic command source
+is permitted. `CommandIntent` must record this command ID and the applied
+policy-profile version. A command-specific budget can only reference or narrow
+the fixture profile's budget; it cannot exceed it. The output limit matches the
+registered `max_command_output_bytes: 65536`. Limit exhaustion is
+`resource_limit_exceeded`; a command mismatch is `policy_blocked`. Future
+commands or larger budgets require a new versioned policy profile and a
+separate OpenSpec.
+
 M4 creates a deterministic `PatchIntent` and `PatchArtifact` rather than
 interpreting a `PatchProposal` as write authority. Before a patch is applied,
 the policy profile must evaluate target paths, diff bounds, sensitive paths,
@@ -397,7 +411,7 @@ failure, and an indeterminate security-rule result are fixed to
 Approval because ForgeFlow cannot prove the safety or integrity of the artifact,
 PR body, or audit data. `requires_human_approval` remains for explicit,
 interpretable governance escalations such as sensitive paths, pre-execution
-threshold review, non-allowlisted commands, and stale base revisions.
+threshold review and stale base revisions.
 
 The local controlled artifact store is outside the sandbox workspace and target
 repository. The local controlled harness alone injects its root; user input,
@@ -414,10 +428,12 @@ execution or a Draft PR; a new Policy Decision Record selects the outcome.
 
 For the allowlisted fixture repository only, a fresh `allowed` decision may
 automate branch, commit, and Draft PR creation. Any changed repository or base
-revision, changed artifact, sensitive path, secret warning, threshold breach,
-or non-allowlisted command requires a bound ApprovalRequest. `blocked` is a
-terminal state and approval cannot bypass it. Approval binds action, artifact,
-policy version, and repository revision and expires on any input change.
+revision, changed artifact, sensitive path, secret warning, or threshold breach
+requires a bound ApprovalRequest. A command that does not exactly match the
+single registered command capability is `blocked`, not approval-eligible.
+`blocked` is a terminal state and approval cannot bypass it. Approval binds
+action, artifact, policy version, and repository revision and expires on any
+input change.
 
 #### M4 Controlled GitHub Issue Input
 

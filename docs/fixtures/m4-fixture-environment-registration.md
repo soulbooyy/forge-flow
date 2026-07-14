@@ -135,7 +135,39 @@ Scanner failure, redaction failure, and any indeterminate security result are
 fixed to `PolicyDecisionRecord.outcome: blocked`; they never enter human
 approval. `requires_human_approval` remains available only for policy-defined,
 interpretable governance escalations such as sensitive paths, pre-execution
-threshold review, non-allowlisted commands, and stale base revisions.
+threshold review and stale base revisions.
+
+## Command Allowlist
+
+```yaml
+command_allowlist:
+- command_id: fixture-test-runner-v1
+  executable: python3
+  args:
+  - -m
+  - unittest
+  - discover
+  - -s
+  - tests
+  working_directory: workspace_root
+  allowed_environment: []
+  timeout_ms: 120000
+  max_output_bytes: 65536
+```
+
+This is the sole M4 fixture-specific execution capability, not a ForgeFlow
+general command allowlist. The executable, argument order, working directory,
+and empty environment must match exactly; extra arguments, shell wrappers,
+network access, dependency installation, and dynamic values from users, Issues,
+repository configuration, or agents are forbidden. `CommandIntent` records
+`command_id` and the policy-profile version in its immutable lineage.
+
+Command-specific limits may only reference or narrow the registered fixture
+profile budget; they may not exceed it. This command's `max_output_bytes` equals
+the registered `max_command_output_bytes: 65536`. A timeout or output limit
+exhaustion is `resource_limit_exceeded`; a command mismatch is
+`policy_blocked`. Any future command or larger budget requires a new versioned
+policy profile and a separate OpenSpec.
 
 ## Evaluation Acceptance Thresholds
 
