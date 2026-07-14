@@ -14,6 +14,7 @@ RFCs/ADRs, or the canonical implementation plan.
 - [RFC-004](../../../rfcs/RFC-004-sandbox-and-security-governance.md)
 - [ADR-008](../../../adr/ADR-008-use-contract-first-deterministic-fixtures-for-m3.md)
 - [Implementation execution](../../process/implementation-execution.md)
+- [Milestone 3 retrospective](../../../retrospectives/m3-validation-review-slice.md)
 
 ## Execution Environment
 
@@ -28,10 +29,10 @@ RFCs/ADRs, or the canonical implementation plan.
 | Field | Value |
 | --- | --- |
 | Milestone | Validation and Review Slice |
-| State | All implementation phases accepted; awaiting user confirmation. |
+| State | Completed; closure verification recorded. |
 | Completed through | Phase 4 — Acceptance and Hardening |
 | Next phase | None — M3 implementation complete. |
-| Implementation authorization | No further M3 work is authorized pending user confirmation. |
+| Implementation authorization | No further M3 implementation is authorized; closure recorded. |
 
 ## Phase Index
 
@@ -71,3 +72,7 @@ RFCs/ADRs, or the canonical implementation plan.
   validation and static side-effect checks passed, and the follow-up approved
   independent review found no remaining issue. M3 implementation is complete;
   await user confirmation before closure or integration.
+- 2026-07-14: Completed M3 closure verification, reconciled OpenSpec tasks and
+  project-level navigation, and recorded the milestone retrospective. The
+  branch is eligible for normal integration review; integration remains a
+  separate Git decision.

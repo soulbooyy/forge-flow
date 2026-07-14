@@ -39,7 +39,7 @@ The long-term vision is autonomous software maintenance. The first implementatio
 | Milestone 0 | Project Foundation | Establish project boundaries, documentation system, RFC roadmap, and scope corrections. | Foundation documents, RFC roadmap, and initial ADRs. | Near Complete | Initial architecture draft |
 | Milestone 1 | Repository Context Foundation Slice | Build the first deterministic repository context capability. | Repository Context Service OpenSpec and `RepositoryContextResult`. | Completed | Milestone 0, RFC-001/002/004/007 skeleton decisions |
 | Milestone 2 | Structured PatchProposal Slice | Produce evidence-backed patch intent from repository context. | Fixture-only `PatchProposal` contract and governed policy boundary. | Completed | Milestone 1, RFC-002/003/004 |
-| Milestone 3 | Validation and Review Slice | Validate patches and produce blocking-level review results. | `ValidationResult`, `ReviewResult`, bounded retry policy. | Planned | Milestone 2, RFC-004/005/006 |
+| Milestone 3 | Validation and Review Slice | Establish fixture-only validation facts and blocking-level review findings. | `ValidationResult`, `ValidationTerminal`, `ReviewResult`, and policy lineage contracts. | Completed | Milestone 2, RFC-002/003/004 |
 | Milestone 4 | Draft PR MVP Vertical Slice | Complete the first GitHub Issue to Draft PR MVP path. | Controlled draft PR from a fixture or test repository. | Planned | Milestone 3, GitHub/tool policy decisions |
 | Milestone 5 | Evaluation and Observability Hardening | Strengthen trace, run summary, redaction, and evaluation. | Reliable eval metrics and product-level run summaries. | Planned | Milestone 4 |
 | Milestone 6 | Enterprise Integrations and Scaling | Add optional enterprise integrations after the core loop is stable. | Policy-gated integrations and scalable deployment direction. | Future | Milestone 5 |
@@ -171,6 +171,10 @@ Exit criteria:
 - basic tests or fixtures exist
 
 ## 7. Milestone 3: Validation and Review Slice
+
+Status: completed. The implementation and closure evidence are recorded in the
+[Milestone 3 progress index](../../milestones/m3-validation-review-slice/progress.md)
+and [retrospective](../../../retrospectives/m3-validation-review-slice.md).
 
 Goal: establish auditable, immutable `ValidationResult`, `ValidationTerminal`,
 and `ReviewResult` contracts so ForgeFlow can model validation facts, terminal
@@ -403,8 +407,8 @@ Current milestone:
 
 ```text
 Milestone 3: Validation and Review Slice
-Status: Architecture, specification, and canonical planning complete; implementation not authorized
-Next stage: await explicit Phase 1 authorization and required execution-environment assignment
+Status: Completed; closure verification recorded
+Next stage: architecture and specification preparation for Milestone 4
 ```
 
 Completed:
@@ -421,10 +425,11 @@ Completed:
 - Milestone 1 and full MVP boundary clarified.
 - Milestone 2 fixture-only PatchProposal contract and conservative policy
   boundary completed and closure-verified.
+- Milestone 3 fixture-only validation, terminal, review, and policy-lineage
+  contracts completed and closure-verified.
 
 Next steps:
 
-- retain M2's fixture-only contract and conservative policy profile as the
-  dependency boundary for M3
+- retain M1–M3 contracts as the dependency boundary for Milestone 4 planning
 - do not introduce a real provider, MCP, DeerFlow runtime, sandbox, command,
-  test, Git, or PR behavior during M3
+  test, Git, or PR behavior without newly accepted scope and governance

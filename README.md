@@ -24,8 +24,8 @@ ForgeFlow is not a general coding assistant, chatbot, or toy agent demo. It is i
 ForgeFlow is currently in:
 
 ```text
-Current phase: Milestone 2 closure complete
-Next stage: architecture and specification preparation for Milestone 3
+Current phase: Milestone 3 closure complete
+Next stage: architecture and specification preparation for Milestone 4
 ```
 
 The project foundation documentation, accepted architecture baseline, DeerFlow
@@ -47,6 +47,14 @@ safe validation envelopes only; it does not call a provider, create a diff,
 read or mutate a workspace, run commands/tests, or perform Git/PR actions. See
 the [Milestone 2 progress index](docs/milestones/m2-structured-patchproposal/progress.md)
 and [retrospective](retrospectives/m2-structured-patchproposal.md).
+
+Milestone 3 added immutable, fixture-only `ValidationResult`,
+`ValidationTerminal`, and `ReviewResult` contracts with independent policy,
+artifact, and evidence lineage. It records completed deterministic facts,
+governance terminals, and review findings without granting command authority or
+introducing sandbox, workspace, network, retry, provider, Git, or PR behavior.
+See the [Milestone 3 progress index](docs/milestones/m3-validation-review-slice/progress.md)
+and [retrospective](retrospectives/m3-validation-review-slice.md).
 
 The later MVP is the GitHub Issue to Draft PR vertical slice:
 
@@ -107,7 +115,7 @@ The project should not move from architecture to implementation until the releva
 
 ## Next Steps
 
-1. Review the Milestone 2 retrospective and closure evidence.
-2. Establish the architecture and OpenSpec scope for Milestone 3.
+1. Review the Milestone 3 retrospective and closure evidence.
+2. Establish the architecture and OpenSpec scope for Milestone 4.
 3. Keep provider integration, code mutation, validation execution, and PR
    behavior outside work until their own contracts and governance are accepted.

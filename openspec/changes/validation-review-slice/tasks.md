@@ -14,16 +14,19 @@
   envelopes, lineage, identity, fixture, policy-reference, and failure rules.
 - [x] Define acceptance scenarios for completed facts, governance terminals,
   review findings, redaction, and absence of side effects.
-- [ ] After review of this OpenSpec and relevant RFC/ADR authority, create the
+- [x] After review of this OpenSpec and relevant RFC/ADR authority, create the
   non-authoritative AI-assisted M3 draft implementation plan only when the
   user explicitly requests `writing-plans`.
-- [ ] Reconcile that draft into the sole canonical M3 implementation plan.
-- [ ] Create M3 milestone index and `progress.md` only with the canonical plan.
+- [x] Reconcile that draft into the sole canonical M3 implementation plan.
+- [x] Create M3 milestone index and `progress.md` only with the canonical plan.
 
 ## Implementation
 
-- [ ] Do not begin implementation until a canonical M3 plan exists, the user
-  authorizes Phase 1, and the milestone execution environment is assigned.
-- [ ] Keep every later M3 phase fixture-only; do not add command execution,
+Implementation completed through all four accepted canonical phases. The
+accepted fixture-only boundary remains closed to additional execution scope.
+
+- [x] Begin implementation only after the canonical M3 plan, explicit Phase 1
+  authorization, and assigned milestone execution environment were recorded.
+- [x] Keep every later M3 phase fixture-only; do not add command execution,
   sandbox behavior, workspace access, network, dynamic installation, retries,
   or provider/runtime integration.

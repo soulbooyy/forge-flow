@@ -16,7 +16,11 @@ integration, workspace access, retry, repair, and all external side effects.
 - [ADR-008: Contract-First Deterministic Fixtures for M3](../../../adr/ADR-008-use-contract-first-deterministic-fixtures-for-m3.md)
 - [Canonical implementation plan](implementation-plan.md)
 - [Progress](progress.md)
+- [Retrospective](../../../retrospectives/m3-validation-review-slice.md)
 
 ## Phase Completion Records
 
-No implementation phase has completed.
+- [Phase 1: Contract Foundation and Canonical Fixtures](phases/phase-1-contract-foundation-and-canonical-fixtures.md)
+- [Phase 2: Deterministic Policy and Attempt Fixtures](phases/phase-2-deterministic-policy-and-attempt-fixtures.md)
+- [Phase 3: Validation and Review Assembly Service](phases/phase-3-validation-and-review-assembly-service.md)
+- [Phase 4: Acceptance and Hardening](phases/phase-4-acceptance-and-hardening.md)
