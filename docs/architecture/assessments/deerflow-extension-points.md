@@ -52,6 +52,15 @@ ForgeFlow product boundary without an adapter:
 | Sandbox lifecycle | `sandbox/middleware.py` acquires a sandbox lazily and documents reuse across thread turns; `sandbox_config.py` permits environment injection and multiple providers. | Not an M4 sandbox default: M4 requires a temporary fixed-revision workspace, no credentials, no network, no dynamic installation, and policy-bound command execution. |
 | Trace/journal | Guardrail journaling is optional/best-effort; README/config expose external tracing integrations. | Trace hooks may supply correlation references only. They are not durable product audit storage and must not receive unredacted M4 payloads. |
 
+The source also shows that the runtime middleware builder defines a concrete
+tool-wrapper order and that `GraphBubbleUp`/interrupt nodes can propagate
+pause signals. Those are useful substrate observations, not stable ForgeFlow
+integration guarantees: the builder is an internal DeerFlow assembly detail,
+and the pause signal has no ForgeFlow `ApprovalRequest`/Decision lifecycle.
+An M4 adapter must therefore own policy-before-tool ordering and map a paused
+run to explicit ForgeFlow approval contracts; it must not depend on the
+existing internal middleware list as its enforcement proof.
+
 The capability gate is therefore **not accepted**. The next assessment work
 must prove a ForgeFlow-owned adapter can enforce the required middleware order,
 policy-before-tool semantics, approval pause/resume mapping, sandbox profile,

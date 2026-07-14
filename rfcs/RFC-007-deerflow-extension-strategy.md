@@ -198,6 +198,13 @@ external tracing is not durable product storage. The M4 capability gate remains
 blocked until an adapter design proves those mappings without undocumented
 dependencies.
 
+The source-level review additionally observes an internal middleware builder
+with explicit wrapper ordering and LangGraph interruption propagation. M4 may
+use those only as assessed runtime substrate. It must not make their internal
+ordering a policy guarantee or equate an interrupt with ApprovalRequest state;
+the ForgeFlow adapter owns both mappings and fails closed when the runtime
+cannot provide the required boundary.
+
 ### Option A: DeerFlow as Separate Local Reference Repository
 
 Benefits:
