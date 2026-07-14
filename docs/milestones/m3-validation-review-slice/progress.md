@@ -28,10 +28,10 @@ RFCs/ADRs, or the canonical implementation plan.
 | Field | Value |
 | --- | --- |
 | Milestone | Validation and Review Slice |
-| State | Phase 3 accepted; implementation paused. |
-| Completed through | Phase 3 — Validation and Review Assembly Service |
-| Next phase | Phase 4 — Acceptance and Hardening |
-| Implementation authorization | Phase 4 is not authorized. |
+| State | All implementation phases accepted; awaiting user confirmation. |
+| Completed through | Phase 4 — Acceptance and Hardening |
+| Next phase | None — M3 implementation complete. |
+| Implementation authorization | No further M3 work is authorized pending user confirmation. |
 
 ## Phase Index
 
@@ -40,7 +40,7 @@ RFCs/ADRs, or the canonical implementation plan.
 | 1 | Contract Foundation and Canonical Fixtures | Accepted | `d7b84f6` | [Phase 1 record](phases/phase-1-contract-foundation-and-canonical-fixtures.md) |
 | 2 | Deterministic Policy and Attempt Fixtures | Accepted | `569d1f2` | [Phase 2 record](phases/phase-2-deterministic-policy-and-attempt-fixtures.md) |
 | 3 | Validation and Review Assembly Service | Accepted | `695d6ef` | [Phase 3 record](phases/phase-3-validation-and-review-assembly-service.md) |
-| 4 | Acceptance and Hardening | Not started | — | — |
+| 4 | Acceptance and Hardening | Accepted | `336c417` | [Phase 4 record](phases/phase-4-acceptance-and-hardening.md) |
 
 ## Change Log
 
@@ -66,3 +66,8 @@ RFCs/ADRs, or the canonical implementation plan.
 - 2026-07-14: Accepted Phase 3 fixture-only service assembly in `695d6ef`;
   targeted tests passed 4/4, full suite passed 120/120, and independent review
   verified the safe forbidden-payload correction. Phase 4 is not authorized.
+- 2026-07-14: Accepted Phase 4 acceptance and hardening in `336c417`;
+  targeted tests passed 3/3, the full suite passed 123/123, strict OpenSpec
+  validation and static side-effect checks passed, and the follow-up approved
+  independent review found no remaining issue. M3 implementation is complete;
+  await user confirmation before closure or integration.
