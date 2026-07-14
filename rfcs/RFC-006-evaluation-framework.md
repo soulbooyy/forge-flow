@@ -121,6 +121,11 @@ Fault injection must not introduce arbitrary shell execution, network access,
 credentials, or environment variables; bypass policy; fabricate authorization;
 or change immutable lineage.
 
+The `sandbox_unavailable` case must verify that the OCI adapter rejects a
+backend that cannot prove the ADR-011 network, credential, image-digest,
+workspace, and dynamic-installation constraints, without falling back to host
+execution or producing an external mutation.
+
 ## M4 Readiness Preconditions
 
 Each later M4 OpenSpec must name its evaluation fixtures, terminal cases,

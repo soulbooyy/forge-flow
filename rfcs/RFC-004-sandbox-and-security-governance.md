@@ -350,6 +350,16 @@ pre-audited, and writes are confined to that workspace. Arbitrary shell input,
 repository configuration as authority, and credentials in the sandbox are
 forbidden.
 
+Per ADR-011, this boundary is supplied by a ForgeFlow-owned OCI container
+adapter, not a host process, DeerFlow sandbox, or runtime default. Every
+`ExecutionAttempt` uses a pre-audited image pinned by immutable digest and a
+temporary workspace destroyed at attempt end. The adapter enforces no network,
+no credential injection, no dynamic dependency installation, workspace-only
+writes, and no artifact-store mount. Docker or Podman may satisfy this contract
+without becoming a ForgeFlow dependency. If a backend cannot prove every
+capability, the harness must fail closed as `sandbox_unavailable`; host-process
+fallback is forbidden.
+
 M4 resource budgets are declared exclusively by the versioned ForgeFlow policy
 profile for the controlled fixture. Repository configuration, Issue content,
 user requests, and agent output cannot override them. The profile must declare
