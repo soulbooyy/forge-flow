@@ -79,7 +79,8 @@ acceptance thresholds.
 | --- | --- | --- | --- |
 | Registered allowlisted clean path | `allowed` | Successful execution; at most one branch, commit, and Draft PR | At most 1 of each |
 | Non-allowlisted repository or Issue | `blocked` | `not_started` / `policy_blocked` | 0 |
-| Scanner failure, redaction failure, or indeterminate security rule | `blocked` | `not_started` / `policy_blocked`; no persistable or publishable artifact | 0 |
+| Scanner failure or indeterminate security rule | `blocked` | `not_started` / `policy_blocked`; no persistable or publishable artifact | 0 |
+| Redaction failure after artifact generation | `blocked` | `failed` / `redaction_failed`; raw or partial artifact is neither published nor referenced | 0 |
 | Confirmed secret match | `blocked` | `not_started` / `policy_blocked`; no commit or Draft PR | 0 |
 | Sensitive path, pre-execution threshold review, non-allowlisted command, or stale base revision | `requires_human_approval` | Bound ApprovalRequest; `not_started` / `approval_required` or `base_revision_mismatch` | 0 before a new approved evaluation |
 | Approval expired or inputs changed | `requires_human_approval` | Previous approval unusable; `not_started` / `approval_required` | 0 |
@@ -146,11 +147,10 @@ base revision, fixture-only fine-grained credential mode, reset/audit procedure,
 and versioned budget values in the registration record. No credential value is
 recorded in this RFC or in the registration document.
 
-The registration, acceptance-threshold, and fault-injection prerequisites are
-satisfied. The complete evaluation gate remains unapproved until its evaluation
-matrix is reconciled and Phase 0 closure review approval is complete. It
-therefore does not authorize an M4 OpenSpec, branch/worktree, GitHub mutation,
-or implementation.
+The registration, acceptance-threshold, fault-injection, and evaluation-matrix
+prerequisites are satisfied. The complete evaluation gate remains unapproved
+until Phase 0 closure review approval is complete. It therefore does not
+authorize an M4 OpenSpec, branch/worktree, GitHub mutation, or implementation.
 
 ## Decision Summary
 

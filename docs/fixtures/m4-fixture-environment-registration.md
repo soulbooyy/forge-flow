@@ -180,7 +180,7 @@ immutable lineage.
 
 ```yaml
 status: Registered # Pending | Registered | Approved
-readiness_blocker: Evaluation-matrix reconciliation and Phase 0 closure review approval remain required.
+readiness_blocker: Phase 0 closure review approval remains required.
 ```
 
 `Registered` means that the controlled external environment supplied and the
