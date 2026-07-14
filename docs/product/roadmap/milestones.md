@@ -215,6 +215,10 @@ Exit criteria:
 
 ## 8. Milestone 4: Draft PR MVP Vertical Slice
 
+Status: Execution Architecture Readiness in progress. M4 must not create one
+OpenSpec for the complete Issue-to-Draft-PR path, and no implementation
+environment is authorized until the readiness gates below are accepted.
+
 Goal: complete the first true vertical MVP:
 
 ```text
@@ -259,6 +263,32 @@ Exit criteria:
 - validation retry is bounded
 - run summary is persisted
 - evaluation result is recorded
+
+### M4 Feature Decomposition and Readiness Gates
+
+M4 will use multiple dependent feature changes rather than one end-to-end
+OpenSpec:
+
+1. **Governed action and sandbox boundary** — `ActionIntent`/`CommandIntent`,
+   policy evaluation, temporary fixed-revision workspace, and terminal
+   execution semantics.
+2. **Deterministic patch artifact and security scanning** — `PatchIntent`,
+   `PatchArtifact`, path/diff controls, `SecretScanResult`, redaction, and
+   immutable lineage.
+3. **Approval, trace, and durable summary** — ApprovalRequest/Decision,
+   execution-attempt lineage, local controlled artifact store, and
+   ForgeFlow-owned DurableRunSummary.
+4. **Fixture-repository GitHub Draft PR adapter** — allowlisted repository
+   identity, opaque credential boundary, idempotent branch/commit materialization,
+   and Draft PR result.
+5. **M4 evaluation and acceptance** — controlled fault cases, policy terminals,
+   idempotency, redaction, and end-to-end evidence.
+
+Each change requires its own accepted architecture inputs, Grill-Me review,
+OpenSpec, and readiness gate. The first M4 change remains blocked until
+RFC-004/005/006/007 design boundaries are accepted, the DeerFlow adapter
+capability gate is accepted or a local harness is formally selected, and the
+cross-contract lineage is reconciled.
 
 ## 9. Milestone 5: Evaluation and Observability Hardening
 
