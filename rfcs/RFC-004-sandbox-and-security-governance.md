@@ -381,6 +381,14 @@ as selected by policy; it never defaults to allow. A `SecretScanResult` is an
 immutable lineage contract, and a redacted artifact is distinct from its raw
 source.
 
+For the M4 registered fixture policy profile, scanner failure, redaction
+failure, and an indeterminate security-rule result are fixed to
+`PolicyDecisionRecord.outcome: blocked`. They are not eligible for Human
+Approval because ForgeFlow cannot prove the safety or integrity of the artifact,
+PR body, or audit data. `requires_human_approval` remains for explicit,
+interpretable governance escalations such as sensitive paths, pre-execution
+threshold review, non-allowlisted commands, and stale base revisions.
+
 The local controlled artifact store is outside the sandbox workspace and target
 repository. The local controlled harness alone injects its root; user input,
 agent output, Issue content, and repository configuration cannot choose or

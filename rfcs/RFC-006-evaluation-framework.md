@@ -69,6 +69,25 @@ The M4 readiness suite must prove at least:
 - idempotency prevents duplicate branch, commit, or Draft PR creation;
 - summaries and PR bodies exclude prohibited raw payloads.
 
+### Reconciled M4 Evaluation Matrix
+
+The registered fixture profile requires these minimum deterministic scenarios.
+Each scenario produces the stated immutable lineage and must meet the registered
+acceptance thresholds.
+
+| Scenario | Expected PDR outcome | Expected execution / side-effect result | External mutations |
+| --- | --- | --- | --- |
+| Registered allowlisted clean path | `allowed` | Successful execution; at most one branch, commit, and Draft PR | At most 1 of each |
+| Non-allowlisted repository or Issue | `blocked` | `not_started` / `policy_blocked` | 0 |
+| Scanner failure, redaction failure, or indeterminate security rule | `blocked` | `not_started` / `policy_blocked`; no persistable or publishable artifact | 0 |
+| Confirmed secret match | `blocked` | `not_started` / `policy_blocked`; no commit or Draft PR | 0 |
+| Sensitive path, pre-execution threshold review, non-allowlisted command, or stale base revision | `requires_human_approval` | Bound ApprovalRequest; `not_started` / `approval_required` or `base_revision_mismatch` | 0 before a new approved evaluation |
+| Approval expired or inputs changed | `requires_human_approval` | Previous approval unusable; `not_started` / `approval_required` | 0 |
+| Runtime resource budget reached after an allowed start | prior `allowed` remains a decision fact | `failed` / `resource_limit_exceeded`; current run cannot mutate externally | 0 after the limit |
+| Sandbox, command, timeout, cancellation, parser, or artifact-publication fault | decision remains separately recorded | Corresponding terminal failure; controlled adapter records no effect | 0 |
+| GitHub adapter pre-mutation or ambiguous-result fault | fresh action decision remains separately recorded | Fake/controlled adapter records no duplicate external effect | 0 |
+| Idempotency-key replay | fresh current-input decision as required | Existing result is returned or reconciled; no new branch, commit, or Draft PR | 0 new effects |
+
 ### Registered Fixture Acceptance Thresholds
 
 The registered fixture profile defines these M4 acceptance thresholds:

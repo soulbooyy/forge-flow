@@ -118,6 +118,10 @@ max_diff_bytes: 262144
 max_changed_files: 10
 max_tool_calls: 25
 max_automatic_retries: 0
+
+scanner_failure_outcome: blocked
+redaction_failure_outcome: blocked
+uncertain_security_result_outcome: blocked
 ```
 
 This versioned fixture-only profile is the sole budget source. Repository,
@@ -126,6 +130,12 @@ Issue, request, user, and agent inputs cannot override it.
 All budget values must come from the versioned fixture policy profile. The
 repository, Issue, request, user, and agent cannot override them. Reaching any
 budget produces `resource_limit_exceeded` and blocks later mutation.
+
+Scanner failure, redaction failure, and any indeterminate security result are
+fixed to `PolicyDecisionRecord.outcome: blocked`; they never enter human
+approval. `requires_human_approval` remains available only for policy-defined,
+interpretable governance escalations such as sensitive paths, pre-execution
+threshold review, non-allowlisted commands, and stale base revisions.
 
 ## Evaluation Acceptance Thresholds
 
