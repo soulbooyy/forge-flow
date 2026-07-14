@@ -163,3 +163,10 @@ Superpowers 是推荐且可替换的执行辅助工具，不是 ForgeFlow 的 ar
 governance dependency。未来若要工具化，必须保留权威链路，且不得使 AI-assisted
 draft 变成权威来源；替换执行 framework 不得影响 RFC、ADR、OpenSpec、canonical
 plan 或 milestone lifecycle record。
+
+### 6.5 固定外部运行时版本
+
+架构评估或 adapter 所依赖的外部运行时 immutable revision 属于架构决策。不得在
+实现期间静默跟随 upstream `HEAD` 或更新该 revision。revision 升级必须先记录未
+满足的需求，完成新的 capability assessment，并通过 ADR 记录目标 revision 与迁移
+风险；在实现使用前，还必须协调受影响的 RFC、OpenSpec 和 adapter assumptions。

@@ -20,6 +20,12 @@ Review stage: Grill-Me feedback has been incorporated as current draft decisions
 - Full workflow graph integration, role runtime implementation, write/test sandbox integration, approval pause/resume, PR side effects, and full checkpoint mapping are deferred to later milestones.
 - RFC-007 must define RFC-001 DeerFlow Extension Acceptance Criteria and remain Draft until those criteria are documented.
 - RFC-007 records its current DeerFlow revision and Milestone 1 extension-point assessment in `docs/architecture/assessments/deerflow-extension-points.md`.
+- M4 Phase 0 capability assessment uses immutable DeerFlow revision
+  `c0b917cce2cd8b8644a3ed17d58ddb31adc5299a` as its reproducible baseline.
+  A revision upgrade is an architecture change: it requires evidence that the
+  current revision cannot satisfy a stated integration requirement, a fresh
+  capability assessment, an ADR recording the target revision and migration
+  risk, and reconciliation of this RFC plus affected adapter assumptions.
 
 ## Context
 
@@ -131,6 +137,16 @@ ForgeFlow may depend on documented DeerFlow extension points, but it must not si
 Any dependency on DeerFlow internal state shape, message format, checkpoint layout, tool registry internals, middleware ordering, tracing payload structure, or other undocumented runtime behavior must be recorded as an integration assumption before implementation.
 
 Boundary-crossing implementation choices require RFC, ADR, or OpenSpec documentation before use.
+
+### Pinned Revision and Upgrade Boundary
+
+The recorded immutable DeerFlow revision is part of ForgeFlow's architecture
+decision, not a convenience dependency range. Implementations must not follow
+upstream `HEAD`, silently refresh a checkout, or change the revision while
+adding an adapter. A proposed upgrade must identify the unsatisfied current
+requirement, compare extension-point capability and security implications,
+record the chosen revision and migration risk in an ADR, and update the
+capability assessment and affected RFC/OpenSpec assumptions before use.
 
 Examples of boundary-crossing decisions include:
 

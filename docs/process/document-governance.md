@@ -185,3 +185,12 @@ ForgeFlow architecture or governance dependency. Any future tooling must
 preserve the authority chain and must not make an AI-assisted draft
 authoritative; replacing an execution framework must not affect RFCs, ADRs,
 OpenSpec, the canonical plan, or milestone lifecycle records.
+
+### 6.5 Pinned External Runtime Revisions
+
+An immutable revision of an external runtime that an architecture assessment or
+adapter relies on is an architecture decision. Do not silently follow upstream
+`HEAD` or update that revision during implementation. A revision upgrade
+requires a documented unmet requirement, a fresh capability assessment, an ADR
+recording the target revision and migration risk, and reconciliation of the
+affected RFC, OpenSpec, and adapter assumptions before implementation uses it.
