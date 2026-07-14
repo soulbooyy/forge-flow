@@ -53,6 +53,27 @@ and final stop reason.
 Every persisted artifact must first pass the versioned redaction and size
 policy. A failed scan/redaction operation cannot fall back to raw persistence.
 
+### M4 Layered Terminal Audit Boundary
+
+`DurableRunSummary` must preserve the distinction between governance decision,
+execution fact, finding, and external side effect by referencing their
+immutable contracts rather than flattening them into one status. It must record
+the referenced `PolicyDecisionRecord.outcome` (`allowed`,
+`requires_human_approval`, or `blocked`) separately from the referenced
+`ExecutionAttempt.status` (`succeeded`, `failed`, `cancelled`, `timed_out`, or
+`not_started`). A non-successful attempt's bounded failure reason is one of
+`policy_blocked`, `approval_required`, `sandbox_unavailable`,
+`command_failed`, `parser_failed`, `redaction_failed`,
+`base_revision_mismatch`, or `resource_limit_exceeded`.
+
+The summary may reference `SecretScanResult`, `ReviewResult`, approval
+artifacts, and `PRResult`, but must not reinterpret a finding as authorization
+or an absent external side effect as an execution failure. It records a
+redacted, bounded stop reason and contract lineage sufficient to distinguish
+policy prevention, approval wait, execution failure, and Draft PR adapter
+failure without persisting raw command output, source, credentials, or GitHub
+payloads.
+
 ## Open Questions
 
 - What local artifact-store path, ownership, and atomic-write model will M4

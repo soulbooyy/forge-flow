@@ -380,6 +380,31 @@ or non-allowlisted command requires a bound ApprovalRequest. `blocked` is a
 terminal state and approval cannot bypass it. Approval binds action, artifact,
 policy version, and repository revision and expires on any input change.
 
+#### M4 Terminal and Failure Semantics
+
+M4 keeps governance decisions separate from execution facts. A
+`PolicyDecisionRecord` has one outcome: `allowed`,
+`requires_human_approval`, or `blocked`. `allowed` is not a completed action,
+and the other two outcomes must not be represented as fabricated command,
+exit-code, or output facts.
+
+An `ExecutionAttempt` records only lifecycle facts using `succeeded`,
+`failed`, `cancelled`, `timed_out`, or `not_started`. Any non-successful
+attempt must carry exactly one failure reason from `policy_blocked`,
+`approval_required`, `sandbox_unavailable`, `command_failed`,
+`parser_failed`, `redaction_failed`, `base_revision_mismatch`, or
+`resource_limit_exceeded`. This reason explains what happened to that attempt;
+it does not replace or create a Policy Decision Record. In particular, policy
+block and approval requirement produce an immutable `not_started` attempt
+fact, distinct from a command that actually started and later failed.
+
+`SecretScanResult` and execution-review `ReviewResult` are fact/finding
+contracts. They must not encode execution authorization or Draft PR approval.
+A fresh Policy Decision Record consumes their current lineage before any later
+action. `PRResult` is likewise an external-side-effect record only: it states
+whether the branch, commit, and Draft PR were created, or why they were not;
+it never authorizes those mutations.
+
 ### Milestone 3 Validation and Review Readiness
 
 Milestone 3 may not interpret a `PatchProposal`, including a proposal's

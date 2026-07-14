@@ -21,6 +21,9 @@ Review stage: Grill-Me feedback has been incorporated as current draft decisions
 - A future execution attempt is distinct from a validation or review contract;
   retry policy belongs to future execution-runtime governance and must not
   mutate an otherwise immutable validation contract.
+- M4 separates governance decisions, execution facts, review/scan findings,
+  and external side effects into independent immutable contracts; none may
+  silently stand in for another layer.
 
 ## Context
 
@@ -470,6 +473,76 @@ For M3, this readiness direction is now bounded as follows:
 - retry is not an M3 capability. A future execution-runtime design may attach
   bounded retry lineage to immutable attempt results, but it must define its
   own policy and terminal semantics.
+
+### M4 Execution Contract Boundary
+
+M4 extends the contract direction without granting a `PatchProposal` execution
+authority. The following are separate immutable contract families with
+explicit lineage:
+
+- `ActionIntent` describes a proposed governed action;
+- `CommandIntent` describes one structured command proposed for a controlled
+  execution environment;
+- `PatchIntent` describes a deterministic proposed patch against a fixed
+  repository revision;
+- `PatchArtifact` records the resulting, identity-bound patch artifact;
+- `ExecutionAttempt` records the lifecycle facts of one execution attempt;
+- `SecretScanResult` records deterministic scanning facts for its scoped
+  artifact(s);
+- `ReviewResult` records deterministic review findings and evidence;
+- `PolicyDecisionRecord` records a governance decision over specified current
+  inputs;
+- `ApprovalRequest` and its decision record an independently governed human
+  approval interaction when policy requires it;
+- `PRResult` records a branch, commit, and Draft PR side effect or why no such
+  side effect occurred; and
+- `DurableRunSummary` references the bounded, redacted lineage rather than
+  embedding its raw payloads.
+
+Each contract must identify its schema version and immutable contract ID. M4
+lineage must bind, where applicable, the originating `PatchProposal` contract
+ID, repository identity and fixed base revision, intent ID, artifact ID,
+attempt ID, policy-decision ID, approval ID, evidence/artifact references, and
+Draft PR result ID. A contract reference is not reusable authorization: a
+later action requires a fresh `PolicyDecisionRecord` over its current inputs.
+
+#### M4 Layered Terminal Model
+
+`PolicyDecisionRecord.outcome` is the governance layer and has exactly these
+values:
+
+- `allowed`
+- `requires_human_approval`
+- `blocked`
+
+`ExecutionAttempt.status` records only actual execution-lifecycle facts and
+has exactly these values:
+
+- `succeeded`
+- `failed`
+- `cancelled`
+- `timed_out`
+- `not_started`
+
+For every non-successful attempt, `ExecutionAttempt.failure_reason` is
+required and must be one of:
+
+- `policy_blocked`
+- `approval_required`
+- `sandbox_unavailable`
+- `command_failed`
+- `parser_failed`
+- `redaction_failed`
+- `base_revision_mismatch`
+- `resource_limit_exceeded`
+
+The failure reason explains execution facts; it neither replaces nor infers a
+policy decision. In particular, `not_started` paired with `policy_blocked` or
+`approval_required` remains distinct from a started attempt that failed.
+`SecretScanResult` and `ReviewResult` produce facts and findings only. A new
+`PolicyDecisionRecord` consumes those inputs to decide whether a later action
+is allowed, requires human approval, or is blocked. `PRResult` records an
+external side effect or why it did not occur; it never authorizes that effect.
 
 ## PRResult
 
