@@ -24,6 +24,12 @@ immutable redacted `TaskInput`; raw Issue and GitHub response payloads cannot
 enter the ForgeFlow artifact store or DurableRunSummary. Users and agents may
 not select arbitrary repositories, Issues, or organization resources.
 
+Repository owner/name/ID, Issue number/ID, fixed base commit SHA, credential
+mode, and reset/audit procedure are required fixture-environment registration
+inputs. They are not M4 architecture defaults or values the adapter may invent.
+Until a controlled profile registers them, no GitHub mutation configuration or
+implementation is authorized.
+
 The adapter may create only a controlled branch, commit, and Draft PR after a
 fresh allowed Policy Decision Record binds repository identity, base revision,
 branch/commit identity, PatchArtifact identity, and idempotency key. It uses a

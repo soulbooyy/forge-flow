@@ -21,6 +21,10 @@ patch artifacts, controlled command fixtures, and a versioned policy profile.
   were correct.
 - Evaluation evidence uses redacted references and DurableRunSummary lineage;
   it does not retain raw credentials, source, logs, or GitHub payloads.
+- The fixture environment registration package supplies actual repository/Issue
+  identity, base revision, credential mode, reset/audit procedure, budget
+  values, and acceptance thresholds; M4 architecture and implementation must
+  not invent them.
 
 ## Goals
 
@@ -68,7 +72,14 @@ The M4 readiness suite must prove at least:
 
 Each later M4 OpenSpec must name its evaluation fixtures, terminal cases,
 redaction assertions, and evidence outputs. The canonical M4 plan may begin
-only after the complete matrix and acceptance thresholds are reconciled.
+only after the complete matrix and acceptance thresholds are reconciled. The
+evaluation gate additionally requires a registered fixture environment profile
+containing fixture repository owner/name/ID, pre-registered Issue number/ID,
+fixed base commit SHA, credential mode, reset/audit ownership and recovery
+procedure, concrete resource-budget values, and acceptance thresholds. These
+are external controlled inputs rather than values an implementation may infer.
+Until registration is complete, M4 must not create a hypothetical GitHub
+mutation configuration or enter implementation.
 
 ## Decision Summary
 

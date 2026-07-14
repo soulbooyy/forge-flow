@@ -417,6 +417,16 @@ default. Enterprise Issue ingestion requires independently governed repository
 onboarding, authorization, retention, and multi-tenant policy; it is outside
 M4.
 
+The fixture environment registration is an external controlled input, not a
+contract that M4 may invent. Before a later M4 OpenSpec enables any GitHub
+adapter action, the fixture policy profile must register repository owner/name/
+ID, Issue number/ID, fixed base commit SHA, credential mode, and reset/audit
+responsibility plus recovery procedure. GitHub App installation tokens are the
+preferred mode; a fixture-only fine-grained test token is permitted only when
+the fixture environment cannot support an App installation. In the absence of
+that registration, GitHub mutation configuration and implementation are
+blocked.
+
 #### M4 Terminal and Failure Semantics
 
 M4 keeps governance decisions separate from execution facts. A

@@ -290,6 +290,11 @@ RFC-004/005/006/007 design boundaries are accepted and the cross-contract
 lineage is reconciled. M4 has formally selected a ForgeFlow-owned local
 controlled harness and runtime-neutral adapter seam; the separate DeerFlow-
 backed adapter gate remains blocked and cannot authorize implementation.
+M4 additionally requires a real external fixture-environment registration
+package before any GitHub adapter implementation: repository owner/name/ID,
+Issue number/ID, fixed base commit SHA, credential mode, reset/audit procedure,
+concrete policy budgets, and acceptance thresholds. These are controlled inputs
+and must not be invented by architecture or implementation work.
 
 ## 9. Milestone 5: Evaluation and Observability Hardening
 
