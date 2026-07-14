@@ -18,6 +18,12 @@ deny-by-default versioned policy profile. The ForgeFlow-owned GitHub adapter is
 the only component that may call GitHub APIs. Sandboxes and Command Intents do
 not receive network or GitHub credentials.
 
+The adapter may read only the pre-registered fixture Issue bound to that
+repository and its expected base revision. It must normalize the result into an
+immutable redacted `TaskInput`; raw Issue and GitHub response payloads cannot
+enter the ForgeFlow artifact store or DurableRunSummary. Users and agents may
+not select arbitrary repositories, Issues, or organization resources.
+
 The adapter may create only a controlled branch, commit, and Draft PR after a
 fresh allowed Policy Decision Record binds repository identity, base revision,
 branch/commit identity, PatchArtifact identity, and idempotency key. It uses a
@@ -32,8 +38,10 @@ production GitHub mutations are excluded.
   repository automation authority.
 - Credential material cannot enter contracts, artifacts, summaries, logs, or
   PR bodies.
+- M4 validates a real but narrowly bounded Issue-to-Draft-PR path without
+  creating a general GitHub data-ingestion capability.
 - Enterprise repository onboarding requires a separate OpenSpec/ADR with its
-  own onboarding, permission, approval, retention, and audit model.
+  own Issue-input onboarding, permission, approval, retention, and audit model.
 
 ## Related RFCs
 

@@ -380,6 +380,22 @@ or non-allowlisted command requires a bound ApprovalRequest. `blocked` is a
 terminal state and approval cannot bypass it. Approval binds action, artifact,
 policy version, and repository revision and expires on any input change.
 
+#### M4 Controlled GitHub Issue Input
+
+The GitHub adapter may perform a read-only Issue retrieval only for the
+pre-registered fixture repository, configured Issue identity, and expected base
+revision. The read operation is a governed adapter action, not sandbox network
+access, and it must produce evidence sufficient to bind the resulting task to
+that repository and revision.
+
+The adapter normalizes the result into a redacted immutable `TaskInput` before
+it enters ForgeFlow workflow state. Raw GitHub Issue payloads must not be
+persisted in the controlled artifact store or `DurableRunSummary`. User- or
+agent-selected Issues, repositories, and organization resources are denied by
+default. Enterprise Issue ingestion requires independently governed repository
+onboarding, authorization, retention, and multi-tenant policy; it is outside
+M4.
+
 #### M4 Terminal and Failure Semantics
 
 M4 keeps governance decisions separate from execution facts. A

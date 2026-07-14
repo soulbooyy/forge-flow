@@ -233,7 +233,7 @@ GitHub Issue
 
 Scope:
 
-- GitHub Issue input
+- pre-registered fixture GitHub Issue input, normalized as `TaskInput`
 - sandbox workspace setup
 - repository context retrieval
 - `PatchProposal` generation
@@ -260,7 +260,7 @@ Exit criteria:
 - a GitHub Issue can produce a draft PR in a controlled fixture or test repository
 - PR body contains root cause, changes, validation, risk, and trace summary
 - high-risk actions are blocked or require approval
-- validation retry is bounded
+- validation automatic retry is fixed at `0`
 - run summary is persisted
 - evaluation result is recorded
 

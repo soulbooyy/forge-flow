@@ -480,6 +480,8 @@ M4 extends the contract direction without granting a `PatchProposal` execution
 authority. The following are separate immutable contract families with
 explicit lineage:
 
+- `TaskInput` records a normalized, redacted task derived from the single
+  pre-registered fixture Issue;
 - `ActionIntent` describes a proposed governed action;
 - `CommandIntent` describes one structured command proposed for a controlled
   execution environment;
@@ -505,6 +507,22 @@ ID, repository identity and fixed base revision, intent ID, artifact ID,
 attempt ID, policy-decision ID, approval ID, evidence/artifact references, and
 Draft PR result ID. A contract reference is not reusable authorization: a
 later action requires a fresh `PolicyDecisionRecord` over its current inputs.
+
+#### M4 Controlled Issue Input
+
+The M4 task source is only a pre-registered fixture Issue. The ForgeFlow-owned
+GitHub adapter may read it through a repository- and Issue-identity allowlist
+that also binds the expected base revision. A user, agent, or workflow role
+cannot select an arbitrary repository, Issue, organization resource, or other
+external task source.
+
+The adapter must normalize the read-only Issue into an immutable `TaskInput`.
+`TaskInput` contains only the redacted task summary, Issue identity, content
+hash, repository identity, expected base revision, and adapter/evidence
+references required for lineage. The raw GitHub Issue payload is neither a
+ForgeFlow durable artifact nor a `DurableRunSummary` field. A later enterprise
+Issue-input capability requires a separate OpenSpec that defines repository
+onboarding, authorization, data retention, and multi-tenant policy.
 
 #### M4 Layered Terminal Model
 

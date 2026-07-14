@@ -21,6 +21,9 @@ responses cannot become product-layer truth or an unbounded persistence path.
   workspace. It stores immutable references and redacted artifacts only.
 - Raw command output, environment values, source, unredacted logs, credentials,
   and complete GitHub payloads are not durable records.
+- A fixture Issue is normalized into a redacted immutable `TaskInput`; only its
+  Issue identity, content hash, redacted task summary, and adapter/evidence
+  references may enter durable lineage.
 - DeerFlow state and checkpoints are transient or recovery inputs only; any
   promotion into a ForgeFlow summary requires explicit mapping and redaction.
 
@@ -43,7 +46,8 @@ responses cannot become product-layer truth or an unbounded persistence path.
 ## M4 Durable Summary Boundary
 
 A `DurableRunSummary` must reference immutable contracts rather than embed
-their raw payloads. Its minimum directional lineage is task/issue reference,
+their raw payloads. Its minimum directional lineage is `TaskInput` / Issue
+reference,
 repository identity and fixed revision, `PatchProposal`, `PatchIntent`,
 `PatchArtifact`, `SecretScanResult`, `CommandIntent`, `ExecutionAttempt`,
 review evaluation, Policy Decision Records, Approval Requests/Decisions when
@@ -73,6 +77,16 @@ redacted, bounded stop reason and contract lineage sufficient to distinguish
 policy prevention, approval wait, execution failure, and Draft PR adapter
 failure without persisting raw command output, source, credentials, or GitHub
 payloads.
+
+### M4 Task-Input Audit Boundary
+
+The only M4 external task input is a pre-registered Issue read by the
+ForgeFlow-owned GitHub adapter from the single fixture repository. The durable
+record may reference the normalized `TaskInput` contract, Issue identity,
+content hash, expected base revision, and adapter/evidence reference. It must
+not persist the raw Issue body or complete GitHub response. This preserves
+input lineage without creating a general external-data ingestion or retention
+path.
 
 ## Open Questions
 
