@@ -1,0 +1,42 @@
+# ADR-010: Restrict M4 GitHub Mutations to a Policy-Gated Fixture Repository
+
+## Status
+
+Accepted
+
+## Context
+
+M4 is ForgeFlow's first Draft PR path and therefore its first GitHub external
+side effect. Arbitrary, production, organization, or unregistered repositories
+would introduce unresolved authorization, data-egress, audit, and credential
+governance.
+
+## Decision
+
+M4 permits only one pre-registered fixture/test repository through a
+deny-by-default versioned policy profile. The ForgeFlow-owned GitHub adapter is
+the only component that may call GitHub APIs. Sandboxes and Command Intents do
+not receive network or GitHub credentials.
+
+The adapter may create only a controlled branch, commit, and Draft PR after a
+fresh allowed Policy Decision Record binds repository identity, base revision,
+branch/commit identity, PatchArtifact identity, and idempotency key. It uses a
+runtime-injected opaque credential, preferring a repository-scoped GitHub App
+installation token; a fixture-only fine-grained test token is the limited
+fallback. Merge, default-branch writes, protection-rule changes, and all other
+production GitHub mutations are excluded.
+
+## Consequences
+
+- M4 validates an auditable external-effect path without granting general
+  repository automation authority.
+- Credential material cannot enter contracts, artifacts, summaries, logs, or
+  PR bodies.
+- Enterprise repository onboarding requires a separate OpenSpec/ADR with its
+  own onboarding, permission, approval, retention, and audit model.
+
+## Related RFCs
+
+- [RFC-003](../rfcs/RFC-003-tool-and-mcp-integration.md)
+- [RFC-004](../rfcs/RFC-004-sandbox-and-security-governance.md)
+- [RFC-005](../rfcs/RFC-005-observability-and-trace-model.md)

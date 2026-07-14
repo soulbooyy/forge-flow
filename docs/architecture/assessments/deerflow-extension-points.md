@@ -20,6 +20,26 @@ This assessment documents:
 
 This is documentation-only. It does not create adapters, runtime integrations, workflow graph implementations, middleware, checkpoint mappers, policy engines, contract schemas, or workflow role implementation units.
 
+## M4 Execution Architecture Readiness
+
+M4 requires a new source-level assessment at immutable revision
+`c0b917cce2cd8b8644a3ed17d58ddb31adc5299a`; the existing Milestone 1
+README-level assessment is not evidence that M4 may use runtime hooks. Before
+any M4 runtime-backed OpenSpec or implementation, assess and record whether
+documented stable extension points support:
+
+- workflow lifecycle and stop-condition propagation;
+- pre-tool ForgeFlow policy interception and post-tool redacted capture;
+- approval pause/resume without treating runtime state as approval truth;
+- mapping checkpoint/recovery state to ForgeFlow-owned durable summaries;
+- sandbox and tool lifecycle without credentials or policy bypass; and
+- trace hooks that can emit bounded ForgeFlow correlation references.
+
+The current decision is adapter-first: ForgeFlow contracts, policy, artifact
+store, and DurableRunSummary remain runtime-neutral. No DeerFlow submodule or
+deep integration is authorized by this readiness plan. A revision upgrade or
+deeper dependency requires the governance defined in RFC-007 and ADR-009.
+
 ## DeerFlow Upstream Reference
 
 | Field | Value |

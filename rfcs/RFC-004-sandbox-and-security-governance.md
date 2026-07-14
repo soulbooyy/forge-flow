@@ -21,6 +21,9 @@ Review stage: Grill-Me feedback has been incorporated as current draft decisions
 - Milestone 3 uses deterministic fixtures or a fake executor only to verify
   contract and policy-state transitions; it does not authorize real command
   execution, sandbox operation, dependency installation, or retry runtime.
+- M4 controlled execution is limited to one allowlisted fixture/test
+  repository, a fixed repository revision, and a versioned ForgeFlow policy
+  profile. It is not general automation authority.
 
 ## Context
 
@@ -336,6 +339,46 @@ Blocked or approval-required examples include:
 - credential access commands
 
 This RFC gives command-policy direction, not an implementation parser.
+
+### M4 Controlled Execution Boundary
+
+M4 may introduce real execution only through an immutable `CommandIntent` and
+a fresh Policy Decision Record. The sandbox workspace is temporary, isolated,
+and fixed to the evaluated repository revision; network and dynamic dependency
+installation are disabled by default, the environment is prebuilt and
+pre-audited, and writes are confined to that workspace. Arbitrary shell input,
+repository configuration as authority, and credentials in the sandbox are
+forbidden.
+
+M4 creates a deterministic `PatchIntent` and `PatchArtifact` rather than
+interpreting a `PatchProposal` as write authority. Before a patch is applied,
+the policy profile must evaluate target paths, diff bounds, sensitive paths,
+artifact identity, and secret-scan status. Each immutable PatchArtifact has at
+most one validation execution attempt; `max_automatic_retries` is `0`.
+Failures, timeout, cancellation, sandbox failure, parser failure, and
+redaction failure are terminal/failed execution facts. Any later rerun requires
+a new intent, attempt, fresh decision, and revalidation of artifact and base
+revision.
+
+Secret scanning and redaction use a versioned deterministic local rule set over
+the PatchArtifact, diff, persistable artifacts, PR body, and persistable log
+summaries. Confirmed secret matches block commit, Draft PR, and raw
+persistence. Scanner or redaction failure must be blocked or require approval
+as selected by policy; it never defaults to allow. A `SecretScanResult` is an
+immutable lineage contract, and a redacted artifact is distinct from its raw
+source.
+
+Review after execution is a separate deterministic, provider-free evaluator.
+It receives only scanned PatchArtifact, execution summary, SecretScanResult,
+and policy lineage, then records findings and severity. Review cannot authorize
+execution or a Draft PR; a new Policy Decision Record selects the outcome.
+
+For the allowlisted fixture repository only, a fresh `allowed` decision may
+automate branch, commit, and Draft PR creation. Any changed repository or base
+revision, changed artifact, sensitive path, secret warning, threshold breach,
+or non-allowlisted command requires a bound ApprovalRequest. `blocked` is a
+terminal state and approval cannot bypass it. Approval binds action, artifact,
+policy version, and repository revision and expires on any input change.
 
 ### Milestone 3 Validation and Review Readiness
 

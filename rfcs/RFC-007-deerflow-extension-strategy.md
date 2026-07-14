@@ -174,6 +174,21 @@ DeerFlow provides runtime foundations; ForgeFlow must preserve its product contr
 
 ForgeFlow should not fork or modify DeerFlow core prematurely. During Milestone 0 and Milestone 1, DeerFlow should be treated as upstream framework foundation and reference implementation, not as ForgeFlow application code.
 
+### M4 Execution Architecture Readiness
+
+Before M4 selects a DeerFlow-backed runtime, the recorded revision must receive
+a source-level capability assessment for workflow lifecycle, pre-tool policy
+interception, approval pause/resume, checkpoint mapping, sandbox/tool
+lifecycle, and tracing hooks. The assessment must distinguish documented stable
+hooks from internal assumptions and record any adapter needed to preserve
+ForgeFlow contract, policy, redaction, and durable-summary ownership.
+
+Until that gate is accepted, M4 architecture may use a ForgeFlow-owned local
+controlled harness and runtime-neutral adapter seam only. It must not create a
+submodule, rely on undocumented DeerFlow behavior, or make checkpoint/runtime
+state authoritative. A submodule or deep integration requires a later ADR as
+defined by the pinned-revision boundary.
+
 ### Option A: DeerFlow as Separate Local Reference Repository
 
 Benefits:
