@@ -25,6 +25,9 @@ patch artifacts, controlled command fixtures, and a versioned policy profile.
   identity, base revision, credential mode, reset/audit procedure, budget
   values, and acceptance thresholds; M4 architecture and implementation must
   not invent them.
+- The fixture-registration sub-gate is `Registered` for profile
+  `forgeflow-m4-fixture-only` version `1.0.0`, as recorded in the M4 Fixture
+  Environment Registration. This is not an `Approved` complete evaluation gate.
 
 ## Goals
 
@@ -62,9 +65,7 @@ The M4 readiness suite must prove at least:
 
 ## Open Questions
 
-- Which concrete fixture-profile values and pass thresholds define M4
-  acceptance?
-- How will a real GitHub fixture repository be reset and audited between runs?
+- Which pass thresholds define M4 acceptance for the registered fixture profile?
 - Which fault-injection mechanisms can prove adapter, sandbox, and persistence
   failure semantics without widening authority?
 
@@ -85,6 +86,20 @@ The required registration fields and placeholder rules are maintained in the
 [M4 Fixture Environment Registration](../docs/fixtures/m4-fixture-environment-registration.md)
 template. That template is a readiness-gate input record, not permission to
 provision or infer a fixture environment.
+
+### M4 Fixture-Registration Gate
+
+The fixture-registration sub-gate is `Registered`. The controlled external
+environment has supplied the allowlisted repository and Issue identities, fixed
+base revision, fixture-only fine-grained credential mode, reset/audit procedure,
+and versioned budget values in the registration record. No credential value is
+recorded in this RFC or in the registration document.
+
+This satisfies only the registration prerequisite. The complete evaluation gate
+remains unapproved until the registered profile has explicit acceptance
+thresholds, the required fault-injection approach, a reconciled evaluation
+matrix, and Phase 0 closure review approval. It therefore does not authorize an
+M4 OpenSpec, branch/worktree, GitHub mutation, or implementation.
 
 ## Decision Summary
 

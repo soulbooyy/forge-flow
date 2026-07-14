@@ -30,35 +30,38 @@ must not be completed with AI-inferred or generated values.
 ## Repository Registration
 
 ```yaml
-repository_owner:
-repository_name:
-repository_id:
-visibility:
-allowlisted:
+repository_owner: soulbooyy
+repository_name: forgeflow-m4-fixture
+repository_id: 1300511729
+visibility: private
+allowlisted: true
 ```
 
-Leave every field as a placeholder until the real environment supplies it. Do
-not create a repository or generate a repository ID. Repository identity must
-come from the registered controlled environment.
+In an unregistered copy, leave every field as a placeholder until the real
+environment supplies it. Do not create a repository or generate a repository
+ID. Repository identity must come from the registered controlled environment.
 
 ## Issue Registration
 
 ```yaml
-issue_number:
-issue_id:
-issue_title:
-content_hash:
+issue_number: 1
+issue_id: 4883496432
+issue_title: Fix calculator addition bug
+content_hash: sha256:7acf3aebdad4eb3b138c975cb10ba094b7be63dc2f983f9d506adba4f799e785
 ```
 
-Leave every field as a placeholder until the registered fixture Issue exists.
-Do not create a synthetic Issue. Its fixed identity is the source of
-`TaskInput` lineage.
+`content_hash` is SHA-256 of the exact Issue title, followed by two newline
+characters, followed by the exact Issue body as created on 2026-07-14.
+
+In an unregistered copy, leave every field as a placeholder until the
+registered fixture Issue exists. Do not create a synthetic Issue. Its fixed
+identity is the source of `TaskInput` lineage.
 
 ## Base Revision Registration
 
 ```yaml
-base_commit_sha:
-revision_pinning_reason:
+base_commit_sha: 97c8220cd713ebf61124ac2de2f3eadc6e4dc222
+revision_pinning_reason: Immutable initial fixture commit; M4 evaluation must use this SHA and may not follow the main branch implicitly.
 ```
 
 The base revision must be an immutable commit SHA supplied by the controlled
@@ -68,10 +71,10 @@ automatically during implementation.
 ## Authentication Registration
 
 ```yaml
-auth_type:
-permission_scope:
-credential_owner:
-rotation_and_revocation_responsibility:
+auth_type: fixture_only_fine_grained_token
+permission_scope: Repository access is restricted to soulbooyy/forgeflow-m4-fixture only; Contents, Issues, and Pull requests are Read and write; Metadata is required Read-only.
+credential_owner: soulbooyy (ForgeFlow fixture environment owner)
+rotation_and_revocation_responsibility: Owner stores the token only in the approved controlled secret store, rotates it before expiry or on suspected exposure, and revokes it immediately after M4 evaluation or on scope change.
 ```
 
 Allowed `auth_type` values are:
@@ -88,11 +91,11 @@ real token.
 ## Reset and Audit Strategy
 
 ```yaml
-reset_owner:
-reset_method:
-branch_cleanup_strategy:
-draft_pr_cleanup_strategy:
-audit_responsibility:
+reset_owner: soulbooyy (ForgeFlow fixture environment owner)
+reset_method: After each evaluation, force-restore the fixture default branch to base_commit_sha 97c8220cd713ebf61124ac2de2f3eadc6e4dc222; do not implicitly advance the baseline.
+branch_cleanup_strategy: Delete every evaluation-created branch after its audit summary is retained.
+draft_pr_cleanup_strategy: Close every evaluation-created Draft PR, then delete its head branch after audit retention.
+audit_responsibility: Owner retains the ForgeFlow redacted audit summary and reset record; credentials, raw token values, and raw GitHub payloads are excluded.
 ```
 
 M4 may use a manual reset. The completed registration must state how the
@@ -103,19 +106,22 @@ retained.
 ## Evaluation Policy Profile
 
 ```yaml
-profile_id:
-profile_version:
+profile_id: forgeflow-m4-fixture-only
+profile_version: 1.0.0
 
-max_wall_clock_ms:
-max_sandbox_lifetime_ms:
-max_command_output_bytes:
-max_workspace_write_bytes:
-max_artifact_bytes:
-max_diff_bytes:
-max_changed_files:
-max_tool_calls:
+max_wall_clock_ms: 600000
+max_sandbox_lifetime_ms: 480000
+max_command_output_bytes: 65536
+max_workspace_write_bytes: 10485760
+max_artifact_bytes: 2097152
+max_diff_bytes: 262144
+max_changed_files: 10
+max_tool_calls: 25
 max_automatic_retries: 0
 ```
+
+This versioned fixture-only profile is the sole budget source. Repository,
+Issue, request, user, and agent inputs cannot override it.
 
 All budget values must come from the versioned fixture policy profile. The
 repository, Issue, request, user, and agent cannot override them. Reaching any
@@ -124,9 +130,15 @@ budget produces `resource_limit_exceeded` and blocks later mutation.
 ## Registration Status
 
 ```yaml
-status: Pending # Pending | Registered | Approved
-readiness_blocker: Real controlled fixture environment values are not registered.
+status: Registered # Pending | Registered | Approved
+readiness_blocker: None. Registration is complete; Phase 0 closure review approval remains required.
 ```
+
+`Registered` means that the controlled external environment supplied and the
+project reconciled the required registration values. It removes only the
+fixture-registration blocker; it is not `Approved` and does not authorize an
+M4 OpenSpec, branch/worktree, GitHub mutation, or implementation before the
+remaining Phase 0 closure review is approved.
 
 While status is `Pending`, the following are prohibited:
 
@@ -141,4 +153,3 @@ While status is `Pending`, the following are prohibited:
 - [RFC-004: Sandbox and Security Governance](../../rfcs/RFC-004-sandbox-and-security-governance.md)
 - [RFC-006: Evaluation Framework](../../rfcs/RFC-006-evaluation-framework.md)
 - [RFC-007: DeerFlow Extension Strategy](../../rfcs/RFC-007-deerflow-extension-strategy.md)
-
