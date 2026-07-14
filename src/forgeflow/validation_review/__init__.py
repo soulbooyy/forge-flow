@@ -19,6 +19,7 @@ from .models import (
     ValidationTerminal,
 )
 from .profile import M3_FIXTURE_V1
+from .service import build_review_result, build_validation_envelope
 
 __all__ = [
     "M3_FIXTURE_V1",
@@ -31,6 +32,8 @@ __all__ = [
     "ValidationReviewErrorSummary",
     "ValidationTerminal",
     "canonical_bytes",
+    "build_review_result",
+    "build_validation_envelope",
     "policy_decision_id_for",
     "review_result_id_for",
     "validation_result_id_for",
