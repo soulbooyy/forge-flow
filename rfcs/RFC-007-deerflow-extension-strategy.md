@@ -189,6 +189,15 @@ submodule, rely on undocumented DeerFlow behavior, or make checkpoint/runtime
 state authoritative. A submodule or deep integration requires a later ADR as
 defined by the pinned-revision boundary.
 
+The recorded source assessment currently finds pre-tool guardrail wrappers,
+interrupt/checkpoint facilities, sandbox providers, and trace hooks, but not a
+complete ForgeFlow policy/approval/durable-state boundary. In particular,
+guardrail allow/deny is not a Policy Decision Record, sandbox lifecycle and
+environment defaults are not M4's temporary isolated profile, and journal or
+external tracing is not durable product storage. The M4 capability gate remains
+blocked until an adapter design proves those mappings without undocumented
+dependencies.
+
 ### Option A: DeerFlow as Separate Local Reference Repository
 
 Benefits:

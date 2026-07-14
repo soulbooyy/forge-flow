@@ -40,6 +40,23 @@ store, and DurableRunSummary remain runtime-neutral. No DeerFlow submodule or
 deep integration is authorized by this readiness plan. A revision upgrade or
 deeper dependency requires the governance defined in RFC-007 and ADR-009.
 
+### M4 Source-Level Findings at the Recorded Revision
+
+The fixed revision exposes useful integration surfaces, but none may become a
+ForgeFlow product boundary without an adapter:
+
+| M4 need | Observed source evidence | Assessment result |
+| --- | --- | --- |
+| Pre-tool interception | `guardrails/middleware.py` implements sync/async `wrap_tool_call` and defaults provider errors to fail-closed. | A usable interception seam exists, but its boolean allow/deny decision and best-effort journal event are not a ForgeFlow PDR, ApprovalRequest, or durable audit record. |
+| Workflow interruption/checkpointing | `runtime/runs/worker.py` accepts `interrupt_before`/`interrupt_after` and uses a configurable checkpointer. | Runtime pause/recovery exists, but M4 approval state and DurableRunSummary must remain ForgeFlow-owned and mapped by an adapter. |
+| Sandbox lifecycle | `sandbox/middleware.py` acquires a sandbox lazily and documents reuse across thread turns; `sandbox_config.py` permits environment injection and multiple providers. | Not an M4 sandbox default: M4 requires a temporary fixed-revision workspace, no credentials, no network, no dynamic installation, and policy-bound command execution. |
+| Trace/journal | Guardrail journaling is optional/best-effort; README/config expose external tracing integrations. | Trace hooks may supply correlation references only. They are not durable product audit storage and must not receive unredacted M4 payloads. |
+
+The capability gate is therefore **not accepted**. The next assessment work
+must prove a ForgeFlow-owned adapter can enforce the required middleware order,
+policy-before-tool semantics, approval pause/resume mapping, sandbox profile,
+and redacted durable-event mapping without undocumented DeerFlow dependencies.
+
 ## DeerFlow Upstream Reference
 
 | Field | Value |
