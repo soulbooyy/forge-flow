@@ -285,11 +285,14 @@ OpenSpec:
    idempotency, redaction, and end-to-end evidence.
 
 Each change requires its own accepted architecture inputs, Grill-Me review,
-OpenSpec, and readiness gate. The first M4 change remains blocked until
-RFC-004/005/006/007 design boundaries are accepted and the cross-contract
-lineage is reconciled. M4 has formally selected a ForgeFlow-owned local
-controlled harness and runtime-neutral adapter seam; the separate DeerFlow-
-backed adapter gate remains blocked and cannot authorize implementation.
+OpenSpec, and readiness gate. The first M4 change remains blocked until its M4
+scoped decisions are accepted, the cross-contract lineage is reconciled, and
+Phase 0 closure is explicitly approved. M4 scoped acceptance does not change
+the overall `Draft` status of RFC-004/005/006/007, which retain future-milestone
+open questions outside this slice. M4 has formally selected a ForgeFlow-owned
+local controlled harness and runtime-neutral adapter seam; the separate
+DeerFlow-backed adapter gate remains blocked and cannot authorize
+implementation.
 M4 additionally requires a real external fixture-environment registration
 package before any GitHub adapter implementation: repository owner/name/ID,
 Issue number/ID, fixed base commit SHA, credential mode, reset/audit procedure,
@@ -298,6 +301,14 @@ and must not be invented by architecture or implementation work.
 The required registration fields are maintained in the
 [M4 Fixture Environment Registration](../../fixtures/m4-fixture-environment-registration.md)
 template; it does not authorize provisioning or implementation.
+
+M4 Phase 0 closure requires all of the following: the relevant M4 execution,
+policy, artifact/run-summary, evaluation, runtime-adapter, fixture,
+fault-injection, and acceptance decisions are recorded in their authoritative
+RFCs and accepted ADRs; the evaluation matrix is reconciled; independent review
+has passed; the fixture environment is `Registered`; and a closure decision is
+explicitly approved. This scoped acceptance permits subsequent M4 feature
+specification without prematurely accepting the full RFCs.
 
 ## 9. Milestone 5: Evaluation and Observability Hardening
 

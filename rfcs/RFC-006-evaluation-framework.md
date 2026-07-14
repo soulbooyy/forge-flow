@@ -152,6 +152,19 @@ prerequisites are satisfied. The complete evaluation gate remains unapproved
 until Phase 0 closure review approval is complete. It therefore does not
 authorize an M4 OpenSpec, branch/worktree, GitHub mutation, or implementation.
 
+### M4 Scoped-Decision Acceptance
+
+M4 may accept the scoped decisions needed for this execution-readiness slice
+without changing the overall `Draft` status of RFC-004, RFC-005, RFC-006, or
+RFC-007. Those RFCs retain wider future-milestone questions. Scoped acceptance
+requires that the M4 execution and policy boundary, contract/artifact/durable
+summary boundary, evaluation matrix and fault-injection boundary,
+runtime-adapter boundary, fixture registration, and acceptance thresholds are
+recorded in their authoritative RFCs and accepted ADRs; that the matrix is
+reconciled; that independent review passes; and that Phase 0 closure is
+explicitly approved. Until then, this RFC's M4 readiness content is not
+implementation authority.
+
 ## Decision Summary
 
 M4 evaluates governed behavior through deterministic, fixture-repository
