@@ -315,6 +315,11 @@ Phase 0 closure has been explicitly approved. The next authorized activity is
 preparing the first feature-level OpenSpec; it does not authorize a branch,
 worktree, GitHub mutation, or implementation.
 
+The first governed-action/sandbox feature remains blocked until its fixture
+profile receives a security-reviewed OCI image registration with immutable
+digest. That external asset must not be inferred, generated, or replaced by a
+floating tag or local image.
+
 ## 9. Milestone 5: Evaluation and Observability Hardening
 
 Goal: strengthen evaluation, trace, run summary, security redaction, and audit capabilities.

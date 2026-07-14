@@ -125,6 +125,14 @@ policy prevention, approval wait, execution failure, and Draft PR adapter
 failure without persisting raw command output, source, credentials, or GitHub
 payloads.
 
+For the first M4 execution feature, a durable execution reference is composed
+from immutable `ActionIntent`, `CommandIntent`, Policy Decision Record, and
+`ExecutionAttempt` IDs, evidence/artifact references, and the OCI image digest
+when execution started. It must not rely on a mutable workspace path, DeerFlow
+checkpoint, runtime object, raw output, environment, credential, raw source, or
+unredacted artifact. This keeps the audit chain stable if a future adapter or
+sandbox backend changes.
+
 ### M4 Task-Input Audit Boundary
 
 The only M4 external task input is a pre-registered Issue read by the

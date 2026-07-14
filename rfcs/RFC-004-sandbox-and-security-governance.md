@@ -360,6 +360,13 @@ without becoming a ForgeFlow dependency. If a backend cannot prove every
 capability, the harness must fail closed as `sandbox_unavailable`; host-process
 fallback is forbidden.
 
+The M4 fixture policy profile must also register the security-reviewed OCI image
+reference, immutable manifest digest, registry, approval owner, security-review
+reference, registration timestamp, and registration version. No `CommandIntent`
+is executable and no first execution-feature OpenSpec is ready until those
+external image-registration values are present. `latest`, floating tags, and
+local unregistered images are forbidden.
+
 M4 resource budgets are declared exclusively by the versioned ForgeFlow policy
 profile for the controlled fixture. Repository configuration, Issue content,
 user requests, and agent output cannot override them. The profile must declare
@@ -386,6 +393,15 @@ registered `max_command_output_bytes: 65536`. Limit exhaustion is
 `resource_limit_exceeded`; a command mismatch is `policy_blocked`. Future
 commands or larger budgets require a new versioned policy profile and a
 separate OpenSpec.
+
+The first M4 execution feature uses immutable `ActionIntent`, `CommandIntent`,
+`PolicyDecisionRecord`, and `ExecutionAttempt` contracts as defined in RFC-002.
+`ActionIntent` remains non-authorizing; the Policy Decision Record is the sole
+authorization source; and `ExecutionAttempt` records only facts that actually
+occurred. An attempt must reference immutable contract IDs, evidence/artifact
+references, and image digest rather than a mutable workspace path or runtime
+object. A `not_started` attempt cannot include image, exit-code, output, or
+other unobserved execution facts.
 
 M4 creates a deterministic `PatchIntent` and `PatchArtifact` rather than
 interpreting a `PatchProposal` as write authority. Before a patch is applied,

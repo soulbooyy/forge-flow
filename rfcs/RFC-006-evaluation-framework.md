@@ -128,6 +128,14 @@ backend that cannot prove the ADR-011 network, credential, image-digest,
 workspace, and dynamic-installation constraints, without falling back to host
 execution or producing an external mutation.
 
+The first M4 execution-feature readiness gate additionally requires a
+security-reviewed OCI image registration with immutable manifest digest,
+registry, approval owner, security-review reference, registration timestamp,
+and registration version. Until it is supplied by the controlled image
+environment, no executable `CommandIntent` exists and the feature remains
+blocked; evaluation must model the resulting `sandbox_unavailable` path rather
+than substitute a local or floating-tag image.
+
 ## M4 Readiness Preconditions
 
 Each later M4 OpenSpec must name its evaluation fixtures, terminal cases,

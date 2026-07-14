@@ -566,6 +566,39 @@ policy decision. In particular, `not_started` paired with `policy_blocked` or
 is allowed, requires human approval, or is blocked. `PRResult` records an
 external side effect or why it did not occur; it never authorizes that effect.
 
+#### M4 First Execution-Feature Contract Shape
+
+The first M4 controlled-execution OpenSpec must use the following minimum
+immutable contract shape. Every listed contract contains `schema_version`,
+`contract_id`, `run_id`, and `created_at`.
+
+- `ActionIntent` contains `action_id`, kind `execute_fixture_test`, `TaskInput`
+  ID, repository ID, base SHA, requested `command_id`, and policy-profile ID and
+  version. It is declarative and never grants execution authority.
+- `CommandIntent` contains `action_intent_id`, repository ID, base SHA, the
+  sole registered `command_id`, exact executable, ordered arguments, working
+  directory, empty allowed environment, required OCI image digest, timeout and
+  output limits, and policy-profile ID and version. Every value must exactly
+  match the fixture policy profile and registered OCI image. No CommandIntent
+  is executable until that image registration supplies an immutable digest.
+- `PolicyDecisionRecord` contains `decision_id`, subject contract ID,
+  input-lineage digest, policy-profile ID and version, outcome, reason codes,
+  evidence references, and `evaluated_at`. It is the only authorization
+  decision source.
+- `ExecutionAttempt` contains `attempt_id`, `CommandIntent` ID, Policy Decision
+  Record ID, status, failure reason when non-successful, bounded resource
+  observations, immutable artifact references, and started/finished timestamps
+  when those facts exist. Actual image digest, exit code, and output artifact
+  reference exist only after execution started and produced those facts.
+
+`ExecutionAttempt` must not reference a mutable workspace path or runtime
+object. Its audit lineage uses immutable contract IDs, evidence/artifact
+references, and image digest so sandbox-backend or runtime-adapter replacement
+does not break the durable record. No contract in this set may persist raw
+command output, environment, credentials, workspace paths, raw source, or an
+unredacted artifact. A `not_started` attempt must not carry image, exit-code,
+or output facts.
+
 ## PRResult
 
 `PRResult` is a future milestone contract. It records draft PR side effects after policy-eligible artifacts have been packaged.
