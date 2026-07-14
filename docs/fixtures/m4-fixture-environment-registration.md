@@ -169,27 +169,10 @@ exhaustion is `resource_limit_exceeded`; a command mismatch is
 `policy_blocked`. Any future command or larger budget requires a new versioned
 policy profile and a separate OpenSpec.
 
-No `CommandIntent` is executable until the required OCI image is registered
-below. `latest`, any floating tag, and a local unregistered image are forbidden.
-
-## Sandbox Image Registration
-
-```yaml
-sandbox_image_registration:
-  image_reference:
-  image_digest:
-  registry:
-  approval_owner:
-  security_review_reference:
-  registered_at:
-  registration_version:
-```
-
-These values are supplied only by the controlled, security-reviewed OCI image
-environment. The immutable digest must identify the manifest used by the OCI
-adapter; it must not be generated, inferred, or substituted by an image tag.
-Until every field is registered, the sandbox capability is unavailable and the
-first M4 execution-feature OpenSpec remains blocked.
+No `CommandIntent` is executable until the external
+[M4 Sandbox Image Registration](m4-sandbox-image-registration.md) is registered
+and approved. That independent authority owns OCI image identity and approval
+data; this repository/Issue fixture record does not duplicate those fields.
 
 ## Evaluation Acceptance Thresholds
 
@@ -236,7 +219,7 @@ immutable lineage.
 status: Approved # Pending | Registered | Approved
 readiness_blocker: M4 Phase 0 closure is approved; feature-level OpenSpec gates remain required.
 execution_feature_readiness: Blocked
-execution_feature_readiness_blocker: Required OCI image registration is absent.
+execution_feature_readiness_blocker: See the Pending M4 Sandbox Image Registration.
 ```
 
 `Registered` means that the controlled external environment supplied and the
@@ -256,6 +239,7 @@ While status is `Pending`, the following are prohibited:
 ## References
 
 - [M4 execution architecture readiness](../product/roadmap/milestones.md)
+- [M4 Sandbox Image Registration](m4-sandbox-image-registration.md)
 - [RFC-004: Sandbox and Security Governance](../../rfcs/RFC-004-sandbox-and-security-governance.md)
 - [RFC-006: Evaluation Framework](../../rfcs/RFC-006-evaluation-framework.md)
 - [RFC-007: DeerFlow Extension Strategy](../../rfcs/RFC-007-deerflow-extension-strategy.md)

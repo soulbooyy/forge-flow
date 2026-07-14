@@ -360,12 +360,11 @@ without becoming a ForgeFlow dependency. If a backend cannot prove every
 capability, the harness must fail closed as `sandbox_unavailable`; host-process
 fallback is forbidden.
 
-The M4 fixture policy profile must also register the security-reviewed OCI image
-reference, immutable manifest digest, registry, approval owner, security-review
-reference, registration timestamp, and registration version. No `CommandIntent`
-is executable and no first execution-feature OpenSpec is ready until those
-external image-registration values are present. `latest`, floating tags, and
-local unregistered images are forbidden.
+The independent [M4 Sandbox Image Registration](../docs/fixtures/m4-sandbox-image-registration.md)
+is the sole authority for the security-reviewed OCI image identity and approval
+data. No `CommandIntent` is executable and no first execution-feature OpenSpec
+is ready until that external registration is complete and approved. `latest`,
+floating tags, and local unregistered images are forbidden.
 
 M4 resource budgets are declared exclusively by the versioned ForgeFlow policy
 profile for the controlled fixture. Repository configuration, Issue content,
