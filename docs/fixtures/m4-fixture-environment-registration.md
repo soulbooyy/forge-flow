@@ -179,15 +179,16 @@ immutable lineage.
 ## Registration Status
 
 ```yaml
-status: Registered # Pending | Registered | Approved
-readiness_blocker: Phase 0 closure review approval remains required.
+status: Approved # Pending | Registered | Approved
+readiness_blocker: None. M4 Phase 0 closure is approved; feature-level OpenSpec gates remain required.
 ```
 
 `Registered` means that the controlled external environment supplied and the
-project reconciled the required registration values. It removes only the
-fixture-registration blocker; it is not `Approved` and does not authorize an
-M4 OpenSpec, branch/worktree, GitHub mutation, or implementation before the
-remaining Phase 0 closure review is approved.
+project reconciled the required registration values. `Approved` additionally
+records the explicit M4 Phase 0 closure decision. That decision authorizes
+feature-level OpenSpec preparation only; every later feature still requires its
+own OpenSpec and readiness gate, and it does not authorize a branch/worktree,
+GitHub mutation, or implementation.
 
 While status is `Pending`, the following are prohibited:
 

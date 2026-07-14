@@ -215,9 +215,10 @@ Exit criteria:
 
 ## 8. Milestone 4: Draft PR MVP Vertical Slice
 
-Status: Execution Architecture Readiness in progress. M4 must not create one
-OpenSpec for the complete Issue-to-Draft-PR path, and no implementation
-environment is authorized until the readiness gates below are accepted.
+Status: Phase 0 Execution Architecture Readiness closed; feature-level OpenSpec
+preparation authorized. M4 must not create one OpenSpec for the complete
+Issue-to-Draft-PR path, and no implementation environment is authorized until
+each feature's readiness gate is accepted.
 
 Goal: complete the first true vertical MVP:
 
@@ -309,6 +310,10 @@ RFCs and accepted ADRs; the evaluation matrix is reconciled; independent review
 has passed; the fixture environment is `Registered`; and a closure decision is
 explicitly approved. This scoped acceptance permits subsequent M4 feature
 specification without prematurely accepting the full RFCs.
+
+Phase 0 closure has been explicitly approved. The next authorized activity is
+preparing the first feature-level OpenSpec; it does not authorize a branch,
+worktree, GitHub mutation, or implementation.
 
 ## 9. Milestone 5: Evaluation and Observability Hardening
 

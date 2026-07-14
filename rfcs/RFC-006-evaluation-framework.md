@@ -147,10 +147,11 @@ base revision, fixture-only fine-grained credential mode, reset/audit procedure,
 and versioned budget values in the registration record. No credential value is
 recorded in this RFC or in the registration document.
 
-The registration, acceptance-threshold, fault-injection, and evaluation-matrix
-prerequisites are satisfied. The complete evaluation gate remains unapproved
-until Phase 0 closure review approval is complete. It therefore does not
-authorize an M4 OpenSpec, branch/worktree, GitHub mutation, or implementation.
+The registration, acceptance-threshold, fault-injection, evaluation-matrix, and
+Phase 0 closure prerequisites are satisfied. M4 feature-level OpenSpec
+preparation is authorized. This does not authorize a branch/worktree, GitHub
+mutation, or implementation: every feature retains its own OpenSpec and
+readiness gate.
 
 ### M4 Scoped-Decision Acceptance
 
