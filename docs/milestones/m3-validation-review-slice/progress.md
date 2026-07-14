@@ -28,10 +28,10 @@ RFCs/ADRs, or the canonical implementation plan.
 | Field | Value |
 | --- | --- |
 | Milestone | Validation and Review Slice |
-| State | Phase 2 accepted; implementation paused. |
-| Completed through | Phase 2 — Deterministic Policy and Attempt Fixtures |
-| Next phase | Phase 3 — Validation and Review Assembly Service |
-| Implementation authorization | Phase 3 and later phases are not authorized. |
+| State | Phase 3 accepted; implementation paused. |
+| Completed through | Phase 3 — Validation and Review Assembly Service |
+| Next phase | Phase 4 — Acceptance and Hardening |
+| Implementation authorization | Phase 4 is not authorized. |
 
 ## Phase Index
 
@@ -39,7 +39,7 @@ RFCs/ADRs, or the canonical implementation plan.
 | --- | --- | --- | --- | --- |
 | 1 | Contract Foundation and Canonical Fixtures | Accepted | `d7b84f6` | [Phase 1 record](phases/phase-1-contract-foundation-and-canonical-fixtures.md) |
 | 2 | Deterministic Policy and Attempt Fixtures | Accepted | `569d1f2` | [Phase 2 record](phases/phase-2-deterministic-policy-and-attempt-fixtures.md) |
-| 3 | Validation and Review Assembly Service | Not started | — | — |
+| 3 | Validation and Review Assembly Service | Accepted | `695d6ef` | [Phase 3 record](phases/phase-3-validation-and-review-assembly-service.md) |
 | 4 | Acceptance and Hardening | Not started | — | — |
 
 ## Change Log
@@ -63,3 +63,6 @@ RFCs/ADRs, or the canonical implementation plan.
   `569d1f2`. Targeted tests passed 9/9; the cumulative suite passed 116/116;
   strict OpenSpec validation, static side-effect checks, and independent review
   passed. Phase 3 is not authorized.
+- 2026-07-14: Accepted Phase 3 fixture-only service assembly in `695d6ef`;
+  targeted tests passed 4/4, full suite passed 120/120, and independent review
+  verified the safe forbidden-payload correction. Phase 4 is not authorized.
