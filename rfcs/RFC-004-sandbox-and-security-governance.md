@@ -368,6 +368,14 @@ as selected by policy; it never defaults to allow. A `SecretScanResult` is an
 immutable lineage contract, and a redacted artifact is distinct from its raw
 source.
 
+The local controlled artifact store is outside the sandbox workspace and target
+repository. The local controlled harness alone injects its root; user input,
+agent output, Issue content, and repository configuration cannot choose or
+redirect it. An artifact becomes eligible for later lineage only after
+generation, scan/redaction, temporary write, atomic publication, and content
+hash plus ForgeFlow-owned ID verification have all succeeded. A failed step
+must not leave a referenced partial artifact.
+
 Review after execution is a separate deterministic, provider-free evaluator.
 It receives only scanned PatchArtifact, execution summary, SecretScanResult,
 and policy lineage, then records findings and severity. Review cannot authorize

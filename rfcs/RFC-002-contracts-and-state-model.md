@@ -507,6 +507,10 @@ ID, repository identity and fixed base revision, intent ID, artifact ID,
 attempt ID, policy-decision ID, approval ID, evidence/artifact references, and
 Draft PR result ID. A contract reference is not reusable authorization: a
 later action requires a fresh `PolicyDecisionRecord` over its current inputs.
+Artifact and evidence references use ForgeFlow-owned IDs (including run ID,
+artifact ID, contract ID, and policy-decision ID) as their identity. A local
+store path is a resolved location only and must never be the sole durable
+identity or lineage key.
 
 #### M4 Controlled Issue Input
 

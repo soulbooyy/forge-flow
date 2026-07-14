@@ -19,6 +19,9 @@ responses cannot become product-layer truth or an unbounded persistence path.
   summary, and Draft PR result.
 - The local controlled artifact store is outside the target repository and
   workspace. It stores immutable references and redacted artifacts only.
+- The local controlled harness injects the only artifact-store root; paths from
+  users, agents, Issues, or repository configuration cannot select or redirect
+  it. ForgeFlow-owned IDs, not paths, are durable artifact identities.
 - Raw command output, environment values, source, unredacted logs, credentials,
   and complete GitHub payloads are not durable records.
 - A fixture Issue is normalized into a redacted immutable `TaskInput`; only its
@@ -57,6 +60,33 @@ and final stop reason.
 Every persisted artifact must first pass the versioned redaction and size
 policy. A failed scan/redaction operation cannot fall back to raw persistence.
 
+### M4 Local Controlled Artifact Store
+
+The ForgeFlow-owned local controlled harness injects one artifact-store root
+outside both the target repository and sandbox workspace. Each run receives an
+independent, non-colliding directory below that root. M4 permits only creation
+of immutable artifacts and append-oriented summary/event records; it does not
+permit mutation of an already published artifact.
+
+Artifact publication is fixed to this fail-closed sequence:
+
+```text
+generate -> scan/redact -> temporary write -> atomic publish
+         -> content-hash and ForgeFlow-owned-ID verification
+```
+
+Only a successfully published object may receive an artifact reference. Any
+failure leaves no partial object eligible for contract lineage, summary
+reference, commit creation, or Draft PR packaging. Durable references are
+identified primarily by ForgeFlow-owned run ID, artifact ID, contract ID, and
+Policy Decision Record ID; a filesystem path is a resolvable implementation
+location, never the sole identity.
+
+M4 deliberately excludes deletion and retention behavior, remote backends,
+encryption, and multi-tenant access control. Those are enterprise-governance
+requirements for a later OpenSpec and must not be inferred from this local MVP
+store.
+
 ### M4 Layered Terminal Audit Boundary
 
 `DurableRunSummary` must preserve the distinction between governance decision,
@@ -90,8 +120,6 @@ path.
 
 ## Open Questions
 
-- What local artifact-store path, ownership, and atomic-write model will M4
-  use?
 - Which bounded execution/resource fields are required for the first summary
   schema?
 - Which summary fields are safe to publish in a Draft PR body?
