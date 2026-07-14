@@ -61,10 +61,15 @@ An M4 adapter must therefore own policy-before-tool ordering and map a paused
 run to explicit ForgeFlow approval contracts; it must not depend on the
 existing internal middleware list as its enforcement proof.
 
-The capability gate is therefore **not accepted**. The next assessment work
-must prove a ForgeFlow-owned adapter can enforce the required middleware order,
-policy-before-tool semantics, approval pause/resume mapping, sandbox profile,
-and redacted durable-event mapping without undocumented DeerFlow dependencies.
+The DeerFlow-backed capability gate is therefore **not accepted**. M4 has
+formally selected a ForgeFlow-owned local controlled harness and
+runtime-neutral adapter seam as its first execution substrate, so this
+unaccepted DeerFlow gate does not block that local-harness path. It continues to
+block any DeerFlow-backed implementation. A later assessment must prove an
+adapter can enforce the required middleware order, policy-before-tool semantics,
+approval pause/resume mapping, sandbox profile, and redacted durable-event
+mapping through documented stable DeerFlow extension points before a new ADR and
+integration OpenSpec may authorize that path.
 
 ## DeerFlow Upstream Reference
 
@@ -85,7 +90,11 @@ git submodule add https://github.com/bytedance/deer-flow.git third_party/deer-fl
 git -C third_party/deer-flow checkout c0b917cce2cd8b8644a3ed17d58ddb31adc5299a
 ```
 
-This assessment intentionally records the immutable revision without adding a submodule in this change.
+This assessment intentionally records the immutable revision without adding a
+submodule. M4 has formally selected a ForgeFlow-owned local controlled harness
+as its execution substrate; DeerFlow remains an assessed reference runtime
+only. Any future DeerFlow-backed adapter requires a new ADR and integration
+OpenSpec after it proves the required public, stable extension points.
 
 ## Assessment Scope
 

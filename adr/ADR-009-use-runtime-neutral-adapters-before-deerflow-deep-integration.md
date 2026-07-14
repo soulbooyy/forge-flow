@@ -16,7 +16,10 @@ undocumented hooks to define ForgeFlow product semantics.
 ForgeFlow keeps execution contracts, policy, artifact storage, durable run
 summary, and workflow semantics runtime-neutral. M4 first assesses immutable
 DeerFlow revision `c0b917cce2cd8b8644a3ed17d58ddb31adc5299a` at source level,
-then attaches through ForgeFlow-owned adapters or a local controlled harness.
+then formally uses a ForgeFlow-owned local controlled harness and
+runtime-neutral adapter seam as its first execution substrate. DeerFlow remains
+an assessed reference runtime only; M4 does not attach its runtime or create a
+submodule.
 
 DeerFlow configuration, checkpoints, tool registration, and runtime state may
 not bypass ForgeFlow policy wrappers or become product-layer durable truth. A
@@ -28,6 +31,8 @@ migration risk.
 ## Consequences
 
 - M4 can test controlled execution without prematurely coupling to DeerFlow.
+- ForgeFlow is the sole authority for policy decisions, approval flow, artifact
+  lineage, durable run summaries, and execution semantics in the M4 MVP.
 - Adapter assumptions and revision changes remain explicit and reviewable.
 - A deeper integration may add adapter work or delay a capability if upstream
   hooks are insufficient; it cannot be introduced as an implementation shortcut.

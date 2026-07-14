@@ -286,9 +286,10 @@ OpenSpec:
 
 Each change requires its own accepted architecture inputs, Grill-Me review,
 OpenSpec, and readiness gate. The first M4 change remains blocked until
-RFC-004/005/006/007 design boundaries are accepted, the DeerFlow adapter
-capability gate is accepted or a local harness is formally selected, and the
-cross-contract lineage is reconciled.
+RFC-004/005/006/007 design boundaries are accepted and the cross-contract
+lineage is reconciled. M4 has formally selected a ForgeFlow-owned local
+controlled harness and runtime-neutral adapter seam; the separate DeerFlow-
+backed adapter gate remains blocked and cannot authorize implementation.
 
 ## 9. Milestone 5: Evaluation and Observability Hardening
 

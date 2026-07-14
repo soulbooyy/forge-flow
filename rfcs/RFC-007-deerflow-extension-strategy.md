@@ -183,20 +183,22 @@ lifecycle, and tracing hooks. The assessment must distinguish documented stable
 hooks from internal assumptions and record any adapter needed to preserve
 ForgeFlow contract, policy, redaction, and durable-summary ownership.
 
-Until that gate is accepted, M4 architecture may use a ForgeFlow-owned local
-controlled harness and runtime-neutral adapter seam only. It must not create a
-submodule, rely on undocumented DeerFlow behavior, or make checkpoint/runtime
-state authoritative. A submodule or deep integration requires a later ADR as
-defined by the pinned-revision boundary.
+M4 has formally selected a ForgeFlow-owned local controlled harness and
+runtime-neutral adapter seam as the first execution substrate. It must not
+create a DeerFlow submodule, attach DeerFlow runtime, rely on undocumented
+DeerFlow behavior, or make checkpoint/runtime state authoritative. This choice
+is the only M4 runtime substrate unless a later ADR and integration OpenSpec
+reassess a DeerFlow-backed adapter as defined by the pinned-revision boundary.
 
 The recorded source assessment currently finds pre-tool guardrail wrappers,
 interrupt/checkpoint facilities, sandbox providers, and trace hooks, but not a
 complete ForgeFlow policy/approval/durable-state boundary. In particular,
 guardrail allow/deny is not a Policy Decision Record, sandbox lifecycle and
 environment defaults are not M4's temporary isolated profile, and journal or
-external tracing is not durable product storage. The M4 capability gate remains
-blocked until an adapter design proves those mappings without undocumented
-dependencies.
+external tracing is not durable product storage. The DeerFlow-backed capability
+gate remains blocked until an adapter design proves those mappings through
+documented stable extension points. That does not block the formally selected
+local harness, but it does block any DeerFlow-backed runtime implementation.
 
 The source-level review additionally observes an internal middleware builder
 with explicit wrapper ordering and LangGraph interruption propagation. M4 may
