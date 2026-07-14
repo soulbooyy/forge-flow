@@ -85,6 +85,12 @@ The default lightweight review is a self-review of the current diff, passing tes
 
 Escalate to independent review when a change modifies a feature contract, security boundary, canonical identity algorithm, external dependency, or cross-platform security behavior; when it diverges from the canonical plan; or when explicitly requested by the user.
 
+Before starting an independent review, stop at the current phase review gate and
+request explicit user approval. Do not dispatch or begin an independent review
+without that approval. Approval applies only to the current phase diff; if the
+diff materially changes after approval, request approval again before reviewing
+the changed scope.
+
 ### 1.8 Execution-Assistance Boundary
 
 Superpowers is a recommended execution-assistance framework. It may help apply

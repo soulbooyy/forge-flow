@@ -78,6 +78,8 @@ Phase 被接受后才创建其 Completion Record；文件名必须来自 canonic
 
 当修改 feature contract、安全边界、canonical identity algorithm、外部依赖或跨平台安全行为；偏离 canonical plan；或用户明确要求 review 时，必须升级为独立审查。
 
+开始独立审查前，必须在当前 Phase 的 review gate 停止并向用户申请明确批准。未经该批准，不得 dispatch 或开始独立审查。批准只适用于当前 Phase 的 diff；若批准后 diff 发生实质变化，必须在审查变化后的范围前再次申请批准。
+
 ### 1.8 执行辅助边界
 
 Superpowers 是推荐使用的实施执行辅助框架。它可以通过 TDD、verification、聚焦
