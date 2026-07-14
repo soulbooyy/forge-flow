@@ -81,6 +81,11 @@ are external controlled inputs rather than values an implementation may infer.
 Until registration is complete, M4 must not create a hypothetical GitHub
 mutation configuration or enter implementation.
 
+The required registration fields and placeholder rules are maintained in the
+[M4 Fixture Environment Registration](../docs/fixtures/m4-fixture-environment-registration.md)
+template. That template is a readiness-gate input record, not permission to
+provision or infer a fixture environment.
+
 ## Decision Summary
 
 M4 evaluates governed behavior through deterministic, fixture-repository

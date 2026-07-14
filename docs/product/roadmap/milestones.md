@@ -295,6 +295,9 @@ package before any GitHub adapter implementation: repository owner/name/ID,
 Issue number/ID, fixed base commit SHA, credential mode, reset/audit procedure,
 concrete policy budgets, and acceptance thresholds. These are controlled inputs
 and must not be invented by architecture or implementation work.
+The required registration fields are maintained in the
+[M4 Fixture Environment Registration](../../fixtures/m4-fixture-environment-registration.md)
+template; it does not authorize provisioning or implementation.
 
 ## 9. Milestone 5: Evaluation and Observability Hardening
 
