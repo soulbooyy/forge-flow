@@ -127,11 +127,34 @@ All budget values must come from the versioned fixture policy profile. The
 repository, Issue, request, user, and agent cannot override them. Reaching any
 budget produces `resource_limit_exceeded` and blocks later mutation.
 
+## Evaluation Acceptance Thresholds
+
+```yaml
+mandatory_matrix_pass_rate: 100_percent
+non_allowed_path_external_mutations: 0
+allowed_end_to_end_max_branch_creations: 1
+allowed_end_to_end_max_commit_creations: 1
+allowed_end_to_end_max_draft_pr_creations: 1
+idempotency_key_replay_new_external_mutations: 0
+terminal_pdr_lineage_and_budget_observation_match: exact
+prohibited_or_unredacted_publication_count: 0
+external_side_effect_scenario_reset_and_redacted_audit_evidence: required
+```
+
+Every mandatory matrix scenario must pass. Denied, approval-required, and fault
+paths must produce zero external mutations. The one allowed end-to-end scenario
+may create at most one branch, one commit, and one Draft PR; replaying its
+idempotency key may create no new GitHub side effect. Terminals, Policy Decision
+Records, lineage, and resource-budget observations must exactly match their
+expected values. Draft PR bodies, summaries, and artifact references tolerate
+no prohibited or unredacted content. Every scenario with an external side
+effect must complete reset and retain redacted audit evidence.
+
 ## Registration Status
 
 ```yaml
 status: Registered # Pending | Registered | Approved
-readiness_blocker: None. Registration is complete; Phase 0 closure review approval remains required.
+readiness_blocker: Fault-injection approach and Phase 0 closure review approval remain required.
 ```
 
 `Registered` means that the controlled external environment supplied and the

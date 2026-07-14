@@ -28,6 +28,12 @@ patch artifacts, controlled command fixtures, and a versioned policy profile.
 - The fixture-registration sub-gate is `Registered` for profile
   `forgeflow-m4-fixture-only` version `1.0.0`, as recorded in the M4 Fixture
   Environment Registration. This is not an `Approved` complete evaluation gate.
+- M4 acceptance requires a 100 percent mandatory-matrix pass rate, zero
+  external mutations on every non-allowed path, bounded one-branch/one-commit/
+  one-Draft-PR creation for the single allowed path, zero new side effects on
+  idempotency-key replay, exact governance/lineage/budget observations, zero
+  prohibited publication, and reset plus redacted audit evidence after each
+  external side-effect scenario.
 
 ## Goals
 
@@ -63,9 +69,24 @@ The M4 readiness suite must prove at least:
 - idempotency prevents duplicate branch, commit, or Draft PR creation;
 - summaries and PR bodies exclude prohibited raw payloads.
 
+### Registered Fixture Acceptance Thresholds
+
+The registered fixture profile defines these M4 acceptance thresholds:
+
+- 100 percent of mandatory evaluation-matrix scenarios pass;
+- denied, approval-required, and fault paths produce zero external mutations;
+- the one allowed end-to-end scenario creates at most one branch, one commit,
+  and one Draft PR;
+- replaying an idempotency key creates zero new GitHub side effects;
+- every terminal, Policy Decision Record, lineage field, and resource-budget
+  observation exactly matches its expected value;
+- Draft PR bodies, summaries, and artifact references contain zero prohibited
+  or unredacted content; and
+- every external-side-effect scenario completes reset and retains redacted
+  audit evidence.
+
 ## Open Questions
 
-- Which pass thresholds define M4 acceptance for the registered fixture profile?
 - Which fault-injection mechanisms can prove adapter, sandbox, and persistence
   failure semantics without widening authority?
 
@@ -95,11 +116,11 @@ base revision, fixture-only fine-grained credential mode, reset/audit procedure,
 and versioned budget values in the registration record. No credential value is
 recorded in this RFC or in the registration document.
 
-This satisfies only the registration prerequisite. The complete evaluation gate
-remains unapproved until the registered profile has explicit acceptance
-thresholds, the required fault-injection approach, a reconciled evaluation
-matrix, and Phase 0 closure review approval. It therefore does not authorize an
-M4 OpenSpec, branch/worktree, GitHub mutation, or implementation.
+The registration and acceptance-threshold prerequisites are satisfied. The
+complete evaluation gate remains unapproved until the required fault-injection
+approach, a reconciled evaluation matrix, and Phase 0 closure review approval
+are complete. It therefore does not authorize an M4 OpenSpec, branch/worktree,
+GitHub mutation, or implementation.
 
 ## Decision Summary
 
