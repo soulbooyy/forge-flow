@@ -25,10 +25,10 @@ RFCs/ADRs, or the canonical implementation plan.
 | Field | Value |
 | --- | --- |
 | Milestone | Governed Action and Sandbox Boundary |
-| State | Phase 1 complete; awaiting explicit Phase 2 authorization |
+| State | Phase 2 authorized and in progress |
 | Completed through | Phase 1: Contract Foundation and Canonical Fixtures |
 | Next phase | Phase 2: Exact Policy and Terminal Assembly |
-| Implementation authorization | Granted for Phase 1 only; do not begin Phase 2 |
+| Implementation authorization | Granted for Phase 2 only; do not begin Phase 3 |
 
 ## Phase Index
 
@@ -41,6 +41,8 @@ RFCs/ADRs, or the canonical implementation plan.
 
 ## Change Log
 
+- 2026-07-15: Began explicitly authorized Phase 2 under the assigned M4
+  worktree; Phase 3 remains out of scope.
 - 2026-07-15: Completed Phase 1 in `88bbbae`; independent closure review
   passed after contract, terminal-fact, resource, timeout, and lineage
   corrections. Phase 2 remains unstarted pending explicit authorization.
