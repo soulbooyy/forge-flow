@@ -315,10 +315,12 @@ Phase 0 closure has been explicitly approved. The next authorized activity is
 preparing the first feature-level OpenSpec; it does not authorize a branch,
 worktree, GitHub mutation, or implementation.
 
-The first governed-action/sandbox feature remains blocked until the independent
-[M4 Sandbox Image Registration](../../fixtures/m4-sandbox-image-registration.md)
-is complete and approved. That external asset must not be inferred, generated,
-or replaced by a floating tag or local image.
+The independent [M4 Sandbox Image Registration](../../fixtures/m4-sandbox-image-registration.md)
+is complete and approved. The OCI image identity and owner-approval gate now
+permits governed-action/sandbox feature-level OpenSpec preparation; it does not
+authorize a branch, worktree, GitHub mutation, or implementation. The external
+asset must not be inferred, generated, or replaced by a floating tag or local
+image.
 
 ## 9. Milestone 5: Evaluation and Observability Hardening
 

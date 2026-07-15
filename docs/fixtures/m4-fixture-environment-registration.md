@@ -218,8 +218,8 @@ immutable lineage.
 ```yaml
 status: Approved # Pending | Registered | Approved
 readiness_blocker: M4 Phase 0 closure is approved; feature-level OpenSpec gates remain required.
-execution_feature_readiness: Blocked
-execution_feature_readiness_blocker: See the Pending M4 Sandbox Image Registration.
+execution_feature_readiness: Ready for feature-level OpenSpec preparation
+execution_feature_readiness_blocker: None. The approved M4 Sandbox Image Registration satisfies the OCI image identity and owner-approval gate; later feature-specific readiness requirements still apply.
 ```
 
 `Registered` means that the controlled external environment supplied and the
