@@ -16,8 +16,8 @@ RFCs/ADRs, or the canonical implementation plan.
 
 | Field | Value |
 | --- | --- |
-| Branch | Not assigned; do not create before explicit Phase 1 authorization. |
-| Worktree | Not assigned; do not create before explicit Phase 1 authorization. |
+| Branch | `feature/m4-governed-action-sandbox` |
+| Worktree | `.worktrees/m4-governed-action-sandbox` |
 | Execution mode | Lightweight Implementation Execution |
 
 ## Current Status
@@ -25,10 +25,10 @@ RFCs/ADRs, or the canonical implementation plan.
 | Field | Value |
 | --- | --- |
 | Milestone | Governed Action and Sandbox Boundary |
-| State | Canonical plan accepted; awaiting Phase 1 authorization |
+| State | Phase 1 authorized and in progress |
 | Completed through | None |
 | Next phase | Phase 1: Contract Foundation and Canonical Fixtures |
-| Implementation authorization | Not granted |
+| Implementation authorization | Granted for Phase 1 only; do not begin Phase 2 |
 
 ## Phase Index
 
@@ -41,6 +41,10 @@ RFCs/ADRs, or the canonical implementation plan.
 
 ## Change Log
 
+- 2026-07-15: Assigned the milestone isolation environment: branch
+  `feature/m4-governed-action-sandbox`, worktree
+  `.worktrees/m4-governed-action-sandbox`; began explicitly authorized Phase 1
+  under Lightweight Implementation Execution.
 - 2026-07-15: Canonical plan accepted after independent review; awaiting
   explicit Phase 1 authorization. No branch, worktree, implementation, sandbox
   execution, or GitHub mutation is authorized.
