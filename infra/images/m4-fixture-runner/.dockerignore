@@ -1,0 +1,7 @@
+# The runner requires no build context. Keep only its review metadata available
+# to the builder; no ForgeFlow or fixture-repository source is copied into the
+# image.
+*
+!Dockerfile
+!.dockerignore
+!README.md
