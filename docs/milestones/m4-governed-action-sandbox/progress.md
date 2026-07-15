@@ -25,22 +25,25 @@ RFCs/ADRs, or the canonical implementation plan.
 | Field | Value |
 | --- | --- |
 | Milestone | Governed Action and Sandbox Boundary |
-| State | Phase 1 authorized and in progress |
-| Completed through | None |
-| Next phase | Phase 1: Contract Foundation and Canonical Fixtures |
+| State | Phase 1 complete; awaiting explicit Phase 2 authorization |
+| Completed through | Phase 1: Contract Foundation and Canonical Fixtures |
+| Next phase | Phase 2: Exact Policy and Terminal Assembly |
 | Implementation authorization | Granted for Phase 1 only; do not begin Phase 2 |
 
 ## Phase Index
 
 | Phase | Name | Status | Commit | Completion Record |
 | --- | --- | --- | --- | --- |
-| 1 | Contract Foundation and Canonical Fixtures | Not started | None | None |
+| 1 | Contract Foundation and Canonical Fixtures | Complete | `88bbbae` | [Phase 1 record](phases/phase-1-contract-foundation-and-canonical-fixtures.md) |
 | 2 | Exact Policy and Terminal Assembly | Not started | None | None |
 | 3 | Fail-Closed OCI Adapter and Attempt Service | Not started | None | None |
 | 4 | Acceptance Matrix and Boundary Hardening | Not started | None | None |
 
 ## Change Log
 
+- 2026-07-15: Completed Phase 1 in `88bbbae`; independent closure review
+  passed after contract, terminal-fact, resource, timeout, and lineage
+  corrections. Phase 2 remains unstarted pending explicit authorization.
 - 2026-07-15: Assigned the milestone isolation environment: branch
   `feature/m4-governed-action-sandbox`, worktree
   `.worktrees/m4-governed-action-sandbox`; began explicitly authorized Phase 1
