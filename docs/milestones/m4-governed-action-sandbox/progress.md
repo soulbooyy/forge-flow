@@ -25,22 +25,25 @@ RFCs/ADRs, or the canonical implementation plan.
 | Field | Value |
 | --- | --- |
 | Milestone | Governed Action and Sandbox Boundary |
-| State | Phase 2 authorized and in progress |
-| Completed through | Phase 1: Contract Foundation and Canonical Fixtures |
-| Next phase | Phase 2: Exact Policy and Terminal Assembly |
-| Implementation authorization | Granted for Phase 2 only; do not begin Phase 3 |
+| State | Phase 2 complete; awaiting explicit Phase 3 authorization |
+| Completed through | Phase 2: Exact Policy and Terminal Assembly |
+| Next phase | Phase 3: Fail-Closed OCI Adapter and Attempt Service |
+| Implementation authorization | Phase 2 complete; do not begin Phase 3 without explicit authorization |
 
 ## Phase Index
 
 | Phase | Name | Status | Commit | Completion Record |
 | --- | --- | --- | --- | --- |
 | 1 | Contract Foundation and Canonical Fixtures | Complete | `88bbbae` | [Phase 1 record](phases/phase-1-contract-foundation-and-canonical-fixtures.md) |
-| 2 | Exact Policy and Terminal Assembly | Not started | None | None |
+| 2 | Exact Policy and Terminal Assembly | Complete | `6a1fe04` | [Phase 2 record](phases/phase-2-exact-policy-and-terminal-assembly.md) |
 | 3 | Fail-Closed OCI Adapter and Attempt Service | Not started | None | None |
 | 4 | Acceptance Matrix and Boundary Hardening | Not started | None | None |
 
 ## Change Log
 
+- 2026-07-15: Completed Phase 2 in `6a1fe04`; final independent closure review
+  found no P1/P2 after stale-base and null-preserving PDR-lineage corrections.
+  Phase 3 remains unstarted pending explicit authorization.
 - 2026-07-15: Began explicitly authorized Phase 2 under the assigned M4
   worktree; Phase 3 remains out of scope.
 - 2026-07-15: Completed Phase 1 in `88bbbae`; independent closure review
