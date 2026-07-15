@@ -83,7 +83,8 @@ acceptance thresholds.
 | Scanner failure or indeterminate security rule | `blocked` | `not_started` / `policy_blocked`; no persistable or publishable artifact | 0 |
 | Redaction failure after artifact generation | `blocked` | `failed` / `redaction_failed`; raw or partial artifact is neither published nor referenced | 0 |
 | Confirmed secret match | `blocked` | `not_started` / `policy_blocked`; no commit or Draft PR | 0 |
-| Sensitive path, pre-execution threshold review, or stale base revision | `requires_human_approval` | Bound ApprovalRequest; `not_started` / `approval_required` or `base_revision_mismatch` | 0 before a new approved evaluation |
+| Sensitive path or pre-execution threshold review | `requires_human_approval` | Bound ApprovalRequest; `not_started` / `approval_required` | 0 before a new approved evaluation |
+| Stale base revision | `requires_human_approval` | `not_started` / `base_revision_mismatch`; no sandbox mutation, GitHub mutation, artifact publish, or execution fact | 0 before a new approved evaluation |
 | Approval expired or inputs changed | `requires_human_approval` | Previous approval unusable; `not_started` / `approval_required` | 0 |
 | Runtime resource budget reached after an allowed start | prior `allowed` remains a decision fact | `failed` / `resource_limit_exceeded`; current run cannot mutate externally | 0 after the limit |
 | Fixture test command timeout or output limit exhaustion | prior `allowed` remains a decision fact | `timed_out` or `failed` / `resource_limit_exceeded`; current run cannot mutate externally | 0 after the limit |

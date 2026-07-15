@@ -13,11 +13,13 @@
 
 - [x] Define scope, exclusions, immutable contracts, OCI boundary, policy
   authority, failure semantics, and acceptance scenarios.
-- [x] Review and accept this OpenSpec change under document governance.
-- [ ] After acceptance and explicit user authorization, create a
-  non-authoritative M4 draft implementation plan and reconcile it into the
-  sole canonical plan. Superpowers `writing-plans` is optional; request
-  explicit user approval before invoking it.
+- [x] Review and accept this OpenSpec change under document governance after
+  the stale-base-revision terminal mapping amendment.
+- [x] After acceptance and explicit user authorization, create the
+  non-authoritative M4 draft implementation plan. Superpowers `writing-plans`
+  is optional; request explicit user approval before invoking it.
+- [ ] Reconcile the draft against accepted authority into the sole canonical
+  plan before implementation.
 - [ ] Create the M4 milestone index and progress record only with the
   canonical plan.
 

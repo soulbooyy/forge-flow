@@ -50,6 +50,25 @@ DeerFlow sandbox, or a backend default.
 - **THEN** the attempt is `not_started` with `sandbox_unavailable`
 - **AND** no command, GitHub mutation, or host fallback occurs
 
+### Requirement: Stale base revision SHALL require a new governed evaluation
+
+A stale base revision SHALL produce a fresh PolicyDecisionRecord outcome of
+`requires_human_approval` and an ExecutionAttempt of `not_started` with
+`base_revision_mismatch`. It SHALL produce no sandbox mutation, GitHub
+mutation, artifact publication, exit code, resource observation, or execution
+artifact reference. A later human-approved execution SHALL use new immutable
+intent and decision contracts bound to the current revision; it SHALL NOT
+reuse the stale attempt or authorization.
+
+#### Scenario: Stale revision preserves fact and governance separately
+
+- **GIVEN** a CommandIntent whose base revision is no longer the registered
+  current revision
+- **WHEN** policy evaluates its current lineage
+- **THEN** the PolicyDecisionRecord is `requires_human_approval`
+- **AND** the ExecutionAttempt is `not_started` with
+  `base_revision_mismatch` and no execution facts
+
 ### Requirement: ExecutionAttempt SHALL record only observed lifecycle facts
 
 The capability SHALL emit `ExecutionAttempt` using the contract shape in the

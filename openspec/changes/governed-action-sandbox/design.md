@@ -52,8 +52,10 @@ The fixture policy profile grants exactly one structured capability:
 `fixture-test-runner-v1` = `python3 -m unittest discover -s tests` from
 `workspace_root`, with no environment entries, a 120000 ms timeout, and a
 65536-byte output limit. Every command value, policy profile version,
-repository/base revision, and OCI image digest must match the registered
-inputs exactly. A mismatch is `policy_blocked`; timeout or any declared budget
+repository and OCI image digest must match the registered inputs exactly. A
+repository, command, profile, or image mismatch is `policy_blocked`; a stale
+base revision instead produces `requires_human_approval` and a
+`not_started`/`base_revision_mismatch` attempt. Timeout or any declared budget
 exhaustion is `resource_limit_exceeded`.
 
 For a started attempt, the OCI adapter must prove an image pinned to the
@@ -78,9 +80,16 @@ external input; it neither grants execution nor permits a different image.
   image, exit code, output, workspace, or started timestamp.
 - `requires_human_approval` produces a `not_started` attempt with
   `approval_required`; it creates no approval record and does not continue.
-- A missing, stale, mismatched, or unprovable OCI capability produces
+- A stale base revision produces `requires_human_approval` plus a
+  `not_started` attempt with `base_revision_mismatch`. It produces no sandbox
+  mutation, GitHub mutation, artifact publication, exit code, resource
+  observation, or execution artifact reference. A later human-approved run
+  must create new ActionIntent, CommandIntent, and PolicyDecisionRecord lineage
+  bound to the current revision; the old attempt remains immutable.
+- A missing, unregistered, mismatched, or unprovable OCI capability produces
   `not_started` with `sandbox_unavailable`, before any execution or external
-  mutation.
+  mutation. This capability taxonomy never includes a repository base-revision
+  mismatch.
 - A started execution may end only as `succeeded`, `failed`, `cancelled`, or
   `timed_out`; non-success requires the applicable bounded failure reason. A
   cancelled attempt must have started and uses only `cancelled_by_request`; it

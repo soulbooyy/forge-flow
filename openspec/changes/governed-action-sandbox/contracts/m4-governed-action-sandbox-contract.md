@@ -104,6 +104,14 @@ this change. `status: "cancelled"` requires and permits only
 `failure_reason: "cancelled_by_request"`; that reason requires a started
 attempt and never authorizes retry.
 
+`failure_reason: "base_revision_mismatch"` requires a `not_started` attempt
+and a Policy Decision Record outcome of `requires_human_approval`. It has zero
+resource observations, empty artifact references, and no image, exit-code,
+workspace, or started timestamp. It cannot cause a sandbox/GitHub mutation or
+artifact publication. A later approved execution uses new ActionIntent,
+CommandIntent, and PolicyDecisionRecord contracts bound to the current base
+revision; the stale attempt remains immutable audit lineage.
+
 ## Validation Error Envelope
 
 Invalid lineage, unsupported schema/profile/command, an image identity
