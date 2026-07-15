@@ -18,7 +18,7 @@
 - [x] After acceptance and explicit user authorization, create the
   non-authoritative M4 draft implementation plan. Superpowers `writing-plans`
   is optional; request explicit user approval before invoking it.
-- [ ] Reconcile the draft against accepted authority into the sole canonical
+- [x] Reconcile the draft against accepted authority into the sole canonical
   plan before implementation.
 - [ ] Create the M4 milestone index and progress record only with the
   canonical plan.
