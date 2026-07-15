@@ -557,10 +557,15 @@ required and must be one of:
 - `redaction_failed`
 - `base_revision_mismatch`
 - `resource_limit_exceeded`
+- `cancelled_by_request`
 
 The failure reason explains execution facts; it neither replaces nor infers a
 policy decision. In particular, `not_started` paired with `policy_blocked` or
 `approval_required` remains distinct from a started attempt that failed.
+`cancelled_by_request` applies only to an attempt that actually started and
+whose status is `cancelled`; it cannot describe a policy, approval, or other
+pre-start stop. A cancelled attempt must use that cancellation reason rather
+than `command_failed`, and it does not authorize an automatic retry.
 `SecretScanResult` and `ReviewResult` produce facts and findings only. A new
 `PolicyDecisionRecord` consumes those inputs to decide whether a later action
 is allowed, requires human approval, or is blocked. `PRResult` records an

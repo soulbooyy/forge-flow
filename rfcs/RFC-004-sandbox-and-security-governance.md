@@ -489,10 +489,14 @@ An `ExecutionAttempt` records only lifecycle facts using `succeeded`,
 attempt must carry exactly one failure reason from `policy_blocked`,
 `approval_required`, `sandbox_unavailable`, `command_failed`,
 `parser_failed`, `redaction_failed`, `base_revision_mismatch`, or
-`resource_limit_exceeded`. This reason explains what happened to that attempt;
+`resource_limit_exceeded`, or `cancelled_by_request`. This reason explains what happened to that attempt;
 it does not replace or create a Policy Decision Record. In particular, policy
 block and approval requirement produce an immutable `not_started` attempt
 fact, distinct from a command that actually started and later failed.
+`cancelled_by_request` is required and exclusive when a started attempt has
+status `cancelled`; it must not be used for an attempt that never started or
+substituted with `command_failed`. Cancellation creates no retry authority and
+M4 remains fixed at `max_automatic_retries: 0`.
 
 `SecretScanResult` and execution-review `ReviewResult` are fact/finding
 contracts. They must not encode execution authorization or Draft PR approval.

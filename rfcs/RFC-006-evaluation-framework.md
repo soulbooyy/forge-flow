@@ -87,7 +87,8 @@ acceptance thresholds.
 | Approval expired or inputs changed | `requires_human_approval` | Previous approval unusable; `not_started` / `approval_required` | 0 |
 | Runtime resource budget reached after an allowed start | prior `allowed` remains a decision fact | `failed` / `resource_limit_exceeded`; current run cannot mutate externally | 0 after the limit |
 | Fixture test command timeout or output limit exhaustion | prior `allowed` remains a decision fact | `timed_out` or `failed` / `resource_limit_exceeded`; current run cannot mutate externally | 0 after the limit |
-| Sandbox, command, timeout, cancellation, parser, or artifact-publication fault | decision remains separately recorded | Corresponding terminal failure; controlled adapter records no effect | 0 |
+| Sandbox, command, timeout, parser, or artifact-publication fault | decision remains separately recorded | Corresponding terminal failure; controlled adapter records no effect | 0 |
+| Controlled cancellation after a real start | prior `allowed` remains a decision fact | `cancelled` / `cancelled_by_request`; no retry or external mutation | 0 |
 | GitHub adapter pre-mutation or ambiguous-result fault | fresh action decision remains separately recorded | Fake/controlled adapter records no duplicate external effect | 0 |
 | Idempotency-key replay | fresh current-input decision as required | Existing result is returned or reconciled; no new branch, commit, or Draft PR | 0 new effects |
 

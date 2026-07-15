@@ -115,7 +115,10 @@ the referenced `PolicyDecisionRecord.outcome` (`allowed`,
 `not_started`). A non-successful attempt's bounded failure reason is one of
 `policy_blocked`, `approval_required`, `sandbox_unavailable`,
 `command_failed`, `parser_failed`, `redaction_failed`,
-`base_revision_mismatch`, or `resource_limit_exceeded`.
+`base_revision_mismatch`, `resource_limit_exceeded`, or
+`cancelled_by_request`. The cancellation reason appears only with a started
+attempt whose status is `cancelled`; it is not a command failure or retry
+authorization.
 
 The summary may reference `SecretScanResult`, `ReviewResult`, approval
 artifacts, and `PRResult`, but must not reinterpret a finding as authorization
