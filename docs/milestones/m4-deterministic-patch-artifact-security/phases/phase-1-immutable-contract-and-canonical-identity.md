@@ -89,15 +89,28 @@ fields, controlled security values, canonical key ordering, float rejection,
 and self-excluding identity. Cumulative tests, OpenSpec validation, diff
 hygiene, and the static no-I/O boundary check all passed.
 
-Status: **Accepted**.
+Status: **Pending independent review**.
 
-## 10. Scope Boundary Confirmation
+## 10. Review Gate
+
+- Independent review required: Yes — Phase 1 changes feature contracts, the
+  metadata security boundary, and canonical identity under Implementation
+  Execution section 1.7.
+- Independent review completed: No.
+- Subagent used: No.
+- Review-method rationale and user-approval scope: Self-review, targeted and
+  cumulative tests, strict OpenSpec validation, and static boundary checks are
+  complete, but cannot replace the mandatory independent review. The user has
+  approved independent subagent review through the end of Phase 2; the current
+  Phase 1 diff is awaiting that review.
+
+## 11. Scope Boundary Confirmation
 
 Phase 1 added no scanner/redactor, policy evaluator, service, diff renderer,
 source reader, workspace operation, artifact store, DurableRunSummary, command,
 sandbox, approval, retry, GitHub, network, or external side effect.
 
-## 11. Follow-up
+## 12. Follow-up
 
-Next Phase: Registered Metadata Security Facts. It requires explicit user
-authorization before starting.
+Next action: complete the required independent Phase 1 review. Phase 2 cannot
+start until this gate is accepted.

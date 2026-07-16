@@ -37,6 +37,10 @@ persistence, or authorization capability.
 - Treat `PatchProposal`, `PatchIntent`, `PatchArtifact`, security facts, and
   candidates as non-authorizing; only a later fresh PDR can authorize a later
   action.
+- Before any phase is accepted, apply the Implementation Execution review gate:
+  record whether independent review is required, whether it completed, whether
+  a subagent was used, and the approved rationale. Phase 1 changes contracts,
+  security boundary, and canonical identity, so independent review is required.
 - Before Phase 1, create and record exactly branch
   `feature/m4-deterministic-patch-artifact-security` and worktree
   `.worktrees/m4-deterministic-patch-artifact-security`; do not reuse Feature 1.
@@ -61,7 +65,8 @@ and digest helpers named in the AI draft.
 - [ ] Create one focused commit, Phase 1 Completion Record, and progress update.
 
 **Acceptance:** Contracts are payload-free, identity-stable, metadata-only, and
-reject forbidden raw data without copying it.
+reject forbidden raw data without copying it; an approved independent review
+must also complete before Phase 1 is accepted.
 
 ## Phase 2: Registered Metadata Security Facts
 
@@ -82,7 +87,9 @@ reject forbidden raw data without copying it.
 - [ ] Create one focused commit, Phase 2 Completion Record, and progress update.
 
 **Acceptance:** Only allowlisted metadata is processed; matched text is never
-retained; unsafe results have no candidate and cannot become approval-required.
+retained; unsafe results have no candidate and cannot become approval-required;
+the required review-gate decision and any required independent review are
+recorded before Phase 2 is accepted.
 
 ## Phase 3: Metadata-only Assembly Service
 
@@ -105,7 +112,9 @@ eligibility facts; it has no adapter parameter or side-effect dependency.
 - [ ] Create one focused commit, Phase 3 Completion Record, and progress update.
 
 **Acceptance:** The service has no source/diff renderer, workspace/OCI/GitHub
-integration, persistence path, or PDR evaluator.
+integration, persistence path, or PDR evaluator; the required review-gate
+decision and any required independent review are recorded before Phase 3 is
+accepted.
 
 ## Phase 4: Acceptance and Boundary Hardening
 
@@ -124,4 +133,6 @@ integration, persistence path, or PDR evaluator.
 - [ ] Create one focused commit, Phase 4 Completion Record, and progress update.
 
 **Acceptance:** All Feature 2 requirements pass with no raw material,
-side-effect, persistence, or authorization escape.
+side-effect, persistence, or authorization escape; the required review-gate
+decision and any required independent review are recorded before Phase 4 is
+accepted.
