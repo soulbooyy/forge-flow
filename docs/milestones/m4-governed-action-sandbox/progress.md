@@ -25,10 +25,10 @@ RFCs/ADRs, or the canonical implementation plan.
 | Field | Value |
 | --- | --- |
 | Milestone | Governed Action and Sandbox Boundary |
-| State | Phase 3 complete; awaiting explicit Phase 4 authorization |
+| State | Phase 4 authorized and in progress |
 | Completed through | Phase 3: Fail-Closed OCI Adapter and Attempt Service |
-| Next phase | Phase 4: Acceptance Matrix and Boundary Hardening |
-| Implementation authorization | Phase 3 complete; do not begin Phase 4 without explicit authorization |
+| Next phase | None; Phase 4 is the final canonical-plan phase |
+| Implementation authorization | Granted for Phase 4 only; do not begin work beyond the canonical plan |
 
 ## Phase Index
 
@@ -41,6 +41,8 @@ RFCs/ADRs, or the canonical implementation plan.
 
 ## Change Log
 
+- 2026-07-16: Began explicitly authorized Phase 4 under the assigned M4
+  worktree; no work beyond the canonical plan is authorized.
 - 2026-07-16: Completed Phase 3 in `746a0f9`; final independent closure review
   found no P1/P2. Phase 4 remains unstarted pending explicit authorization.
 - 2026-07-15: Began explicitly authorized Phase 3 under the assigned M4
