@@ -25,10 +25,11 @@ RFCs/ADRs, or the canonical implementation plan.
 | Field | Value |
 | --- | --- |
 | Milestone | Governed Action and Sandbox Boundary |
-| State | Canonical implementation complete; external OCI evaluation not closed |
+| State | Canonical implementation complete; OCI negative fixture path reconciled |
 | Completed through | Phase 4: Acceptance Matrix and Boundary Hardening |
 | Next phase | None |
 | Implementation authorization | Canonical M4 plan complete; no further work authorized by this plan |
+| External OCI closure readiness | Negative fixture execution is evidenced. Full positive end-to-end closure is not claimed because no governed GitHub-mutation evaluation has been authorized or performed. |
 
 ## Phase Index
 
@@ -45,6 +46,14 @@ RFCs/ADRs, or the canonical implementation plan.
   the registered image digest. It exited non-zero under the required isolation
   controls; no retry or external mutation was performed. See [redacted run
   evidence](evidence/real-oci-fixture-run-2026-07-16.md).
+- 2026-07-16: Reconciled the OCI probe. The runner image intentionally contains
+  no fixture source and the probe mounted no fixed-revision workspace, so
+  `exit=1` is a workspace-provisioning alignment result, not
+  `sandbox_unavailable`, `policy_blocked`, or a governed `command_failed`
+  terminal. A subsequent base-SHA-verified controlled re-probe confirmed the
+  fixture's expected pre-fix negative test failure; see [re-probe
+  evidence](evidence/real-oci-fixture-reprobe-2026-07-16.md). Full positive
+  end-to-end external closure remains unclaimed.
 - 2026-07-16: Completed Phase 4 in `b162f7b`; canonical M4 implementation is complete.
 - 2026-07-16: Began explicitly authorized Phase 4 under the assigned M4
   worktree; no work beyond the canonical plan is authorized.

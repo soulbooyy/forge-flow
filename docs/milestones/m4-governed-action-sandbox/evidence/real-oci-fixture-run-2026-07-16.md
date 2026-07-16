@@ -64,3 +64,47 @@ command returned a non-zero result. It does not close M4 external evaluation
 or milestone closure. A later, separately authorized investigation should use
 an independently verified fixture checkout at the registered base revision and
 preserve only redacted diagnostic evidence before any further real run.
+
+## Reconciliation
+
+### Final classification of exit code `1`
+
+The exit code is **not established as an expected fixture/test failure**. Raw
+output was deliberately discarded, so this record cannot identify a particular
+unittest diagnostic. It is also not a result from the registered fixture
+repository: the runner's controlled-build record states that its build context
+intentionally contains no fixture-repository source, while this probe supplied
+no temporary workspace mount. The result is therefore classified as a
+**probe workspace-provisioning / fixture-image alignment failure**, not a
+fixture-repository behavioral result.
+
+The exact allowlisted command identity was invoked by Docker, which is a
+command-execution fact. It was not invoked through ForgeFlow's evaluated
+`ActionIntent` / `CommandIntent` / `PolicyDecisionRecord` tuple, so it creates
+no governed `ExecutionAttempt` and must not be recorded as a M4
+`command_failed` terminal fact.
+
+### Facts kept separate
+
+| Domain | Reconciled fact |
+| --- | --- |
+| Sandbox capability | The registered image started with the recorded digest, network, root-filesystem, UID, credential, and mount exclusions. The fixed-revision-workspace condition was not supplied or proven. |
+| Command execution | Docker invoked the exact registered command once and it returned `1` within the output and time bounds. |
+| Fixture behavior | Not evaluated: no independently verified checkout at `97c8220cd713ebf61124ac2de2f3eadc6e4dc222` was mounted. |
+| Policy decision | Not evaluated: this was an environment probe, not a ForgeFlow policy evaluation. |
+
+Accordingly, the result is neither `sandbox_unavailable` nor
+`policy_blocked`, and it is not a governed `command_failed` fact. It also does
+not establish a successful allowed execution path.
+
+### Original-probe follow-up
+
+The minimal correction was not a
+policy, command, image, or architecture change: provide a temporary local
+checkout whose Git object is verified to equal the registered base SHA, mount
+only that checkout at `/workspace`, and run the same single command under the
+same controls. The runner documentation specifies this workspace arrangement.
+
+That correction was completed later on 2026-07-16 after GitHub CLI access was
+made available. Its resulting expected fixture negative-test failure and
+controls are recorded in [the controlled re-probe evidence](real-oci-fixture-reprobe-2026-07-16.md).
