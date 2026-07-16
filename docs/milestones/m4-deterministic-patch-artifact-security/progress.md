@@ -34,7 +34,7 @@ RFCs/ADRs, or the canonical implementation plan.
 
 | Phase | Name | Status | Commit | Completion Record |
 | --- | --- | --- | --- | --- |
-| 1 | Immutable Contract and Canonical Identity | Accepted | `6ccb064` + review corrections | [Phase 1 record](phases/phase-1-immutable-contract-and-canonical-identity.md) |
+| 1 | Immutable Contract and Canonical Identity | Accepted | `6ccb064`, `f9f5061` | [Phase 1 record](phases/phase-1-immutable-contract-and-canonical-identity.md) |
 | 2 | Registered Metadata Security Facts | Not started | None | None |
 | 3 | Metadata-only Assembly Service | Not started | None | None |
 | 4 | Acceptance and Boundary Hardening | Not started | None | None |

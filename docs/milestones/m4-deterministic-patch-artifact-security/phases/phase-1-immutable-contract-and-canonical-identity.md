@@ -91,6 +91,8 @@ compact, sorted UTF-8 JSON and rejects floats and unsupported object values.
 
 - Full commit hash: `6ccb064ef9b9044919a3f557531620d68cb0ed73`
 - Commit message: `feat(patch-security): add immutable metadata contracts`
+- Review-correction commit: `f9f5061c942d3583fdfaa945b9e55fa41688355f`
+  (`fix(patch-security): harden metadata contracts`)
 
 ## 9. Acceptance
 
