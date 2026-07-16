@@ -32,11 +32,19 @@ lineage fields, paths, raw payload fields, and unknown fields are excluded from
 the projection. An input that cannot be projected exactly is `indeterminate`;
 it is not scanned permissively.
 
+The immutable contract bounds the projection before scanning: at most 10
+slash-separated target-scope paths of at most 512 Unicode code points, a
+single-line `change_description` of at most 1,000 code points, and bounded
+rule-ID/field finding summaries only. These bounds exclude multiline raw
+source/diff representations before the scanner receives metadata.
+
 ## Deterministic Secret-like Detection Rules
 
 Rules run in the stated order over each allowlisted string field. Every match
-records only the rule ID and field name in a bounded finding summary; matched
-text is never retained in any contract, candidate, log, or error.
+records only the rule ID and field name as a structured, ordered, unique
+finding pair; matched text is never retained in any contract, candidate, log,
+or error. A passed scan has no findings, a blocked scan has at least one, and a
+failed or indeterminate scan has none plus its controlled safe reason code.
 
 | Rule ID | Deterministic match | Severity |
 | --- | --- | --- |

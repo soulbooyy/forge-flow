@@ -11,6 +11,7 @@ from .models import (
     DeterministicPatchArtifactSecurityValidationError,
     PatchArtifact,
     PatchIntent,
+    RedactedArtifactReferenceCandidate,
     RedactionFact,
     SecretScanResult,
 )
@@ -45,6 +46,10 @@ def scan_id_for(value: SecretScanResult) -> str:
 
 def redaction_id_for(value: RedactionFact) -> str:
     return f"sha256:{sha256_hex(value, omit_fields=frozenset({'redaction_id'}))}"
+
+
+def candidate_id_for(value: RedactedArtifactReferenceCandidate) -> str:
+    return f"sha256:{sha256_hex(value, omit_fields=frozenset({'candidate_id'}))}"
 
 
 def validation_error_id_for(value: DeterministicPatchArtifactSecurityValidationError) -> str:

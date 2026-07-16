@@ -25,8 +25,13 @@ Required minimum fields:
 - `lineage_digest` binding the originating PatchProposal and the listed input
   facts.
 
-It must not contain authorization, approval, execution permission, write
-permission, an applied-workspace assertion, or a persistent artifact reference.
+`target_scope` contains at most 10 sorted unique slash-separated logical paths,
+each at most 512 Unicode code points, without an absolute, drive-prefixed,
+backslash, or parent-escaping form. `change_description` is single-line metadata
+of at most 1,000 Unicode code points, not source, diff, or patch content. The
+contract must not contain authorization, approval, execution
+permission, write permission, an applied-workspace assertion, or a persistent
+artifact reference.
 
 ## PatchArtifact
 
@@ -58,10 +63,15 @@ Required minimum fields:
 - bounded `findings_summary`; and
 - `failure_reason` when the result is `failed` or `indeterminate`.
 
-`blocked` is a security fact meaning that the scanner found content which the
-profile treats as unsafe. It is not a PDR outcome and does not by itself
-authorize or perform a stop; the next PDR consumes that fact and is required to
-be `blocked` under the registered profile.
+`findings_summary` contains only structured, ordered, unique pairs of a
+registered rule ID and an allowlisted metadata field name, at most one per pair;
+it has no free-text member and never contains matched text. `passed` requires
+an empty finding tuple; `blocked` requires a non-empty finding tuple; and
+`failed` or `indeterminate` require an empty finding tuple plus a controlled
+safe failure code. `blocked` is a security fact meaning that the scanner found
+content which the profile treats as unsafe. It is not a PDR outcome and does
+not by itself authorize or perform a stop; the next PDR consumes that fact and
+is required to be `blocked` under the registered profile.
 
 ## RedactionFact
 
@@ -83,10 +93,11 @@ ineligible.
 ## RedactedArtifactReferenceCandidate
 
 This is a Feature 2 in-memory eligibility fact, not a durable contract or
-artifact-store object. It may exist only when the scoped metadata scan passed
-and redaction completed successfully. It binds the input PatchArtifact ID,
-redacted metadata output digest, and applicable profile/rule-set identity. It
-cannot contain a filesystem path, raw artifact payload, raw diff, or source
+artifact-store object. It has `contract_version`, a deterministic `candidate_id`,
+the PatchArtifact ID, SecretScanResult ID, RedactionFact ID, redacted metadata
+digest, lineage digest, and applicable profile/rule-set identity. It may exist
+only when the scoped metadata scan passed and redaction completed successfully.
+It cannot contain a filesystem path, raw artifact payload, raw diff, or source
 material. Feature 3 alone may publish it and assign a ForgeFlow-owned durable
 artifact reference.
 
@@ -95,5 +106,6 @@ artifact reference.
 Invalid lineage, unknown or mismatched registered profile/rule-set identity,
 forbidden payload field, malformed metadata-construction input, or a path-bound
 violation returns `deterministic_patch_artifact_security_validation_error`. It contains
-only a schema version, digest-derived error ID, bounded error code, and safe
-bounded summary; it returns no raw rejected value or partial success contract.
+only a schema version, digest-derived error ID, bounded error code, and one
+controlled safe summary template; it returns no raw rejected value or partial
+success contract.

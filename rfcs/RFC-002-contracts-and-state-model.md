@@ -637,9 +637,12 @@ Feature 2 does not generate, render, retain, or persist patch material. Its
 scanner and redactor operate only on the bounded metadata/fact representation
 defined above. A clean, fully redacted metadata representation may yield only a
 `RedactedArtifactReferenceCandidate`; this is evidence that a later feature
-may publish a bounded reference, not a durable identity, patch material, or
-persistence event. Scan failure, redaction failure, indeterminate security
-result, or a blocked finding yields no candidate reference. Actual patch
+may publish a bounded reference, not a durable artifact identity, patch
+material, or persistence event. The candidate itself has a deterministic
+in-memory identity and binds the PatchArtifact, SecretScanResult, RedactionFact,
+profile/rule-set, and redacted-metadata lineage. Scan failure, redaction
+failure, indeterminate security result, or a blocked finding yields no candidate
+reference. Actual patch
 materialization requires a later feature with explicit source-access and
 application authority. A later action must obtain a fresh Policy Decision
 Record over its current inputs; neither a PatchIntent, PatchArtifact, security

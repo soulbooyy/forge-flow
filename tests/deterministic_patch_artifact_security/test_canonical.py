@@ -6,11 +6,15 @@ from dataclasses import replace
 import unittest
 
 from forgeflow.deterministic_patch_artifact_security.canonical import (
+    candidate_id_for,
     canonical_bytes,
     intent_id_for,
     sha256_hex,
 )
-from forgeflow.deterministic_patch_artifact_security.models import PatchIntent
+from forgeflow.deterministic_patch_artifact_security.models import (
+    PatchIntent,
+    RedactedArtifactReferenceCandidate,
+)
 
 
 _DIGEST = "sha256:" + "0" * 64
@@ -36,6 +40,24 @@ class CanonicalTests(unittest.TestCase):
         identity = intent_id_for(provisional)
         self.assertEqual(identity, intent_id_for(replace(provisional, intent_id=identity)))
         self.assertEqual(len(sha256_hex(provisional)), 64)
+
+    def test_candidate_identity_binds_scan_and_redaction_lineage(self) -> None:
+        provisional = RedactedArtifactReferenceCandidate(
+            contract_version="m4-patch-artifact-security/v1",
+            candidate_id=_DIGEST,
+            patch_artifact_id="sha256:" + "a" * 64,
+            secret_scan_id="sha256:" + "b" * 64,
+            redaction_id="sha256:" + "c" * 64,
+            redacted_metadata_digest="sha256:" + "d" * 64,
+            lineage_digest="sha256:" + "e" * 64,
+            profile_id="forgeflow-m4-patch-metadata-security",
+            profile_version=1,
+            secret_scan_rule_set_id="m4-patch-metadata-secret-scan-v1",
+            redaction_rule_set_id="m4-patch-metadata-redaction-v1",
+        )
+
+        identity = candidate_id_for(provisional)
+        self.assertEqual(identity, candidate_id_for(replace(provisional, candidate_id=identity)))
 
 
 if __name__ == "__main__":

@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Literal, TypeAlias
 import re
+import unicodedata
 
 
 ScanResult: TypeAlias = Literal["passed", "blocked", "failed", "indeterminate"]
@@ -13,6 +14,42 @@ RedactionStatus: TypeAlias = Literal["not_needed", "redacted", "failed", "indete
 _DIGEST = re.compile(r"^sha256:[0-9a-f]{64}$")
 _COMMIT_SHA = re.compile(r"^[0-9a-f]{40}$")
 _FORBIDDEN_SCOPE_SEGMENTS = frozenset(("", ".", ".."))
+_MAX_TARGET_SCOPE_ENTRIES = 10
+_MAX_TARGET_SCOPE_PATH_CHARS = 512
+_MAX_CHANGE_DESCRIPTION_CHARS = 1_000
+_ALLOWED_FINDING_RULE_IDS = (
+    "private-key-marker",
+    "github-token-prefix",
+    "credential-assignment",
+    "jwt-like-token",
+)
+_ALLOWED_FINDING_FIELD_NAMES = (
+    "PatchArtifact.target_scope",
+    "PatchIntent.change_description",
+    "PatchIntent.target_scope",
+)
+_SAFE_FAILURE_REASONS = {
+    "failed": ("scanner_operation_failed",),
+    "indeterminate": ("metadata_projection_invalid", "security_profile_mismatch"),
+}
+_SAFE_ERROR_SUMMARIES = (
+    "metadata security input is invalid",
+    "metadata security profile is invalid",
+)
+
+
+@dataclass(frozen=True, slots=True)
+class ScanFinding:
+    """A controlled rule/field fact that never carries matched text."""
+
+    rule_id: str
+    field_name: str
+
+    def __post_init__(self) -> None:
+        if self.rule_id not in _ALLOWED_FINDING_RULE_IDS:
+            raise ValueError("rule_id must be registered")
+        if self.field_name not in _ALLOWED_FINDING_FIELD_NAMES:
+            raise ValueError("field_name must be allowlisted")
 
 
 @dataclass(frozen=True, slots=True)
@@ -31,7 +68,9 @@ class PatchIntent:
         _require_commit_sha("base_revision", self.base_revision)
         _require_digest("intent_id", self.intent_id)
         _require_target_scope(self.target_scope)
-        _require_text("change_description", self.change_description)
+        _require_metadata_text(
+            "change_description", self.change_description, _MAX_CHANGE_DESCRIPTION_CHARS
+        )
         _require_digest("lineage_digest", self.lineage_digest)
 
 
@@ -65,7 +104,7 @@ class SecretScanResult:
     rule_set_id: str
     scanner_version: str
     result: ScanResult
-    findings_summary: tuple[str, ...]
+    findings_summary: tuple[ScanFinding, ...]
     failure_reason: str | None
 
     def __post_init__(self) -> None:
@@ -76,11 +115,18 @@ class SecretScanResult:
         _require_text("scanner_version", self.scanner_version)
         if self.result not in ("passed", "blocked", "failed", "indeterminate"):
             raise ValueError("result must be a controlled scan result")
-        _require_sorted_unique_text("findings_summary", self.findings_summary)
+        _require_sorted_unique_findings(self.findings_summary)
+        if self.result == "passed" and self.findings_summary:
+            raise ValueError("passed scans must not contain findings")
+        if self.result == "blocked" and not self.findings_summary:
+            raise ValueError("blocked scans must contain findings")
+        if self.result in ("failed", "indeterminate") and self.findings_summary:
+            raise ValueError("failed or indeterminate scans must not contain findings")
         if self.result in ("passed", "blocked") and self.failure_reason is not None:
             raise ValueError("successful or blocked scans must not have a failure reason")
         if self.result in ("failed", "indeterminate"):
-            _require_text("failure_reason", self.failure_reason)
+            if self.failure_reason not in _SAFE_FAILURE_REASONS[self.result]:
+                raise ValueError("failure_reason must be a controlled safe code")
 
 
 @dataclass(frozen=True, slots=True)
@@ -107,16 +153,26 @@ class RedactionFact:
 
 @dataclass(frozen=True, slots=True)
 class RedactedArtifactReferenceCandidate:
+    contract_version: str
+    candidate_id: str
     patch_artifact_id: str
+    secret_scan_id: str
+    redaction_id: str
     redacted_metadata_digest: str
+    lineage_digest: str
     profile_id: str
     profile_version: int
     secret_scan_rule_set_id: str
     redaction_rule_set_id: str
 
     def __post_init__(self) -> None:
+        _require_text("contract_version", self.contract_version)
+        _require_digest("candidate_id", self.candidate_id)
         _require_digest("patch_artifact_id", self.patch_artifact_id)
+        _require_digest("secret_scan_id", self.secret_scan_id)
+        _require_digest("redaction_id", self.redaction_id)
         _require_digest("redacted_metadata_digest", self.redacted_metadata_digest)
+        _require_digest("lineage_digest", self.lineage_digest)
         _require_text("profile_id", self.profile_id)
         if not isinstance(self.profile_version, int) or isinstance(self.profile_version, bool):
             raise ValueError("profile_version must be an integer")
@@ -135,7 +191,8 @@ class DeterministicPatchArtifactSecurityValidationError:
         _require_text("schema_version", self.schema_version)
         _require_digest("error_id", self.error_id)
         _require_text("error_code", self.error_code)
-        _require_text("summary", self.summary)
+        if self.summary not in _SAFE_ERROR_SUMMARIES:
+            raise ValueError("summary must be a controlled safe template")
 
 
 def _require_digest(name: str, value: object) -> None:
@@ -153,10 +210,27 @@ def _require_text(name: str, value: object) -> None:
         raise ValueError(f"{name} must be non-empty safe text")
 
 
+def _require_metadata_text(name: str, value: object, maximum: int) -> None:
+    _require_text(name, value)
+    if not isinstance(value, str) or "\n" in value or "\r" in value or len(value) > maximum:
+        raise ValueError(f"{name} must be bounded single-line metadata text")
+
+
 def _require_target_scope(value: object) -> None:
     if not isinstance(value, tuple) or not value:
         raise ValueError("target_scope must be a non-empty tuple")
-    if any(not isinstance(path, str) or not path or path.startswith("/") for path in value):
+    if len(value) > _MAX_TARGET_SCOPE_ENTRIES:
+        raise ValueError("target_scope exceeds the registered changed-file limit")
+    if any(
+        not isinstance(path, str)
+        or not path
+        or path.startswith("/")
+        or "\\" in path
+        or bool(re.match(r"^[A-Za-z]:", path))
+        or len(path) > _MAX_TARGET_SCOPE_PATH_CHARS
+        or any(unicodedata.category(character).startswith("C") for character in path)
+        for path in value
+    ):
         raise ValueError("target_scope must contain workspace-relative paths")
     if any(_FORBIDDEN_SCOPE_SEGMENTS & set(path.split("/")) for path in value):
         raise ValueError("target_scope must not escape its logical scope")
@@ -164,8 +238,11 @@ def _require_target_scope(value: object) -> None:
         raise ValueError("target_scope must be sorted and unique")
 
 
-def _require_sorted_unique_text(name: str, value: object) -> None:
-    if not isinstance(value, tuple) or any(not isinstance(item, str) or not item for item in value):
-        raise ValueError(f"{name} must be a tuple of non-empty text")
-    if value != tuple(sorted(set(value))):
-        raise ValueError(f"{name} must be sorted and unique")
+def _require_sorted_unique_findings(value: object) -> None:
+    if not isinstance(value, tuple) or any(not isinstance(item, ScanFinding) for item in value):
+        raise ValueError("findings_summary must be a tuple of controlled findings")
+    rule_rank = {rule_id: index for index, rule_id in enumerate(_ALLOWED_FINDING_RULE_IDS)}
+    if value != tuple(
+        sorted(set(value), key=lambda item: (rule_rank[item.rule_id], item.field_name))
+    ):
+        raise ValueError("findings_summary must be sorted and unique")

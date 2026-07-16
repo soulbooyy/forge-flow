@@ -6,6 +6,7 @@ from .models import (
     PatchIntent,
     RedactedArtifactReferenceCandidate,
     RedactionFact,
+    ScanFinding,
     SecretScanResult,
 )
 
@@ -15,5 +16,6 @@ __all__ = [
     "PatchIntent",
     "RedactedArtifactReferenceCandidate",
     "RedactionFact",
+    "ScanFinding",
     "SecretScanResult",
 ]

@@ -67,6 +67,11 @@ compact, sorted UTF-8 JSON and rejects floats and unsupported object values.
 - Cumulative verification: `PYTHONPATH=src uv run --no-sync python -m unittest discover -s tests -v` passed 128 tests; `openspec validate deterministic-patch-artifact-security --strict` and `git diff --check` passed.
 - Static boundary verification found no subprocess, network, filesystem-path,
   or external-I/O imports in the Phase 1 package.
+- Independent-review correction: added RED/GREEN coverage for bounded
+  single-line metadata, cross-platform target-scope rejection, candidate
+  identity/lineage, structured findings, consistent scan terminals, safe error
+  codes, and profile-order finding sorting. The final targeted suite passed
+  10/10 and the final cumulative suite passed 133 tests.
 
 ## 7. Important Fixes and Edge Cases
 
@@ -76,6 +81,11 @@ compact, sorted UTF-8 JSON and rejects floats and unsupported object values.
   future candidate from being constructed from an ambiguous result.
 - Canonical identity excludes only its own identity field, so any other contract
   content change changes the computed digest.
+- Finding facts contain only registered rule-ID/allowlisted-field pairs; they
+  cannot carry a matched secret-like value or other free text.
+- Candidates are deterministic in-memory facts bound to their artifact, scan,
+  redaction, profile/rule-set, and lineage IDs, but remain non-durable and
+  non-authorizing.
 
 ## 8. Commit
 
@@ -89,20 +99,24 @@ fields, controlled security values, canonical key ordering, float rejection,
 and self-excluding identity. Cumulative tests, OpenSpec validation, diff
 hygiene, and the static no-I/O boundary check all passed.
 
-Status: **Pending independent review**.
+Status: **Accepted after independent review**.
 
 ## 10. Review Gate
 
 - Independent review required: Yes — Phase 1 changes feature contracts, the
   metadata security boundary, and canonical identity under Implementation
   Execution section 1.7.
-- Independent review completed: No.
-- Subagent used: No.
+- Independent review completed: Yes — review-correction rounds found and
+  verified fixes for metadata bounds, cross-platform paths, candidate lineage,
+  structured findings, terminal consistency, and registered rule-table order.
+- Subagent used: Yes.
 - Review-method rationale and user-approval scope: Self-review, targeted and
   cumulative tests, strict OpenSpec validation, and static boundary checks are
-  complete, but cannot replace the mandatory independent review. The user has
-  approved independent subagent review through the end of Phase 2; the current
-  Phase 1 diff is awaiting that review.
+  complete, but cannot replace the mandatory independent review. The user
+  approved independent subagent review through the end of Phase 2. Independent
+  read-only reviewers were appropriate because the phase changes contracts,
+  security boundary, and canonical identity; the final review approved the
+  corrected current diff.
 
 ## 11. Scope Boundary Confirmation
 
@@ -112,5 +126,5 @@ sandbox, approval, retry, GitHub, network, or external side effect.
 
 ## 12. Follow-up
 
-Next action: complete the required independent Phase 1 review. Phase 2 cannot
-start until this gate is accepted.
+Next Phase: Registered Metadata Security Facts. It requires explicit Phase 2
+implementation authorization before starting.
