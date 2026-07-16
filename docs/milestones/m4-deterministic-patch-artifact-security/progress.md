@@ -16,29 +16,30 @@ RFCs/ADRs, or the canonical implementation plan.
 
 | Field | Value |
 | --- | --- |
-| Branch | Not assigned; create only after explicit Phase 1 authorization. |
-| Worktree | Not assigned; create only after explicit Phase 1 authorization. |
-| Execution mode | Lightweight Implementation Execution after authorization. |
+| Branch | `feature/m4-deterministic-patch-artifact-security` |
+| Worktree | `.worktrees/m4-deterministic-patch-artifact-security` |
+| Execution mode | Lightweight Implementation Execution |
 
 ## Current Status
 
 | Field | Value |
 | --- | --- |
 | Milestone | M4 Feature 2: Deterministic Patch Artifact and Security Scanning |
-| State | Canonical plan ready for review; implementation not authorized. |
-| Completed through | None |
-| Next phase | Phase 1: Immutable Contract and Canonical Identity |
-| Implementation authorization | Not granted |
+| State | Phase 1 accepted; awaiting Phase 2 authorization. |
+| Completed through | Phase 1: Immutable Contract and Canonical Identity |
+| Next phase | Phase 2: Registered Metadata Security Facts |
+| Implementation authorization | Phase 2 not authorized. |
 
 ## Phase Index
 
 | Phase | Name | Status | Commit | Completion Record |
 | --- | --- | --- | --- | --- |
-| 1 | Immutable Contract and Canonical Identity | Not started | None | None |
+| 1 | Immutable Contract and Canonical Identity | Accepted | `6ccb064` | [Phase 1 record](phases/phase-1-immutable-contract-and-canonical-identity.md) |
 | 2 | Registered Metadata Security Facts | Not started | None | None |
 | 3 | Metadata-only Assembly Service | Not started | None | None |
 | 4 | Acceptance and Boundary Hardening | Not started | None | None |
 
 ## Change Log
 
-- 2026-07-16: Accepted OpenSpec and metadata security profile; canonical plan prepared for review and implementation remains unauthorized.
+- 2026-07-16: Accepted OpenSpec, metadata security profile, and canonical plan; Phase 1 authorized in the assigned isolated environment.
+- 2026-07-16: Accepted Phase 1 in `6ccb064`; targeted tests passed 5/5, the cumulative suite passed 128 tests, strict OpenSpec validation and static no-I/O verification passed. Phase 2 is not authorized.
