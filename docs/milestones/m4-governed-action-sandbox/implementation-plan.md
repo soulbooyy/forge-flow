@@ -132,7 +132,8 @@ or workspace.
 
 ## Phase 3: Fail-Closed OCI Adapter and Attempt Service
 
-**Depends on:** accepted Phases 1–2 and explicit authorization for this phase.
+**Depends on:** accepted Phases 1–2, the explicit evaluated-input/PDR injection
+contract below, and explicit authorization for this phase.
 
 **Files:**
 
@@ -145,10 +146,25 @@ or workspace.
 - Create: `tests/governed_action_sandbox/{test_oci_adapter.py,test_service.py}`.
 - Create: `openspec/changes/governed-action-sandbox/fixtures/expected/phase-3-service/` — controlled terminal fragments.
 
-**Interfaces:** `OciBackend.prove_and_run(CommandIntent) -> OciRunFacts` and
-`execute_governed_attempt(ActionIntent, OciBackend) -> ExecutionAttempt | GovernedActionSandboxValidationError`.
+**Interfaces:** `OciBackend.prove(CommandIntent) -> OciCapabilityProof`,
+`OciBackend.run(CommandIntent) -> OciRunFacts`, and
+`execute_governed_attempt(ActionIntent, CommandIntent, PolicyDecisionRecord,
+OciBackend) -> ExecutionAttempt | GovernedActionSandboxValidationError`.
+The service receives these immutable evaluated inputs explicitly; it does not
+infer policy outcome, repository state, approval state, or runtime authority
+from globals, the workspace, or the backend. The supplied PDR is the sole
+authorization fact. A non-`allowed` PDR must produce the corresponding
+`not_started` terminal without invoking the backend.
+Capability proof occurs before `run`; an unproven backend must never receive a
+run call.
 
-- [ ] Write failing tests with controlled fake backends for no-network/credential/image/workspace proof, no host fallback, blocked/approval/stale zero launch, command failure, timeout/output budget, and post-start cancellation.
+- [ ] Write failing tests with controlled fake backends for: injected blocked,
+  approval-required, and stale-base PDRs with zero backend launches; invalid
+  evaluated-input lineage returning a validation envelope with zero launches;
+  no-network/credential/image/workspace proof and no host fallback; command
+  failure; timeout/output budget; and post-start cancellation. The RED tests
+  must construct the ActionIntent → CommandIntent → PDR tuple explicitly and
+  may not rely on hidden current-state reads.
 - [ ] Run RED: `uv run --no-sync python -m unittest tests.governed_action_sandbox.test_oci_adapter tests.governed_action_sandbox.test_service -v`.
 - [ ] Implement the minimal adapter seam. It must form no shell command, prove
   every OCI constraint before start, discard output after bounded accounting,

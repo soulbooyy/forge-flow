@@ -26,6 +26,21 @@ The OCI adapter is an infrastructure seam: ForgeFlow owns policy, contracts,
 lineage, and terminal semantics; Docker/Podman or another conforming backend
 only supplies the isolated capability.
 
+The OCI seam separates pre-start capability proof from execution: the backend
+first returns a bounded `OciCapabilityProof`, and only a fully proven backend
+may receive `run(CommandIntent)`. This prevents a post-start proof failure from
+being rewritten as a false `not_started` fact.
+
+The execution service receives an explicit immutable evaluated-input tuple:
+`ActionIntent`, `CommandIntent`, and `PolicyDecisionRecord`, plus the injected
+OCI execution environment. It does not evaluate a new policy decision, read a
+repository or workspace to infer current state, inspect an approval store, or
+accept a policy outcome from a backend. It validates the supplied references
+and common immutable lineage, then treats the PDR as the sole authorization
+fact for that exact tuple. This makes the execution-layer gate directly
+testable: `blocked`, approval-required, and stale-base PDRs cannot reach the
+adapter.
+
 ## Contract Shape
 
 ```text
@@ -33,6 +48,7 @@ TaskInput reference + fixture repository/revision
   -> ActionIntent
   -> CommandIntent (exact registered command + OCI digest)
   -> fresh PolicyDecisionRecord
+  -> execute_governed_attempt(ActionIntent, CommandIntent, PDR, OciBackend)
   -> ExecutionAttempt
 ```
 
@@ -77,15 +93,20 @@ external input; it neither grants execution nor permits a different image.
 ## Failure and Stop Behavior
 
 - `blocked` produces a `not_started` attempt with `policy_blocked`; it has no
-  image, exit code, output, workspace, or started timestamp.
+  image, exit code, output, workspace, or started timestamp. The execution
+  service returns this fact directly from the injected PDR and does not call
+  the backend.
 - `requires_human_approval` produces a `not_started` attempt with
-  `approval_required`; it creates no approval record and does not continue.
+  `approval_required`; it creates no approval record, does not call the
+  backend, and does not continue.
 - A stale base revision produces `requires_human_approval` plus a
   `not_started` attempt with `base_revision_mismatch`. It produces no sandbox
   mutation, GitHub mutation, artifact publication, exit code, resource
   observation, or execution artifact reference. A later human-approved run
   must create new ActionIntent, CommandIntent, and PolicyDecisionRecord lineage
-  bound to the current revision; the old attempt remains immutable.
+  bound to the current revision; the old attempt remains immutable. The stale
+  fact is supplied by the PDR/current-input preparation path, not inferred by
+  the OCI adapter.
 - A missing, unregistered, mismatched, or unprovable OCI capability produces
   `not_started` with `sandbox_unavailable`, before any execution or external
   mutation. This capability taxonomy never includes a repository base-revision

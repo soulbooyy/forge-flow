@@ -71,6 +71,29 @@ Required fields:
 It is the only authorization source. Any changed input requires a new record;
 an old `allowed` record is never reusable authorization.
 
+## Evaluated-Input Execution Boundary
+
+The execution service accepts an explicit immutable tuple of `ActionIntent`,
+`CommandIntent`, and `PolicyDecisionRecord`, plus an injected OCI backend. It
+must validate the action/command/PDR references, run ID, repository/profile
+lineage, and PDR subject before considering an adapter call. It must not infer
+current repository state, approval state, or policy outcome from a workspace,
+backend, global state, or runtime object.
+
+The injected PDR is the sole authorization fact. If its outcome is `blocked`,
+the service returns `not_started/policy_blocked`; if it is
+`requires_human_approval`, it returns `not_started/approval_required`, except
+that a `base_revision_mismatch` reason code returns
+`not_started/base_revision_mismatch`. All three cases have zero execution
+facts and zero OCI backend calls. Only an `allowed` PDR may call the backend.
+An invalid evaluated-input tuple returns the validation-error envelope and
+likewise performs no adapter call.
+
+The OCI backend exposes separate `prove(CommandIntent)` and
+`run(CommandIntent)` operations. The service must call `run` only after the
+PDR is allowed and every required proof is true; it must not reinterpret a
+post-start execution fact as `not_started`.
+
 ## ExecutionAttempt
 
 Required fields:
