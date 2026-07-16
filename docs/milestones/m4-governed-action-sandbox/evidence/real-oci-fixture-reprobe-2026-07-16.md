@@ -64,9 +64,9 @@ missing-workspace alignment failure in
 ## Closure effect
 
 No further OCI re-probe is needed to classify `exit=1`; the controlled negative
-fixture path is reconciled. Canonical M4 implementation and deterministic
-contract/policy acceptance remain complete. Full external M4 end-to-end closure
-is still not claimed: the registered positive path would require its separate
-governed evaluation and, if it reaches mutation, the fixture reset/audit
-procedure. No such external mutation is authorized or performed by this
+fixture path is reconciled. Canonical M4 Feature 1 implementation and
+deterministic contract/policy acceptance remain complete. Full M4 end-to-end
+closure is still not claimed: it requires the separately gated later M4
+features, including governed evaluation and, if authorized, the fixture
+reset/audit procedure. No external mutation is authorized or performed by this
 record.

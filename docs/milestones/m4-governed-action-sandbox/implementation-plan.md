@@ -1,4 +1,4 @@
-# Milestone 4: Governed Action and Sandbox Boundary Canonical Implementation Plan
+# Milestone 4, Feature 1: Governed Action and Sandbox Boundary Canonical Implementation Plan
 
 ## Authority and Status
 

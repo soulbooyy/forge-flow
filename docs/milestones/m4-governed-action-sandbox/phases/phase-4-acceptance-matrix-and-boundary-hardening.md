@@ -60,4 +60,5 @@ No work beyond the canonical Phase 4 scope was performed.
 
 ## 11. Follow-up
 
-The canonical M4 implementation plan is complete.
+The canonical Feature 1 implementation plan is complete. This does not close
+the broader M4 Draft PR MVP.

@@ -1,4 +1,4 @@
-# Milestone 4: Governed Action and Sandbox Boundary Progress
+# Milestone 4, Feature 1: Governed Action and Sandbox Boundary Progress
 
 ## Purpose
 
@@ -24,12 +24,13 @@ RFCs/ADRs, or the canonical implementation plan.
 
 | Field | Value |
 | --- | --- |
-| Milestone | Governed Action and Sandbox Boundary |
-| State | Canonical implementation complete; OCI negative fixture path reconciled |
+| M4 feature | 1 — Governed Action and Sandbox Boundary |
+| Feature state | Complete; OCI negative fixture path reconciled |
+| M4 milestone state | Planned; not closed |
 | Completed through | Phase 4: Acceptance Matrix and Boundary Hardening |
 | Next phase | None |
-| Implementation authorization | Canonical M4 plan complete; no further work authorized by this plan |
-| External OCI closure readiness | Negative fixture execution is evidenced. Full positive end-to-end closure is not claimed because no governed GitHub-mutation evaluation has been authorized or performed. |
+| Implementation authorization | Feature 1 canonical plan complete; no further Feature 1 work authorized by this plan |
+| External OCI closure readiness | Negative fixture execution is evidenced. Full positive end-to-end closure belongs to later M4 features and is not claimed. |
 
 ## Phase Index
 
@@ -54,7 +55,7 @@ RFCs/ADRs, or the canonical implementation plan.
   fixture's expected pre-fix negative test failure; see [re-probe
   evidence](evidence/real-oci-fixture-reprobe-2026-07-16.md). Full positive
   end-to-end external closure remains unclaimed.
-- 2026-07-16: Completed Phase 4 in `b162f7b`; canonical M4 implementation is complete.
+- 2026-07-16: Completed Phase 4 in `b162f7b`; the Feature 1 canonical plan is complete. M4 itself remains planned pending separately gated feature changes.
 - 2026-07-16: Began explicitly authorized Phase 4 under the assigned M4
   worktree; no work beyond the canonical plan is authorized.
 - 2026-07-16: Completed Phase 3 in `746a0f9`; final independent closure review
