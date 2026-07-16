@@ -659,6 +659,26 @@ The policy decision should be recorded in the durable run record and made availa
 
 Secret scanning and redaction are minimum guardrails.
 
+### M4 Deterministic Patch Security Facts
+
+For the Feature 2 patch-artifact slice, the registered versioned fixture policy
+profile and its accepted
+[M4 Patch Metadata Security Profile](../docs/fixtures/m4-patch-metadata-security-profile.md)
+are the sole source of secret-scanning/redaction rule-set identity, version,
+metadata-field scope, deterministic detection/redaction behavior, and
+applicable path budgets. Repository configuration, Issue or user input, agent
+output, and a patch artifact cannot select, override, or weaken those rules.
+
+Scanning and redaction produce facts only. They do not decide whether a later
+write, execution, commit, or publication is permitted. The profile's
+`scanner_failure_outcome`, `redaction_failure_outcome`, and
+`uncertain_security_result_outcome` are each `blocked`: scanner failure,
+redaction failure, an indeterminate result, or a blocked finding cannot be
+converted into `requires_human_approval` and produces no artifact-reference
+candidate. A fresh Policy Decision Record must consume the applicable current
+facts before any later governed action; a scan or redaction contract is never
+that authorization decision.
+
 ForgeFlow should:
 
 - scan generated diffs before commit creation, branch packaging, or draft PR packaging
