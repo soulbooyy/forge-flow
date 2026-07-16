@@ -25,7 +25,7 @@ RFCs/ADRs, or the canonical implementation plan.
 | Field | Value |
 | --- | --- |
 | Milestone | Governed Action and Sandbox Boundary |
-| State | Canonical implementation complete |
+| State | Canonical implementation complete; external OCI evaluation not closed |
 | Completed through | Phase 4: Acceptance Matrix and Boundary Hardening |
 | Next phase | None |
 | Implementation authorization | Canonical M4 plan complete; no further work authorized by this plan |
@@ -41,6 +41,10 @@ RFCs/ADRs, or the canonical implementation plan.
 
 ## Change Log
 
+- 2026-07-16: Ran the single explicitly authorized real OCI fixture probe using
+  the registered image digest. It exited non-zero under the required isolation
+  controls; no retry or external mutation was performed. See [redacted run
+  evidence](evidence/real-oci-fixture-run-2026-07-16.md).
 - 2026-07-16: Completed Phase 4 in `b162f7b`; canonical M4 implementation is complete.
 - 2026-07-16: Began explicitly authorized Phase 4 under the assigned M4
   worktree; no work beyond the canonical plan is authorized.
