@@ -25,10 +25,10 @@ RFCs/ADRs, or the canonical implementation plan.
 | Field | Value |
 | --- | --- |
 | Milestone | Governed Action and Sandbox Boundary |
-| State | Phase 3 authorized and in progress |
-| Completed through | Phase 2: Exact Policy and Terminal Assembly |
-| Next phase | Phase 3: Fail-Closed OCI Adapter and Attempt Service |
-| Implementation authorization | Granted for Phase 3 only; do not begin Phase 4 |
+| State | Phase 3 complete; awaiting explicit Phase 4 authorization |
+| Completed through | Phase 3: Fail-Closed OCI Adapter and Attempt Service |
+| Next phase | Phase 4: Acceptance Matrix and Boundary Hardening |
+| Implementation authorization | Phase 3 complete; do not begin Phase 4 without explicit authorization |
 
 ## Phase Index
 
@@ -36,11 +36,13 @@ RFCs/ADRs, or the canonical implementation plan.
 | --- | --- | --- | --- | --- |
 | 1 | Contract Foundation and Canonical Fixtures | Complete | `88bbbae` | [Phase 1 record](phases/phase-1-contract-foundation-and-canonical-fixtures.md) |
 | 2 | Exact Policy and Terminal Assembly | Complete | `6a1fe04` | [Phase 2 record](phases/phase-2-exact-policy-and-terminal-assembly.md) |
-| 3 | Fail-Closed OCI Adapter and Attempt Service | Not started | None | None |
+| 3 | Fail-Closed OCI Adapter and Attempt Service | Complete | `746a0f9` | [Phase 3 record](phases/phase-3-fail-closed-oci-adapter-and-attempt-service.md) |
 | 4 | Acceptance Matrix and Boundary Hardening | Not started | None | None |
 
 ## Change Log
 
+- 2026-07-16: Completed Phase 3 in `746a0f9`; final independent closure review
+  found no P1/P2. Phase 4 remains unstarted pending explicit authorization.
 - 2026-07-15: Began explicitly authorized Phase 3 under the assigned M4
   worktree; Phase 4 remains out of scope.
 - 2026-07-15: Completed Phase 2 in `6a1fe04`; final independent closure review
