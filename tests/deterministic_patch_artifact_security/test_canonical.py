@@ -6,7 +6,9 @@ from dataclasses import replace
 import unittest
 
 from forgeflow.deterministic_patch_artifact_security.canonical import (
+    candidate_id_for,
     canonical_bytes,
+    is_canonical_candidate,
     pre_scan_metadata_id_for,
     sha256_hex,
     terminal_id_for,
@@ -15,6 +17,7 @@ from forgeflow.deterministic_patch_artifact_security.models import (
     PatchSecurityTerminal,
     PreScanPatchMetadataIdentity,
     RedactionFact,
+    RedactedArtifactReferenceCandidate,
     SecretScanResult,
 )
 
@@ -89,6 +92,20 @@ class CanonicalTests(unittest.TestCase):
             identity,
             terminal_id_for(replace(provisional, terminal_id=identity)),
         )
+
+    def test_candidate_identity_must_be_canonical_before_cross_feature_use(self) -> None:
+        provisional = RedactedArtifactReferenceCandidate(
+            contract_version=_VERSION, candidate_id=_DIGEST,
+            patch_artifact_id=_DIGEST, pre_scan_metadata_id=_DIGEST,
+            secret_scan_id=_DIGEST, redaction_id=_DIGEST,
+            redacted_metadata_digest=_DIGEST, lineage_digest="sha256:" + "a" * 64,
+            profile_id="forgeflow-m4-patch-metadata-security", profile_version=1,
+            secret_scan_rule_set_id="m4-patch-metadata-secret-scan-v1",
+            redaction_rule_set_id="m4-patch-metadata-redaction-v1",
+        )
+        self.assertFalse(is_canonical_candidate(provisional))
+        candidate = replace(provisional, candidate_id=candidate_id_for(provisional))
+        self.assertTrue(is_canonical_candidate(candidate))
 
 
 if __name__ == "__main__":

@@ -62,6 +62,11 @@ def candidate_id_for(value: RedactedArtifactReferenceCandidate) -> str:
     return f"sha256:{sha256_hex(value, omit_fields=frozenset({'candidate_id'}))}"
 
 
+def is_canonical_candidate(value: object) -> bool:
+    """Fail closed unless a Feature 2 candidate has its computed identity."""
+    return isinstance(value, RedactedArtifactReferenceCandidate) and value.candidate_id == candidate_id_for(value)
+
+
 def validation_error_id_for(value: DeterministicPatchArtifactSecurityValidationError) -> str:
     return f"sha256:{sha256_hex(value, omit_fields=frozenset({'error_id'}))}"
 

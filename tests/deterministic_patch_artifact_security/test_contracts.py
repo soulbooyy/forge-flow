@@ -11,6 +11,7 @@ from forgeflow.deterministic_patch_artifact_security.models import (
     PatchSecurityTerminal,
     PreScanPatchMetadataIdentity,
     RedactedArtifactReferenceCandidate,
+    DeterministicPatchArtifactSecurityValidationError,
     RedactionFact,
     ScanFinding,
     SecretScanResult,
@@ -238,6 +239,70 @@ class ContractTests(unittest.TestCase):
         )
 
         self.assertEqual(candidate.pre_scan_metadata_id, _DIGEST)
+
+    def test_security_lineage_uses_only_the_registered_profile_identities(self) -> None:
+        with self.assertRaises(ValueError):
+            SecretScanResult(
+                contract_version=_VERSION, scan_id=_DIGEST,
+                pre_scan_metadata_id=_DIGEST, rule_set_id="unknown-rule-set",
+                scanner_version="deterministic-metadata-scanner-v1", result="passed",
+                findings_summary=(), failure_reason=None,
+            )
+        with self.assertRaises(ValueError):
+            RedactionFact(
+                contract_version=_VERSION, redaction_id=_DIGEST,
+                input_pre_scan_metadata_id=_DIGEST, secret_scan_id=_DIGEST,
+                output_metadata_digest=_DIGEST, rule_set_id="unknown-rule-set",
+                status="not_needed",
+            )
+        with self.assertRaises(ValueError):
+            RedactedArtifactReferenceCandidate(
+                contract_version=_VERSION, candidate_id=_DIGEST,
+                patch_artifact_id=_DIGEST, pre_scan_metadata_id=_DIGEST,
+                secret_scan_id=_DIGEST, redaction_id=_DIGEST,
+                redacted_metadata_digest=_DIGEST, lineage_digest=_DIGEST,
+                profile_id="unknown-profile", profile_version=0,
+                secret_scan_rule_set_id="unknown-rule-set",
+                redaction_rule_set_id="unknown-rule-set",
+            )
+
+    def test_identity_fields_reject_raw_or_unregistered_text(self) -> None:
+        with self.assertRaises(ValueError):
+            PreScanPatchMetadataIdentity(
+                contract_version=_VERSION,
+                pre_scan_metadata_id=_DIGEST,
+                repository_identity="raw source contents " * 100,
+                base_revision=_BASE_REVISION,
+                target_scope=("src/calculator.py",),
+                lineage_digest=_DIGEST,
+            )
+
+    def test_profile_version_and_validation_error_code_are_controlled(self) -> None:
+        with self.assertRaises(ValueError):
+            RedactedArtifactReferenceCandidate(
+                contract_version=_VERSION, candidate_id=_DIGEST,
+                patch_artifact_id=_DIGEST, pre_scan_metadata_id=_DIGEST,
+                secret_scan_id=_DIGEST, redaction_id=_DIGEST,
+                redacted_metadata_digest=_DIGEST, lineage_digest=_DIGEST,
+                profile_id="forgeflow-m4-patch-metadata-security", profile_version=True,
+                secret_scan_rule_set_id="m4-patch-metadata-secret-scan-v1",
+                redaction_rule_set_id="m4-patch-metadata-redaction-v1",
+            )
+        with self.assertRaises(ValueError):
+            DeterministicPatchArtifactSecurityValidationError(
+                schema_version=_VERSION, error_id=_DIGEST,
+                error_code="raw source contents " * 100,
+                summary="metadata security input is invalid",
+            )
+        with self.assertRaises(ValueError):
+            PreScanPatchMetadataIdentity(
+                contract_version="unregistered-contract-version",
+                pre_scan_metadata_id=_DIGEST,
+                repository_identity="fixture-repository-1300511729",
+                base_revision=_BASE_REVISION,
+                target_scope=("src/calculator.py",),
+                lineage_digest=_DIGEST,
+            )
 
 
 if __name__ == "__main__":

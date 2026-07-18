@@ -27,6 +27,10 @@ _SAFE_ERROR_SUMMARIES = (
     "metadata security input is invalid",
     "metadata security profile is invalid",
 )
+_SAFE_ERROR_CODES = frozenset(("invalid_patch_security_input", "metadata_construction_invalid"))
+_CONTRACT_VERSION = "m4-patch-artifact-security/v1"
+_REPOSITORY_IDENTITY = "fixture-repository-1300511729"
+_BASE_REVISION = "97c8220cd713ebf61124ac2de2f3eadc6e4dc222"
 
 
 @dataclass(frozen=True, slots=True)
@@ -55,10 +59,10 @@ class PreScanPatchMetadataIdentity:
     lineage_digest: str
 
     def __post_init__(self) -> None:
-        _require_text("contract_version", self.contract_version)
+        _require_known("contract_version", self.contract_version, _CONTRACT_VERSION)
         _require_digest("pre_scan_metadata_id", self.pre_scan_metadata_id)
-        _require_text("repository_identity", self.repository_identity)
-        _require_commit_sha("base_revision", self.base_revision)
+        _require_known("repository_identity", self.repository_identity, _REPOSITORY_IDENTITY)
+        _require_known("base_revision", self.base_revision, _BASE_REVISION)
         _require_target_scope(self.target_scope)
         _require_digest("lineage_digest", self.lineage_digest)
 
@@ -75,9 +79,9 @@ class PatchIntent:
     lineage_digest: str
 
     def __post_init__(self) -> None:
-        _require_text("contract_version", self.contract_version)
-        _require_text("repository_identity", self.repository_identity)
-        _require_commit_sha("base_revision", self.base_revision)
+        _require_known("contract_version", self.contract_version, _CONTRACT_VERSION)
+        _require_known("repository_identity", self.repository_identity, _REPOSITORY_IDENTITY)
+        _require_known("base_revision", self.base_revision, _BASE_REVISION)
         _require_digest("intent_id", self.intent_id)
         _require_digest("pre_scan_metadata_id", self.pre_scan_metadata_id)
         _require_target_scope(self.target_scope)
@@ -97,10 +101,10 @@ class PatchArtifact:
     lineage_digest: str
 
     def __post_init__(self) -> None:
-        _require_text("contract_version", self.contract_version)
+        _require_known("contract_version", self.contract_version, _CONTRACT_VERSION)
         _require_digest("artifact_id", self.artifact_id)
-        _require_text("repository_identity", self.repository_identity)
-        _require_commit_sha("base_revision", self.base_revision)
+        _require_known("repository_identity", self.repository_identity, _REPOSITORY_IDENTITY)
+        _require_known("base_revision", self.base_revision, _BASE_REVISION)
         _require_digest("patch_intent_id", self.patch_intent_id)
         _require_target_scope(self.target_scope)
         _require_digest("metadata_digest", self.metadata_digest)
@@ -119,11 +123,11 @@ class SecretScanResult:
     failure_reason: str | None
 
     def __post_init__(self) -> None:
-        _require_text("contract_version", self.contract_version)
+        _require_known("contract_version", self.contract_version, _CONTRACT_VERSION)
         _require_digest("scan_id", self.scan_id)
         _require_digest("pre_scan_metadata_id", self.pre_scan_metadata_id)
-        _require_text("rule_set_id", self.rule_set_id)
-        _require_text("scanner_version", self.scanner_version)
+        _require_known("rule_set_id", self.rule_set_id, M4_PATCH_METADATA_SECURITY_V1.secret_scan_rule_set_id)
+        _require_known("scanner_version", self.scanner_version, M4_PATCH_METADATA_SECURITY_V1.scanner_version)
         if self.result not in ("passed", "blocked", "failed", "indeterminate"):
             raise ValueError("result must be a controlled scan result")
         _require_sorted_unique_findings(self.findings_summary)
@@ -151,11 +155,11 @@ class RedactionFact:
     status: RedactionStatus
 
     def __post_init__(self) -> None:
-        _require_text("contract_version", self.contract_version)
+        _require_known("contract_version", self.contract_version, _CONTRACT_VERSION)
         _require_digest("redaction_id", self.redaction_id)
         _require_digest("input_pre_scan_metadata_id", self.input_pre_scan_metadata_id)
         _require_digest("secret_scan_id", self.secret_scan_id)
-        _require_text("rule_set_id", self.rule_set_id)
+        _require_known("rule_set_id", self.rule_set_id, M4_PATCH_METADATA_SECURITY_V1.redaction_rule_set_id)
         if self.status not in ("not_needed", "redacted", "failed", "indeterminate"):
             raise ValueError("status must be a controlled redaction status")
         if self.status in ("not_needed", "redacted"):
@@ -193,7 +197,7 @@ class PatchSecurityTerminal:
     terminal_reason: TerminalReason
 
     def __post_init__(self) -> None:
-        _require_text("contract_version", self.contract_version)
+        _require_known("contract_version", self.contract_version, _CONTRACT_VERSION)
         _require_digest("terminal_id", self.terminal_id)
         _require_digest("pre_scan_metadata_id", self.pre_scan_metadata_id)
         _require_digest("lineage_digest", self.lineage_digest)
@@ -259,7 +263,7 @@ class RedactedArtifactReferenceCandidate:
     redaction_rule_set_id: str
 
     def __post_init__(self) -> None:
-        _require_text("contract_version", self.contract_version)
+        _require_known("contract_version", self.contract_version, _CONTRACT_VERSION)
         _require_digest("candidate_id", self.candidate_id)
         _require_digest("patch_artifact_id", self.patch_artifact_id)
         _require_digest("pre_scan_metadata_id", self.pre_scan_metadata_id)
@@ -267,11 +271,11 @@ class RedactedArtifactReferenceCandidate:
         _require_digest("redaction_id", self.redaction_id)
         _require_digest("redacted_metadata_digest", self.redacted_metadata_digest)
         _require_digest("lineage_digest", self.lineage_digest)
-        _require_text("profile_id", self.profile_id)
-        if not isinstance(self.profile_version, int) or isinstance(self.profile_version, bool):
-            raise ValueError("profile_version must be an integer")
-        _require_text("secret_scan_rule_set_id", self.secret_scan_rule_set_id)
-        _require_text("redaction_rule_set_id", self.redaction_rule_set_id)
+        _require_known("profile_id", self.profile_id, M4_PATCH_METADATA_SECURITY_V1.profile_id)
+        if (not isinstance(self.profile_version, int) or isinstance(self.profile_version, bool) or self.profile_version != M4_PATCH_METADATA_SECURITY_V1.profile_version):
+            raise ValueError("profile_version must be the registered profile version")
+        _require_known("secret_scan_rule_set_id", self.secret_scan_rule_set_id, M4_PATCH_METADATA_SECURITY_V1.secret_scan_rule_set_id)
+        _require_known("redaction_rule_set_id", self.redaction_rule_set_id, M4_PATCH_METADATA_SECURITY_V1.redaction_rule_set_id)
 
 
 @dataclass(frozen=True, slots=True)
@@ -282,9 +286,10 @@ class DeterministicPatchArtifactSecurityValidationError:
     summary: str
 
     def __post_init__(self) -> None:
-        _require_text("schema_version", self.schema_version)
+        _require_known("schema_version", self.schema_version, _CONTRACT_VERSION)
         _require_digest("error_id", self.error_id)
-        _require_text("error_code", self.error_code)
+        if self.error_code not in _SAFE_ERROR_CODES:
+            raise ValueError("error_code must be a controlled safe code")
         if self.summary not in _SAFE_ERROR_SUMMARIES:
             raise ValueError("summary must be a controlled safe template")
 
@@ -302,6 +307,11 @@ def _require_commit_sha(name: str, value: object) -> None:
 def _require_text(name: str, value: object) -> None:
     if not isinstance(value, str) or not value or value != value.strip() or "\x00" in value:
         raise ValueError(f"{name} must be non-empty safe text")
+
+
+def _require_known(name: str, value: object, expected: str) -> None:
+    if value != expected:
+        raise ValueError(f"{name} must be the registered value")
 
 
 def _require_metadata_text(name: str, value: object, maximum: int) -> None:
