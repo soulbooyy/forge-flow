@@ -9,6 +9,35 @@ RFC-006, ADR-011, M4 Fixture Environment Registration, and M4 Patch Metadata
 Security Profile. Chat prompts do not redefine phase scope, files, interfaces,
 or acceptance.
 
+## Terminal-first Amendment (Accepted)
+
+This amendment supersedes the execution order and interfaces below because the
+previous plan allowed a raw rationale-bearing PatchIntent to exist before
+security scanning. Under the accepted architecture decision, raw rationale and
+matched text must never enter any contract. The historical Phase 1–3 completion
+records remain factual records of prior work, but are not conformant evidence
+for the amended contract and do not authorize further implementation.
+
+After the amended RFC/OpenSpec/profile and this plan are accepted, implementation
+must restart with fresh phase authorization in this order:
+
+1. **Pre-scan contracts and terminal identity** — replace the pre-scan
+   PatchIntent/Artifact lineage with `PreScanPatchMetadataIdentity`, revised
+   scan/redaction references, `PatchSecurityTerminal`, controlled terminal
+   reasons, and canonical identities.
+2. **Transient metadata security facts** — scan/redact only a bounded transient
+   projection anchored by the pre-scan identity; ensure unsafe facts return a
+   terminal with no raw metadata, intent, artifact, or candidate.
+3. **Passed-path assembly** — validate M2/fixture lineage; create PatchIntent,
+   PatchArtifact, and candidate only after passed/not-needed facts.
+4. **Acceptance and boundary hardening** — verify every OpenSpec scenario,
+   terminal secrecy, no side-effect surface, and no authority escape.
+
+Each re-baselined phase requires RED → GREEN → cumulative verification, a
+focused commit, and the mandatory independent-review gate. No historical Phase
+4 implementation may resume until this amendment is accepted and the relevant
+re-baselined phase is explicitly authorized.
+
 ## Goal
 
 Deliver deterministic, immutable, metadata-only patch/security facts from M2
@@ -37,6 +66,10 @@ persistence, or authorization capability.
 - Treat `PatchProposal`, `PatchIntent`, `PatchArtifact`, security facts, and
   candidates as non-authorizing; only a later fresh PDR can authorize a later
   action.
+- Before any phase is accepted, apply the Implementation Execution review gate:
+  record whether independent review is required, whether it completed, whether
+  a subagent was used, and the approved rationale. Phase 1 changes contracts,
+  security boundary, and canonical identity, so independent review is required.
 - Before Phase 1, create and record exactly branch
   `feature/m4-deterministic-patch-artifact-security` and worktree
   `.worktrees/m4-deterministic-patch-artifact-security`; do not reuse Feature 1.
@@ -50,18 +83,21 @@ persistence, or authorization capability.
 - Create `src/forgeflow/deterministic_patch_artifact_security/{__init__,models,canonical}.py` — frozen contracts and deterministic IDs.
 - Create `tests/deterministic_patch_artifact_security/{__init__,test_contracts,test_canonical}.py` — contract and canonicalization verification.
 
-**Interfaces:** `PatchIntent`, `PatchArtifact`, `SecretScanResult`,
-`RedactionFact`, `RedactedArtifactReferenceCandidate`, validation error envelope,
-and digest helpers named in the AI draft.
+**Interfaces:** `PreScanPatchMetadataIdentity`, `PatchIntent` (passed-path
+only), `PatchArtifact`, `SecretScanResult` and `RedactionFact` anchored to the
+pre-scan identity, `PatchSecurityTerminal`,
+`RedactedArtifactReferenceCandidate`, validation error envelope, and canonical
+digest helpers.
 
-- [ ] Write targeted failing contract/canonical tests and record RED results.
-- [ ] Implement the minimum frozen models and canonical SHA-256 identity helpers; run targeted GREEN tests.
-- [ ] Refactor only inside Phase 1; run the cumulative implemented suite.
-- [ ] Run `git diff --check` and inspect `git status --short`.
-- [ ] Create one focused commit, Phase 1 Completion Record, and progress update.
+- [x] Write targeted failing contract/canonical tests and record RED results.
+- [x] Implement the minimum frozen models and canonical SHA-256 identity helpers; run targeted GREEN tests.
+- [x] Refactor only inside Phase 1; run the cumulative implemented suite.
+- [x] Run `git diff --check` and inspect `git status --short`.
+- [x] Create one focused commit, Phase 1 Completion Record, and progress update.
 
 **Acceptance:** Contracts are payload-free, identity-stable, metadata-only, and
-reject forbidden raw data without copying it.
+reject forbidden raw data without copying it; an approved independent review
+must also complete before Phase 1 is accepted.
 
 ## Phase 2: Registered Metadata Security Facts
 
@@ -72,17 +108,21 @@ reject forbidden raw data without copying it.
 - Create `src/forgeflow/deterministic_patch_artifact_security/{profile,policy}.py` — accepted profile representation and pure scan/redaction functions.
 - Create `tests/deterministic_patch_artifact_security/test_policy.py` — rule, status, redaction, and candidate tests.
 
-**Interfaces:** `M4_PATCH_METADATA_SECURITY_V1`, `scan_metadata`,
-`redact_metadata`, and `candidate_for` as defined in the AI draft.
+**Interfaces:** `M4_PATCH_METADATA_SECURITY_V1`, `scan_metadata`, and
+`redact_metadata` over a `PreScanPatchMetadataIdentity` and a transient,
+allowlisted metadata projection. Phase 2 does not create candidates; passed
+path assembly and candidate construction are re-baselined Phase 3 concerns.
 
-- [ ] Write targeted failing tests for all registered rules and each scan/redaction terminal.
-- [ ] Implement only profile-owned, metadata-only scanning/redaction; run targeted GREEN tests.
-- [ ] Refactor only inside Phase 2; run the cumulative implemented suite.
-- [ ] Run `git diff --check` and inspect `git status --short`.
-- [ ] Create one focused commit, Phase 2 Completion Record, and progress update.
+- [x] Write targeted failing tests for all registered rules and each scan/redaction terminal.
+- [x] Implement only profile-owned, metadata-only scanning/redaction; run targeted GREEN tests.
+- [x] Refactor only inside Phase 2; run the cumulative implemented suite.
+- [x] Run `git diff --check` and inspect `git status --short`.
+- [x] Create one focused commit, Phase 2 Completion Record, and progress update.
 
 **Acceptance:** Only allowlisted metadata is processed; matched text is never
-retained; unsafe results have no candidate and cannot become approval-required.
+retained; unsafe results have no candidate and cannot become approval-required;
+the required review-gate decision and any required independent review are
+recorded before Phase 2 is accepted.
 
 ## Phase 3: Metadata-only Assembly Service
 
@@ -105,7 +145,9 @@ eligibility facts; it has no adapter parameter or side-effect dependency.
 - [ ] Create one focused commit, Phase 3 Completion Record, and progress update.
 
 **Acceptance:** The service has no source/diff renderer, workspace/OCI/GitHub
-integration, persistence path, or PDR evaluator.
+integration, persistence path, or PDR evaluator; the required review-gate
+decision and any required independent review are recorded before Phase 3 is
+accepted.
 
 ## Phase 4: Acceptance and Boundary Hardening
 
@@ -124,4 +166,6 @@ integration, persistence path, or PDR evaluator.
 - [ ] Create one focused commit, Phase 4 Completion Record, and progress update.
 
 **Acceptance:** All Feature 2 requirements pass with no raw material,
-side-effect, persistence, or authorization escape.
+side-effect, persistence, or authorization escape; the required review-gate
+decision and any required independent review are recorded before Phase 4 is
+accepted.

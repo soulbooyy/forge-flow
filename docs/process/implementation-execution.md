@@ -91,7 +91,29 @@ without that approval. Approval applies only to the current phase diff; if the
 diff materially changes after approval, request approval again before reviewing
 the changed scope.
 
-### 1.8 Execution-Assistance Boundary
+### 1.8 Phase Completion Review Gate
+
+Every phase must close its review gate before it can be marked accepted or the
+next phase can be authorized. The Phase Completion Record and `progress.md`
+must state whether independent review was required under section 1.7, whether
+it completed, whether a subagent was used, and the reason for the selected
+review method, including user approval when a subagent was used.
+
+When independent review is not required, the record must state that the phase
+received self-review and why its changed boundary did not trigger section 1.7.
+When independent review is required, passing tests and self-review are not
+sufficient to mark the phase accepted. The phase remains `Pending independent
+review` until the approved independent review completes and any resulting
+correction is verified. A phase may not start its successor while this gate is
+pending.
+
+Subagents are optional review mechanisms, not a default phase requirement. Use
+one only when independent review is required or explicitly requested and the
+user has approved it for the current phase diff. The record must state why a
+subagent was appropriate; if no subagent is used, it must state why self-review
+was sufficient.
+
+### 1.9 Execution-Assistance Boundary
 
 Superpowers is a recommended execution-assistance framework. It may help apply
 the existing plan through TDD, verification, focused review, and other

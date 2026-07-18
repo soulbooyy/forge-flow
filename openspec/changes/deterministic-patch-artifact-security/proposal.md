@@ -11,10 +11,11 @@ write, execution, commit, PR, or persistence authorization.
 
 ## Scope
 
-- define immutable `PatchIntent`, `PatchArtifact`, `SecretScanResult`, and
-  `RedactionFact` contracts with deterministic identity and explicit lineage;
-- deterministically construct a metadata-only change artifact fact against the
-  registered fixture repository identity and fixed base revision;
+- define immutable pre-scan identity, passed-only `PatchIntent`/`PatchArtifact`,
+  `SecretScanResult`, `RedactionFact`, and unsafe `PatchSecurityTerminal`
+  contracts with deterministic identity and explicit lineage;
+- scan transient bounded metadata before constructing any PatchIntent, then
+  construct a metadata-only change artifact only on the passed path;
 - enforce registered policy-profile path bounds while producing security facts
   from the versioned scanner and redaction rule sets over bounded metadata;
 - create only an eligible, non-persistent `RedactedArtifactReferenceCandidate`
@@ -30,12 +31,20 @@ write, execution, commit, PR, or persistence authorization.
   artifact-store publication, durable references, or `DurableRunSummary`;
 - GitHub Issue retrieval, branch/commit/Draft PR creation, or any external
   side effect;
-- raw-patch, raw-diff, raw-source, raw-command-output, credential,
+- raw-rationale, raw-patch, raw-diff, raw-source, raw-command-output, credential,
   environment-value, or temporary-workspace-path persistence; and
 - creating or changing scanner/redaction rules, policy budgets, or fixture
   profile values.
 
 ## Architecture Readiness Gate
+
+### Terminal-first Amendment Status
+
+This amendment is Draft pending user review. It replaces the earlier
+PatchIntent-first scan flow with pre-scan identity, passed-only
+PatchIntent/PatchArtifact creation, and PatchSecurityTerminal for unsafe paths.
+It supersedes prior implementation evidence and authorizes no resumed Phase 4
+or re-baselined implementation work until accepted.
 
 The scoped amendments accepted in RFC-002, RFC-004, and RFC-005 define this
 change's contract, security, and pre-persistence boundary. RFC-006's registered

@@ -47,10 +47,17 @@
 
 <ACCEPTANCE_EVIDENCE>
 
-## 10. Scope Boundary Confirmation
+## 10. Review Gate
+
+- Independent review required: <YES_OR_NO_AND_RULE>
+- Independent review completed: <YES_OR_NO>
+- Subagent used: <YES_OR_NO>
+- Review-method rationale and user-approval scope: <RATIONALE>
+
+## 11. Scope Boundary Confirmation
 
 <CONFIRMATION_OF_EXCLUSIONS_AND_NO_FUTURE_SCOPE>
 
-## 11. Follow-up
+## 12. Follow-up
 
 <NEXT_PHASE_OR_DEFERRED_WORK>

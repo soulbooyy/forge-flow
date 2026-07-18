@@ -2,6 +2,10 @@
 
 ## Readiness Gate
 
+- [x] Accept the terminal-first pre-scan contract amendment before resuming
+  implementation. Existing Phase 1–3 code is superseded by this amendment and
+  cannot be treated as conformant implementation evidence.
+
 - [x] Accept the RFC-002/004/005 scoped amendments that define the Feature 2
   contract, security, and pre-persistence boundary.
 - [x] Complete Grill-Me Report mode and incorporate its scope cuts into this
@@ -19,11 +23,11 @@
 - [x] Create milestone index/progress documentation with the Draft canonical
   plan; do not assign an implementation environment before explicit Phase 1
   authorization.
-- [ ] Review and accept the canonical plan before any Phase 1 authorization.
+- [x] Review and accept the canonical plan before any Phase 1 authorization.
 
 ## Implementation
 
-- [ ] Begin only after canonical-plan acceptance, explicit Phase 1
+- [x] Begin only after canonical-plan acceptance, explicit Phase 1
   authorization, and assignment of branch
   `feature/m4-deterministic-patch-artifact-security` and worktree
   `.worktrees/m4-deterministic-patch-artifact-security`.

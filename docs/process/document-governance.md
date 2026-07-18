@@ -117,8 +117,11 @@ without changing its required section structure. The `Changed Files` section
 uses a `File | Change | Purpose` table. The `TDD and Tests` section records
 RED, GREEN, any necessary refactor or corrective iteration, commands, targeted
 results, and cumulative-suite results. The record captures completed engineering
-facts, not agent dispatches, review-diff bodies, or temporary debugging
-narration.
+facts, not review-diff bodies or temporary debugging narration. Its `Review
+Gate` section must state whether independent review was required, whether it
+completed, whether a subagent was used, and the reason for the selected review
+method. When a subagent was used, record only its review role and user-approval
+scope, not a dispatch transcript.
 
 After each phase commit, create or update both the Phase Completion Record and the milestone `progress.md`. The completion record contains phase detail; `progress.md` is a concise milestone index with phase status, commit, record link, current phase, next incomplete phase, and milestone-level reconciliation items. Neither document redefines requirements, architecture, or sequencing.
 

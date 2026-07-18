@@ -89,20 +89,22 @@ store.
 
 ### M4 Feature 2 Pre-Persistence Boundary
 
-Before Feature 3 owns controlled artifact publication, M4 Feature 2 constructs
-only bounded change-artifact metadata from a PatchIntent. It does not generate,
-hold, render, scan, redact, or write raw patch material, source material, or a
-diff. It must not write a partial redacted object or filesystem path into the
+Before Feature 3 owns controlled artifact publication, M4 Feature 2 scans a
+bounded transient metadata projection anchored by PreScanPatchMetadataIdentity,
+then constructs PatchIntent and change-artifact metadata only on the passed
+path. It does not generate, hold, render, or write raw rationale, raw patch
+material, source material, or a diff. It must not write a partial redacted object or filesystem path into the
 local artifact store, contract lineage, or a durable summary. It may produce a
 `RedactedArtifactReferenceCandidate` only after the registered policy profile's
-scan and redaction gates have succeeded over the bounded metadata/fact
-representation. That candidate is not an artifact-store entry, durable
+scan and redaction gates have succeeded over bounded transient pre-scan
+metadata. That candidate is not an artifact-store entry, durable
 artifact ID, patch material, or persistence authorization.
 
 Feature 3 alone owns the transition from an eligible candidate to immutable
 artifact publication and a ForgeFlow-owned durable reference through the
 existing fail-closed publication sequence. Failed, blocked, or indeterminate
-security processing leaves no candidate or partial object eligible for later
+security processing records PatchSecurityTerminal without raw rationale,
+matched text, PatchIntent, PatchArtifact, candidate, or partial object eligible for later
 publication, summary reference, patch materialization, commit creation, or
 Draft PR packaging. Actual patch materialization remains outside Feature 2.
 

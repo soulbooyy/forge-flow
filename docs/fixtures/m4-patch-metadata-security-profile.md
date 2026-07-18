@@ -18,25 +18,34 @@ scanner_version: deterministic-metadata-scanner-v1
 redaction_rule_set_id: m4-patch-metadata-redaction-v1
 ```
 
-The only scanner input is the canonical, bounded UTF-8 metadata projection of
-these fields:
+The only scanner input is a canonical, bounded UTF-8 transient pre-scan
+metadata projection. It is not a contract and is never returned or persisted.
+Its semantic fields are:
 
 ```text
-PatchIntent.target_scope
-PatchIntent.change_description
-PatchArtifact.target_scope
+PreScanMetadataProjection.target_scope
+PreScanMetadataProjection.change_description
 ```
 
 All identifiers, digests, repository identity, base revision, policy identity,
-lineage fields, paths, raw payload fields, and unknown fields are excluded from
-the projection. An input that cannot be projected exactly is `indeterminate`;
-it is not scanned permissively.
+lineage fields, raw payload fields, and unknown fields are excluded from the
+projection. An input that cannot be projected exactly is `indeterminate`; it is
+not scanned permissively. The projection is discarded after fact production;
+raw rationale and matched text never enter any contract.
+
+The pre-scan boundary bounds the projection before scanning: at most 10
+slash-separated target-scope paths of at most 512 Unicode code points, a
+single-line `change_description` of at most 1,000 code points, and bounded
+rule-ID/field finding summaries only. These bounds exclude multiline raw
+source/diff representations before the scanner receives metadata.
 
 ## Deterministic Secret-like Detection Rules
 
 Rules run in the stated order over each allowlisted string field. Every match
-records only the rule ID and field name in a bounded finding summary; matched
-text is never retained in any contract, candidate, log, or error.
+records only the rule ID and field name as a structured, ordered, unique
+finding pair; matched text is never retained in any contract, candidate, log,
+or error. A passed scan has no findings, a blocked scan has at least one, and a
+failed or indeterminate scan has none plus its controlled safe reason code.
 
 | Rule ID | Deterministic match | Severity |
 | --- | --- | --- |
@@ -62,6 +71,17 @@ approval-eligible result.
 registered fixture profile, any later PDR that consumes one is `blocked`.
 None may be converted to `requires_human_approval`.
 
+## Terminal Reason Vocabulary
+
+Unsafe processing returns `PatchSecurityTerminal` rather than PatchIntent or
+PatchArtifact. Its only `terminal_reason` values are:
+
+| Terminal status | Terminal reason |
+| --- | --- |
+| `blocked` | `security_rule_blocked` |
+| `failed` | `scanner_operation_failed` or `redaction_operation_failed` |
+| `indeterminate` | `metadata_projection_invalid` or `security_profile_mismatch` |
+
 ## Deterministic Metadata Redaction
 
 The redactor consumes only the same projected metadata and the ordered scan
@@ -82,7 +102,8 @@ persists the redacted projection itself.
 
 An output digest exists only for `not_needed` or `redacted`. A candidate exists
 only for `SecretScanResult.result: passed` with `RedactionFact.status:
-not_needed`; a redacted blocked result remains ineligible.
+not_needed`; a redacted blocked result remains ineligible. Only then may
+PatchIntent and PatchArtifact be constructed from digests and passed lineage.
 
 ## Authority and Status
 
@@ -94,7 +115,7 @@ override it.
 
 ```yaml
 status: Accepted # Draft | Accepted
-readiness_blocker: None. Feature 2 OpenSpec and canonical-plan gates remain required.
+readiness_blocker: none
 ```
 
 ## References

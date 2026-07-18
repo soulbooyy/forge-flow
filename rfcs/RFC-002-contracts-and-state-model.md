@@ -610,36 +610,44 @@ M4 Feature 2 is a declaration-and-security-facts slice. It introduces no
 workspace mutation, patch application, command execution, commit, branch, PR,
 artifact-store publication, or Durable Run Summary behavior.
 
-`PatchIntent` is an immutable declaration of a proposed change against one
-repository identity and fixed base revision. Its minimum direction is contract
-version, repository identity, base revision, intent ID, target scope, change
-description, and lineage digest. It must not contain authorization, approval,
-execution permission, or write permission.
+`PreScanPatchMetadataIdentity` is the non-persistent pre-scan lineage anchor.
+It contains only canonical ID, repository identity, fixed base revision, bounded
+target scope, and lineage digest; raw rationale/change description is a bounded
+transient scan input and is never a contract. PatchIntent exists only after
+passed scan and not-needed redaction. It contains identity, repository/base,
+pre-scan ID, target scope, scanned-metadata digest, and lineage; it contains no
+raw rationale, authorization, approval, execution permission, or write permission.
 
 `PatchArtifact` is an immutable change-artifact fact deterministically
-constructed from a `PatchIntent`. It describes repository identity, fixed base
-revision, target scope, and change lineage only; it is not a diff and it does
-not assert that any workspace was changed. Its minimum direction is artifact
-ID, repository identity, base revision, PatchIntent ID, target scope, metadata
-digest, and lineage digest. It must not contain raw patch content, raw diff,
-source material, a commit hash, pull-request URL, execution status, or any
-application state.
+constructed from a passed `PatchIntent`. It describes repository identity,
+fixed base revision, target scope, and change lineage only; it is not a diff and
+does not assert that any workspace was changed. It must not contain raw patch
+content, raw diff, raw rationale, source material, a commit hash, pull-request
+URL, execution status, or any application state.
 
 `SecretScanResult` and `RedactionFact` are immutable security facts, not
-authorization. A scan result identifies its scan ID, scoped artifact ID,
+authorization. A scan result identifies its scan ID, scoped pre-scan metadata ID,
 rule-set ID, scanner version, result, bounded findings summary, and failure
 reason when applicable. A redaction fact identifies its redaction ID, input
-artifact ID, output artifact digest, rule-set ID, and status. Every contract
+pre-scan metadata ID, exact consumed SecretScanResult ID, output metadata digest,
+rule-set ID, and status. Every contract
 identity is derived through canonical serialization and digest; timestamps and
 random or agent-generated identifiers must not be the sole identity fact.
 
-Feature 2 does not generate, render, retain, or persist patch material. Its
-scanner and redactor operate only on the bounded metadata/fact representation
-defined above. A clean, fully redacted metadata representation may yield only a
-`RedactedArtifactReferenceCandidate`; this is evidence that a later feature
-may publish a bounded reference, not a durable identity, patch material, or
-persistence event. Scan failure, redaction failure, indeterminate security
-result, or a blocked finding yields no candidate reference. Actual patch
+Feature 2 does not generate, render, retain, or persist patch material or raw
+rationale. Its scanner and redactor operate first on bounded transient metadata.
+A blocked, failed, or indeterminate result yields `PatchSecurityTerminal`, with
+only canonical pre-scan identity, lineage, security facts, terminal status, and
+controlled terminal reason; it yields no PatchIntent, PatchArtifact, or
+candidate. A clean, fully redacted metadata representation may then yield a
+passed PatchIntent, PatchArtifact, and `RedactedArtifactReferenceCandidate`;
+the candidate is evidence that a later feature
+may publish a bounded reference, not a durable artifact identity, patch
+material, or persistence event. The candidate itself has a deterministic
+in-memory identity and binds the PatchArtifact, SecretScanResult, RedactionFact,
+profile/rule-set, and redacted-metadata lineage. Scan failure, redaction
+failure, indeterminate security result, or a blocked finding yields no candidate
+reference. Actual patch
 materialization requires a later feature with explicit source-access and
 application authority. A later action must obtain a fresh Policy Decision
 Record over its current inputs; neither a PatchIntent, PatchArtifact, security
