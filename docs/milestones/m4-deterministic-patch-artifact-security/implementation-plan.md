@@ -108,14 +108,16 @@ must also complete before Phase 1 is accepted.
 - Create `src/forgeflow/deterministic_patch_artifact_security/{profile,policy}.py` — accepted profile representation and pure scan/redaction functions.
 - Create `tests/deterministic_patch_artifact_security/test_policy.py` — rule, status, redaction, and candidate tests.
 
-**Interfaces:** `M4_PATCH_METADATA_SECURITY_V1`, `scan_metadata`,
-`redact_metadata`, and `candidate_for` as defined in the AI draft.
+**Interfaces:** `M4_PATCH_METADATA_SECURITY_V1`, `scan_metadata`, and
+`redact_metadata` over a `PreScanPatchMetadataIdentity` and a transient,
+allowlisted metadata projection. Phase 2 does not create candidates; passed
+path assembly and candidate construction are re-baselined Phase 3 concerns.
 
-- [ ] Write targeted failing tests for all registered rules and each scan/redaction terminal.
-- [ ] Implement only profile-owned, metadata-only scanning/redaction; run targeted GREEN tests.
-- [ ] Refactor only inside Phase 2; run the cumulative implemented suite.
-- [ ] Run `git diff --check` and inspect `git status --short`.
-- [ ] Create one focused commit, Phase 2 Completion Record, and progress update.
+- [x] Write targeted failing tests for all registered rules and each scan/redaction terminal.
+- [x] Implement only profile-owned, metadata-only scanning/redaction; run targeted GREEN tests.
+- [x] Refactor only inside Phase 2; run the cumulative implemented suite.
+- [x] Run `git diff --check` and inspect `git status --short`.
+- [x] Create one focused commit, Phase 2 Completion Record, and progress update.
 
 **Acceptance:** Only allowlisted metadata is processed; matched text is never
 retained; unsafe results have no candidate and cannot become approval-required;

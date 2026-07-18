@@ -25,10 +25,10 @@ RFCs/ADRs, or the canonical implementation plan.
 | Field | Value |
 | --- | --- |
 | Milestone | M4 Feature 2: Deterministic Patch Artifact and Security Scanning |
-| State | Re-baselined Phase 1 accepted after independent review. |
-| Completed through | Re-baselined Phase 1: Pre-scan contracts and terminal identity. |
-| Next phase | Re-baselined Phase 2: Transient metadata security facts |
-| Implementation authorization | Phase 2 is not authorized. |
+| State | Re-baselined Phase 2 accepted after independent review. |
+| Completed through | Re-baselined Phase 2: Transient metadata security facts. |
+| Next phase | Re-baselined Phase 3: Passed-path assembly |
+| Implementation authorization | Phase 3 is not authorized. |
 
 ## Phase Index
 
@@ -39,6 +39,7 @@ RFCs/ADRs, or the canonical implementation plan.
 | 3 | Metadata-only Assembly Service | Historical; superseded by terminal-first amendment | `0fbb308`, `0cf469b` | [Phase 3 record](phases/phase-3-metadata-only-assembly-service.md) |
 | 4 | Acceptance and Boundary Hardening | Stopped pending amendment | None | None |
 | 1R | Pre-scan contracts and terminal identity | Accepted after independent review | This phase commit | [Phase 1R record](phases/phase-1-pre-scan-contracts-and-terminal-identity.md) |
+| 2R | Transient metadata security facts | Accepted after independent review | This phase commit | [Phase 2R record](phases/phase-2-transient-metadata-security-facts.md) |
 
 ## Change Log
 
@@ -79,3 +80,7 @@ RFCs/ADRs, or the canonical implementation plan.
   diff hygiene, and static no-I/O verification passed. The historical
   artifact-first policy/service failures remain owned by the unauthorized
   re-baselined Phase 2/3 work.
+- 2026-07-18: Accepted re-baselined Phase 2 after independent review. The
+  policy suite passed 7/7, including profile mismatch, invalid projection,
+  blocked-rule, and tampered-scan fail-closed cases. Phase 2 returns only
+  scan/redaction facts and creates no candidate; Phase 3 remains unauthorized.

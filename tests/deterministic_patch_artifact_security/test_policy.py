@@ -1,4 +1,4 @@
-"""Tests for registered metadata security facts."""
+"""Tests for terminal-first transient metadata security facts."""
 
 from __future__ import annotations
 
@@ -6,282 +6,163 @@ from dataclasses import replace
 import unittest
 
 from forgeflow.deterministic_patch_artifact_security.canonical import (
-    artifact_id_for,
-    intent_id_for,
+    pre_scan_metadata_id_for,
     redaction_id_for,
     scan_id_for,
     sha256_hex,
 )
 from forgeflow.deterministic_patch_artifact_security.models import (
-    PatchArtifact,
-    PatchIntent,
-    RedactionFact,
-    SecretScanResult,
+    PreScanPatchMetadataIdentity,
 )
 from forgeflow.deterministic_patch_artifact_security.policy import (
-    candidate_for,
     redact_metadata,
     scan_metadata,
 )
 from forgeflow.deterministic_patch_artifact_security.profile import (
     M4_PATCH_METADATA_SECURITY_V1,
-    MetadataSecurityProfile,
 )
 
 
+_VERSION = "m4-patch-artifact-security/v1"
+_BASE_REVISION = "97c8220cd713ebf61124ac2de2f3eadc6e4dc222"
 _DIGEST = "sha256:" + "a" * 64
 
 
-def _intent(description: str = "Correct the addition result.") -> PatchIntent:
-    provisional = PatchIntent(
-        contract_version="m4-patch-artifact-security/v1",
+def _identity() -> PreScanPatchMetadataIdentity:
+    provisional = PreScanPatchMetadataIdentity(
+        contract_version=_VERSION,
+        pre_scan_metadata_id="sha256:" + "0" * 64,
         repository_identity="fixture-repository-1300511729",
-        base_revision="97c8220cd713ebf61124ac2de2f3eadc6e4dc222",
-        intent_id="sha256:" + "0" * 64,
+        base_revision=_BASE_REVISION,
         target_scope=("src/calculator.py",),
-        change_description=description,
         lineage_digest=_DIGEST,
     )
-    return replace(provisional, intent_id=intent_id_for(provisional))
-
-
-def _artifact(intent: PatchIntent | None = None) -> PatchArtifact:
-    intent = intent or _intent()
-    provisional = PatchArtifact(
-        contract_version="m4-patch-artifact-security/v1",
-        artifact_id="sha256:" + "0" * 64,
-        repository_identity="fixture-repository-1300511729",
-        base_revision="97c8220cd713ebf61124ac2de2f3eadc6e4dc222",
-        patch_intent_id=intent.intent_id,
-        target_scope=("src/calculator.py",),
-        metadata_digest=_DIGEST,
-        lineage_digest=_DIGEST,
+    return replace(
+        provisional,
+        pre_scan_metadata_id=pre_scan_metadata_id_for(provisional),
     )
-    return replace(provisional, artifact_id=artifact_id_for(provisional))
+
+
+def _projection(
+    description: str = "Correct the addition result.",
+) -> tuple[tuple[str, str], ...]:
+    return (
+        ("PreScanMetadataProjection.change_description", description),
+        ("PreScanMetadataProjection.target_scope", "src/calculator.py"),
+    )
 
 
 class MetadataSecurityPolicyTests(unittest.TestCase):
-    def test_clean_metadata_passes_and_yields_not_needed_candidate(self) -> None:
-        scan = scan_metadata(_intent(), _artifact(), M4_PATCH_METADATA_SECURITY_V1)
+    def test_clean_projection_has_passed_scan_and_not_needed_redaction(self) -> None:
+        identity = _identity()
+        projection = _projection()
+
+        scan = scan_metadata(identity, projection, M4_PATCH_METADATA_SECURITY_V1)
         redaction = redact_metadata(
-            _intent(), _artifact(), scan, M4_PATCH_METADATA_SECURITY_V1
-        )
-        candidate = candidate_for(
-            _intent(), _artifact(), scan, redaction, M4_PATCH_METADATA_SECURITY_V1
+            identity, projection, scan, M4_PATCH_METADATA_SECURITY_V1
         )
 
         self.assertEqual(scan.result, "passed")
         self.assertEqual(redaction.status, "not_needed")
-        self.assertIsNotNone(candidate)
+        self.assertEqual(redaction.output_metadata_digest, "sha256:" + sha256_hex(projection))
+        self.assertFalse(hasattr(scan, "artifact_id"))
+        self.assertFalse(hasattr(redaction, "input_artifact_id"))
 
-    def test_each_registered_secret_rule_blocks_without_candidate(self) -> None:
+    def test_each_registered_rule_blocks_without_retaining_matched_value(self) -> None:
         cases = (
             ("private-key-marker", "-----BEGIN PRIVATE KEY-----"),
-            ("private-key-marker", "-----BEGIN RSA  PRIVATE KEY-----"),
             ("github-token-prefix", "ghp_abcdefghijklmnopqrstuvwx"),
             ("credential-assignment", "token=abcdefgh"),
             ("jwt-like-token", "eyJabcdefgh.abcdefgh.abcdefgh"),
         )
         for rule_id, description in cases:
             with self.subTest(rule_id=rule_id):
-                intent = _intent(description)
-                artifact = _artifact(intent)
-                scan = scan_metadata(intent, artifact, M4_PATCH_METADATA_SECURITY_V1)
+                identity = _identity()
+                scan = scan_metadata(
+                    identity, _projection(description), M4_PATCH_METADATA_SECURITY_V1
+                )
                 redaction = redact_metadata(
-                    intent, artifact, scan, M4_PATCH_METADATA_SECURITY_V1
+                    identity, _projection(description), scan, M4_PATCH_METADATA_SECURITY_V1
                 )
 
                 self.assertEqual(scan.result, "blocked")
                 self.assertEqual(scan.findings_summary[0].rule_id, rule_id)
                 self.assertEqual(redaction.status, "redacted")
-                self.assertIsNone(
-                    candidate_for(
-                        intent,
-                        artifact,
-                        scan,
-                        redaction,
-                        M4_PATCH_METADATA_SECURITY_V1,
-                    )
-                )
+                self.assertNotIn(description, repr(scan))
+                self.assertNotIn(description, repr(redaction))
 
-    def test_invalid_profile_identity_is_indeterminate_and_never_candidate_eligible(self) -> None:
-        mismatched = replace(
-            M4_PATCH_METADATA_SECURITY_V1,
-            profile_version=2,
-            scanner_version="unregistered-scanner",
-        )
+    def test_profile_mismatch_fails_closed_as_indeterminate(self) -> None:
+        mismatched = replace(M4_PATCH_METADATA_SECURITY_V1, profile_version=2)
+        identity = _identity()
+        projection = _projection()
 
-        scan = scan_metadata(_intent(), _artifact(), mismatched)
-        redaction = redact_metadata(_intent(), _artifact(), scan, mismatched)
+        scan = scan_metadata(identity, projection, mismatched)
+        redaction = redact_metadata(identity, projection, scan, mismatched)
 
         self.assertEqual(scan.result, "indeterminate")
-        self.assertEqual(
-            scan.scanner_version, M4_PATCH_METADATA_SECURITY_V1.scanner_version
-        )
+        self.assertEqual(scan.failure_reason, "security_profile_mismatch")
         self.assertEqual(redaction.status, "indeterminate")
-        self.assertEqual(
-            redaction.rule_set_id, M4_PATCH_METADATA_SECURITY_V1.redaction_rule_set_id
-        )
-        self.assertIsNone(candidate_for(_intent(), _artifact(), scan, redaction, mismatched))
 
-    def test_tampered_scan_lineage_becomes_indeterminate(self) -> None:
-        scan = scan_metadata(_intent(), _artifact(), M4_PATCH_METADATA_SECURITY_V1)
+    def test_invalid_projection_is_indeterminate_and_exposes_no_output_digest(self) -> None:
+        identity = _identity()
+        invalid_projection = (
+            ("PreScanMetadataProjection.change_description", "Correct the addition result."),
+            ("PreScanMetadataProjection.target_scope", "other/file.py"),
+        )
+
+        scan = scan_metadata(
+            identity, invalid_projection, M4_PATCH_METADATA_SECURITY_V1
+        )
+        redaction = redact_metadata(
+            identity, invalid_projection, scan, M4_PATCH_METADATA_SECURITY_V1
+        )
+
+        self.assertEqual(scan.result, "indeterminate")
+        self.assertEqual(scan.failure_reason, "metadata_projection_invalid")
+        self.assertEqual(redaction.status, "indeterminate")
+        self.assertIsNone(redaction.output_metadata_digest)
+
+    def test_tampered_scan_becomes_indeterminate_redaction(self) -> None:
+        identity = _identity()
+        projection = _projection()
+        scan = scan_metadata(identity, projection, M4_PATCH_METADATA_SECURITY_V1)
         tampered = replace(scan, scan_id="sha256:" + "b" * 64)
 
         redaction = redact_metadata(
-            _intent(), _artifact(), tampered, M4_PATCH_METADATA_SECURITY_V1
+            identity, projection, tampered, M4_PATCH_METADATA_SECURITY_V1
         )
 
         self.assertEqual(redaction.status, "indeterminate")
-        self.assertIsNone(
-            candidate_for(
-                _intent(), _artifact(), tampered, redaction, M4_PATCH_METADATA_SECURITY_V1
-            )
-        )
 
-    def test_failed_scanner_and_redactor_are_never_candidate_eligible(self) -> None:
-        failed_scan = SecretScanResult(
-            contract_version="m4-patch-artifact-security/v1",
-            scan_id=_DIGEST,
-            artifact_id=_artifact().artifact_id,
-            rule_set_id=M4_PATCH_METADATA_SECURITY_V1.secret_scan_rule_set_id,
-            scanner_version=M4_PATCH_METADATA_SECURITY_V1.scanner_version,
+    def test_tampered_failed_scan_cannot_produce_a_failed_redaction_fact(self) -> None:
+        identity = _identity()
+        projection = _projection()
+        scan = scan_metadata(identity, projection, M4_PATCH_METADATA_SECURITY_V1)
+        tampered = replace(
+            scan,
             result="failed",
             findings_summary=(),
             failure_reason="scanner_operation_failed",
         )
-        failed_redaction = redact_metadata(
-            _intent(), _artifact(), failed_scan, M4_PATCH_METADATA_SECURITY_V1
-        )
+        tampered = replace(tampered, scan_id=scan_id_for(tampered))
 
-        self.assertEqual(failed_redaction.status, "failed")
-        self.assertIsNone(
-            candidate_for(
-                _intent(),
-                _artifact(),
-                failed_scan,
-                failed_redaction,
-                M4_PATCH_METADATA_SECURITY_V1,
-            )
-        )
-
-        failed_redaction = RedactionFact(
-            contract_version="m4-patch-artifact-security/v1",
-            redaction_id=_DIGEST,
-            input_artifact_id=_artifact().artifact_id,
-            secret_scan_id=_DIGEST,
-            output_artifact_digest=None,
-            rule_set_id=M4_PATCH_METADATA_SECURITY_V1.redaction_rule_set_id,
-            status="failed",
-        )
-        passed_scan = scan_metadata(_intent(), _artifact(), M4_PATCH_METADATA_SECURITY_V1)
-        self.assertIsNone(
-            candidate_for(
-                _intent(),
-                _artifact(),
-                passed_scan,
-                failed_redaction,
-                M4_PATCH_METADATA_SECURITY_V1,
-            )
-        )
-
-    def test_tampered_redaction_identity_is_never_candidate_eligible(self) -> None:
-        scan = scan_metadata(_intent(), _artifact(), M4_PATCH_METADATA_SECURITY_V1)
         redaction = redact_metadata(
-            _intent(), _artifact(), scan, M4_PATCH_METADATA_SECURITY_V1
-        )
-        tampered = replace(redaction, redaction_id="sha256:" + "c" * 64)
-
-        self.assertIsNone(
-            candidate_for(
-                _intent(), _artifact(), scan, tampered, M4_PATCH_METADATA_SECURITY_V1
-            )
+            identity, projection, tampered, M4_PATCH_METADATA_SECURITY_V1
         )
 
-    def test_unaligned_intent_and_artifact_are_indeterminate(self) -> None:
-        unrelated_artifact = replace(
-            _artifact(), patch_intent_id="sha256:" + "b" * 64
-        )
+        self.assertEqual(redaction.status, "indeterminate")
 
-        scan = scan_metadata(
-            _intent(), unrelated_artifact, M4_PATCH_METADATA_SECURITY_V1
-        )
-
-        self.assertEqual(scan.result, "indeterminate")
-        self.assertEqual(scan.failure_reason, "metadata_projection_invalid")
-
-    def test_noncanonical_upstream_identity_is_indeterminate(self) -> None:
-        forged_intent = replace(_intent(), intent_id=_DIGEST)
-
-        scan = scan_metadata(
-            forged_intent, _artifact(forged_intent), M4_PATCH_METADATA_SECURITY_V1
-        )
-
-        self.assertEqual(scan.result, "indeterminate")
-        self.assertEqual(scan.failure_reason, "metadata_projection_invalid")
-
-    def test_overlapping_matches_redact_only_the_earlier_profile_rule(self) -> None:
-        description = "token=ghp_abcdefghijklmnopqrstuvwx"
-        intent = _intent(description)
-        artifact = _artifact(intent)
-        scan = scan_metadata(intent, artifact, M4_PATCH_METADATA_SECURITY_V1)
+    def test_redaction_identity_is_self_excluding_and_projection_digest_only(self) -> None:
+        identity = _identity()
+        projection = _projection("token=abcdefgh")
+        scan = scan_metadata(identity, projection, M4_PATCH_METADATA_SECURITY_V1)
         redaction = redact_metadata(
-            intent, artifact, scan, M4_PATCH_METADATA_SECURITY_V1
+            identity, projection, scan, M4_PATCH_METADATA_SECURITY_V1
         )
 
-        self.assertEqual(
-            redaction.output_artifact_digest,
-            "sha256:"
-            + sha256_hex(
-                (
-                    ("PatchArtifact.target_scope", "src/calculator.py"),
-                    (
-                        "PatchIntent.change_description",
-                        "token=[REDACTED:github-token-prefix]",
-                    ),
-                    ("PatchIntent.target_scope", "src/calculator.py"),
-                )
-            ),
-        )
-
-    def test_self_consistent_forged_facts_cannot_create_candidate(self) -> None:
-        intent = _intent()
-        artifact = _artifact()
-        expected_scan = scan_metadata(intent, artifact, M4_PATCH_METADATA_SECURITY_V1)
-        forged_scan = replace(expected_scan, contract_version="forged/v1")
-        forged_scan = replace(forged_scan, scan_id=scan_id_for(forged_scan))
-        expected_redaction = redact_metadata(
-            intent, artifact, expected_scan, M4_PATCH_METADATA_SECURITY_V1
-        )
-        forged_redaction = replace(
-            expected_redaction, secret_scan_id=forged_scan.scan_id
-        )
-        forged_redaction = replace(
-            forged_redaction, redaction_id=redaction_id_for(forged_redaction)
-        )
-
-        self.assertIsNone(
-            candidate_for(
-                intent,
-                artifact,
-                forged_scan,
-                forged_redaction,
-                M4_PATCH_METADATA_SECURITY_V1,
-            )
-        )
-
-    def test_profile_is_immutable_and_metadata_only(self) -> None:
-        self.assertIsInstance(M4_PATCH_METADATA_SECURITY_V1, MetadataSecurityProfile)
-        self.assertEqual(
-            M4_PATCH_METADATA_SECURITY_V1.allowed_field_names,
-            (
-                "PatchArtifact.target_scope",
-                "PatchIntent.change_description",
-                "PatchIntent.target_scope",
-            ),
-        )
-        with self.assertRaises(Exception):
-            M4_PATCH_METADATA_SECURITY_V1.profile_version = 2  # type: ignore[misc]
+        self.assertEqual(redaction.redaction_id, redaction_id_for(redaction))
+        self.assertEqual(scan.scan_id, scan_id_for(scan))
+        self.assertNotIn("token=abcdefgh", repr(redaction))
 
 
 if __name__ == "__main__":
