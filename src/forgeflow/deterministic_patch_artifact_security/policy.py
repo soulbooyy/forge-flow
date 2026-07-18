@@ -5,7 +5,14 @@ from __future__ import annotations
 from dataclasses import replace
 import re
 
-from .canonical import candidate_id_for, redaction_id_for, scan_id_for, sha256_hex
+from .canonical import (
+    artifact_id_for,
+    candidate_id_for,
+    intent_id_for,
+    redaction_id_for,
+    scan_id_for,
+    sha256_hex,
+)
 from .models import (
     PatchArtifact,
     PatchIntent,
@@ -240,7 +247,9 @@ def _redaction_terminal(
 
 def _intent_artifact_aligned(intent: PatchIntent, artifact: PatchArtifact) -> bool:
     return (
-        intent.contract_version == artifact.contract_version
+        intent.intent_id == intent_id_for(intent)
+        and artifact.artifact_id == artifact_id_for(artifact)
+        and intent.contract_version == artifact.contract_version
         and artifact.patch_intent_id == intent.intent_id
         and artifact.repository_identity == intent.repository_identity
         and artifact.base_revision == intent.base_revision

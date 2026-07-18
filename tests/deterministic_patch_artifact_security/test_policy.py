@@ -6,6 +6,8 @@ from dataclasses import replace
 import unittest
 
 from forgeflow.deterministic_patch_artifact_security.canonical import (
+    artifact_id_for,
+    intent_id_for,
     redaction_id_for,
     scan_id_for,
 )
@@ -30,28 +32,31 @@ _DIGEST = "sha256:" + "a" * 64
 
 
 def _intent(description: str = "Correct the addition result.") -> PatchIntent:
-    return PatchIntent(
+    provisional = PatchIntent(
         contract_version="m4-patch-artifact-security/v1",
         repository_identity="fixture-repository-1300511729",
         base_revision="97c8220cd713ebf61124ac2de2f3eadc6e4dc222",
-        intent_id=_DIGEST,
+        intent_id="sha256:" + "0" * 64,
         target_scope=("src/calculator.py",),
         change_description=description,
         lineage_digest=_DIGEST,
     )
+    return replace(provisional, intent_id=intent_id_for(provisional))
 
 
-def _artifact() -> PatchArtifact:
-    return PatchArtifact(
+def _artifact(intent: PatchIntent | None = None) -> PatchArtifact:
+    intent = intent or _intent()
+    provisional = PatchArtifact(
         contract_version="m4-patch-artifact-security/v1",
-        artifact_id=_DIGEST,
+        artifact_id="sha256:" + "0" * 64,
         repository_identity="fixture-repository-1300511729",
         base_revision="97c8220cd713ebf61124ac2de2f3eadc6e4dc222",
-        patch_intent_id=_DIGEST,
+        patch_intent_id=intent.intent_id,
         target_scope=("src/calculator.py",),
         metadata_digest=_DIGEST,
         lineage_digest=_DIGEST,
     )
+    return replace(provisional, artifact_id=artifact_id_for(provisional))
 
 
 class MetadataSecurityPolicyTests(unittest.TestCase):
@@ -70,16 +75,18 @@ class MetadataSecurityPolicyTests(unittest.TestCase):
 
     def test_each_registered_secret_rule_blocks_without_candidate(self) -> None:
         cases = (
-            ("private-key-marker", "-----BEGIN TEST PRIVATE KEY-----"),
+            ("private-key-marker", "-----BEGIN PRIVATE KEY-----"),
             ("github-token-prefix", "ghp_abcdefghijklmnopqrstuvwx"),
             ("credential-assignment", "token=abcdefgh"),
             ("jwt-like-token", "eyJabcdefgh.abcdefgh.abcdefgh"),
         )
         for rule_id, description in cases:
             with self.subTest(rule_id=rule_id):
-                scan = scan_metadata(_intent(description), _artifact(), M4_PATCH_METADATA_SECURITY_V1)
+                intent = _intent(description)
+                artifact = _artifact(intent)
+                scan = scan_metadata(intent, artifact, M4_PATCH_METADATA_SECURITY_V1)
                 redaction = redact_metadata(
-                    _intent(description), _artifact(), scan, M4_PATCH_METADATA_SECURITY_V1
+                    intent, artifact, scan, M4_PATCH_METADATA_SECURITY_V1
                 )
 
                 self.assertEqual(scan.result, "blocked")
@@ -87,8 +94,8 @@ class MetadataSecurityPolicyTests(unittest.TestCase):
                 self.assertEqual(redaction.status, "redacted")
                 self.assertIsNone(
                     candidate_for(
-                        _intent(description),
-                        _artifact(),
+                        intent,
+                        artifact,
                         scan,
                         redaction,
                         M4_PATCH_METADATA_SECURITY_V1,
@@ -196,6 +203,16 @@ class MetadataSecurityPolicyTests(unittest.TestCase):
 
         scan = scan_metadata(
             _intent(), unrelated_artifact, M4_PATCH_METADATA_SECURITY_V1
+        )
+
+        self.assertEqual(scan.result, "indeterminate")
+        self.assertEqual(scan.failure_reason, "metadata_projection_invalid")
+
+    def test_noncanonical_upstream_identity_is_indeterminate(self) -> None:
+        forged_intent = replace(_intent(), intent_id=_DIGEST)
+
+        scan = scan_metadata(
+            forged_intent, _artifact(forged_intent), M4_PATCH_METADATA_SECURITY_V1
         )
 
         self.assertEqual(scan.result, "indeterminate")
