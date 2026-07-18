@@ -134,6 +134,7 @@ class RedactionFact:
     contract_version: str
     redaction_id: str
     input_artifact_id: str
+    secret_scan_id: str
     output_artifact_digest: str | None
     rule_set_id: str
     status: RedactionStatus
@@ -142,6 +143,7 @@ class RedactionFact:
         _require_text("contract_version", self.contract_version)
         _require_digest("redaction_id", self.redaction_id)
         _require_digest("input_artifact_id", self.input_artifact_id)
+        _require_digest("secret_scan_id", self.secret_scan_id)
         _require_text("rule_set_id", self.rule_set_id)
         if self.status not in ("not_needed", "redacted", "failed", "indeterminate"):
             raise ValueError("status must be a controlled redaction status")
@@ -212,7 +214,13 @@ def _require_text(name: str, value: object) -> None:
 
 def _require_metadata_text(name: str, value: object, maximum: int) -> None:
     _require_text(name, value)
-    if not isinstance(value, str) or "\n" in value or "\r" in value or len(value) > maximum:
+    if (
+        not isinstance(value, str)
+        or "\n" in value
+        or "\r" in value
+        or len(value) > maximum
+        or any(unicodedata.category(character).startswith("C") for character in value)
+    ):
         raise ValueError(f"{name} must be bounded single-line metadata text")
 
 

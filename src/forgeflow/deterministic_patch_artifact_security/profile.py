@@ -6,6 +6,14 @@ from dataclasses import dataclass
 
 
 @dataclass(frozen=True, slots=True)
+class MetadataSecurityRule:
+    """One accepted, deterministic metadata detection rule."""
+
+    rule_id: str
+    pattern: str
+
+
+@dataclass(frozen=True, slots=True)
 class MetadataSecurityProfile:
     profile_id: str
     profile_version: int
@@ -13,7 +21,11 @@ class MetadataSecurityProfile:
     scanner_version: str
     redaction_rule_set_id: str
     allowed_field_names: tuple[str, ...]
-    ordered_rule_ids: tuple[str, ...]
+    rule_definitions: tuple[MetadataSecurityRule, ...]
+
+    @property
+    def ordered_rule_ids(self) -> tuple[str, ...]:
+        return tuple(rule.rule_id for rule in self.rule_definitions)
 
 
 M4_PATCH_METADATA_SECURITY_V1 = MetadataSecurityProfile(
@@ -27,10 +39,28 @@ M4_PATCH_METADATA_SECURITY_V1 = MetadataSecurityProfile(
         "PatchIntent.change_description",
         "PatchIntent.target_scope",
     ),
-    ordered_rule_ids=(
-        "private-key-marker",
-        "github-token-prefix",
-        "credential-assignment",
-        "jwt-like-token",
+    rule_definitions=(
+        MetadataSecurityRule(
+            rule_id="private-key-marker",
+            pattern=r"-----BEGIN [A-Z0-9 ]+ PRIVATE KEY-----",
+        ),
+        MetadataSecurityRule(
+            rule_id="github-token-prefix",
+            pattern=r"gh[pousr]_[A-Za-z0-9]{20,}",
+        ),
+        MetadataSecurityRule(
+            rule_id="credential-assignment",
+            pattern=(
+                r"(?i)\b(?:api_key|apikey|access_token|secret|password|token)\b"
+                r"\s*[:=]\s*\S{8,}"
+            ),
+        ),
+        MetadataSecurityRule(
+            rule_id="jwt-like-token",
+            pattern=(
+                r"eyJ[A-Za-z0-9_-]{5,}\.[A-Za-z0-9_-]{8,}\."
+                r"[A-Za-z0-9_-]{8,}"
+            ),
+        ),
     ),
 )

@@ -68,6 +68,16 @@ class ContractTests(unittest.TestCase):
                 base_revision="97c8220cd713ebf61124ac2de2f3eadc6e4dc222",
                 intent_id=_DIGEST,
                 target_scope=("src/calculator.py",),
+                change_description="invalid\ud800metadata",
+                lineage_digest=_DIGEST,
+            )
+        with self.assertRaises(ValueError):
+            PatchIntent(
+                contract_version="m4-patch-artifact-security/v1",
+                repository_identity="fixture-repository-1300511729",
+                base_revision="97c8220cd713ebf61124ac2de2f3eadc6e4dc222",
+                intent_id=_DIGEST,
+                target_scope=("src/calculator.py",),
                 change_description="x" * 1_001,
                 lineage_digest=_DIGEST,
             )
@@ -97,6 +107,7 @@ class ContractTests(unittest.TestCase):
             contract_version="m4-patch-artifact-security/v1",
             redaction_id=_DIGEST,
             input_artifact_id=_DIGEST,
+            secret_scan_id=_DIGEST,
             output_artifact_digest=_DIGEST,
             rule_set_id="m4-patch-metadata-redaction-v1",
             status="not_needed",

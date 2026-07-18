@@ -79,6 +79,8 @@ Required minimum fields:
 
 - `redaction_id`;
 - `input_artifact_id`;
+- `secret_scan_id` binding the exact scoped `SecretScanResult` consumed by the
+  redactor;
 - `output_artifact_digest` only when a redacted output was successfully
   produced;
 - `rule_set_id: "m4-patch-metadata-redaction-v1"` supplied by the accepted M4

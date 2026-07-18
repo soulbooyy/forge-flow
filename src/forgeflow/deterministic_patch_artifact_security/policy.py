@@ -17,19 +17,6 @@ from .models import (
 from .profile import M4_PATCH_METADATA_SECURITY_V1, MetadataSecurityProfile
 
 
-_RULE_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
-    ("private-key-marker", re.compile(r"-----BEGIN [A-Z0-9 ]+ PRIVATE KEY-----")),
-    ("github-token-prefix", re.compile(r"gh[pousr]_[A-Za-z0-9]{20,}")),
-    (
-        "credential-assignment",
-        re.compile(
-            r"(?i)\b(?:api_key|apikey|access_token|secret|password|token)\b\s*[:=]\s*\S{8,}"
-        ),
-    ),
-    ("jwt-like-token", re.compile(r"eyJ[A-Za-z0-9_-]{5,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}")),
-)
-
-
 def scan_metadata(
     intent: PatchIntent, artifact: PatchArtifact, profile: MetadataSecurityProfile
 ) -> SecretScanResult:
@@ -40,6 +27,13 @@ def scan_metadata(
             M4_PATCH_METADATA_SECURITY_V1,
             "indeterminate",
             "security_profile_mismatch",
+        )
+    if not _intent_artifact_aligned(intent, artifact):
+        return _scan_terminal(
+            artifact,
+            M4_PATCH_METADATA_SECURITY_V1,
+            "indeterminate",
+            "metadata_projection_invalid",
         )
     projection = _projection(intent, artifact)
     findings = _findings(projection, profile)
@@ -65,9 +59,11 @@ def redact_metadata(
 ) -> RedactionFact:
     """Return a digest-only redaction fact after validating current scan lineage."""
     if not _is_registered_profile(profile) or scan.result == "indeterminate":
-        return _redaction_terminal(artifact, M4_PATCH_METADATA_SECURITY_V1, "indeterminate")
+        return _redaction_terminal(
+            artifact, M4_PATCH_METADATA_SECURITY_V1, scan.scan_id, "indeterminate"
+        )
     if scan.result == "failed":
-        return _redaction_terminal(artifact, profile, "failed")
+        return _redaction_terminal(artifact, profile, scan.scan_id, "failed")
     expected = scan_metadata(intent, artifact, profile)
     if (
         scan.artifact_id != artifact.artifact_id
@@ -77,14 +73,17 @@ def redact_metadata(
         or scan.result != expected.result
         or scan.findings_summary != expected.findings_summary
     ):
-        return _redaction_terminal(artifact, profile, "indeterminate")
+        return _redaction_terminal(artifact, profile, scan.scan_id, "indeterminate")
     projection = _projection(intent, artifact)
     if scan.result == "passed":
-        return _redaction_success(artifact, profile, "not_needed", projection)
-    return _redaction_success(artifact, profile, "redacted", _redacted_projection(projection, scan))
+        return _redaction_success(artifact, profile, scan, "not_needed", projection)
+    return _redaction_success(
+        artifact, profile, scan, "redacted", _redacted_projection(projection, scan, profile)
+    )
 
 
 def candidate_for(
+    intent: PatchIntent,
     artifact: PatchArtifact,
     scan: SecretScanResult,
     redaction: RedactionFact,
@@ -93,16 +92,22 @@ def candidate_for(
     """Return an in-memory candidate only for registered passed/not-needed facts."""
     if not _is_registered_profile(profile):
         return None
+    if not _intent_artifact_aligned(intent, artifact):
+        return None
+    expected_scan = scan_metadata(intent, artifact, profile)
+    expected_redaction = redact_metadata(intent, artifact, expected_scan, profile)
     if (
         scan.artifact_id != artifact.artifact_id
         or scan.rule_set_id != profile.secret_scan_rule_set_id
         or scan.scanner_version != profile.scanner_version
         or scan.scan_id != scan_id_for(scan)
+        or scan != expected_scan
         or scan.result != "passed"
         or scan.findings_summary
         or redaction.input_artifact_id != artifact.artifact_id
         or redaction.rule_set_id != profile.redaction_rule_set_id
         or redaction.redaction_id != redaction_id_for(redaction)
+        or redaction != expected_redaction
         or redaction.status != "not_needed"
         or redaction.output_artifact_digest is None
     ):
@@ -149,19 +154,22 @@ def _findings(
 ) -> tuple[ScanFinding, ...]:
     values = dict(projection)
     findings: list[ScanFinding] = []
-    for rule_id, pattern in _RULE_PATTERNS:
-        if rule_id not in profile.ordered_rule_ids:
-            continue
+    for rule in profile.rule_definitions:
+        pattern = re.compile(rule.pattern)
         for field_name in profile.allowed_field_names:
             if pattern.search(values[field_name]):
-                findings.append(ScanFinding(rule_id=rule_id, field_name=field_name))
+                findings.append(ScanFinding(rule_id=rule.rule_id, field_name=field_name))
     return tuple(findings)
 
 
 def _redacted_projection(
-    projection: tuple[tuple[str, str], ...], scan: SecretScanResult
+    projection: tuple[tuple[str, str], ...],
+    scan: SecretScanResult,
+    profile: MetadataSecurityProfile,
 ) -> tuple[tuple[str, str], ...]:
-    rule_patterns = dict(_RULE_PATTERNS)
+    rule_patterns = {
+        rule.rule_id: re.compile(rule.pattern) for rule in profile.rule_definitions
+    }
     findings_by_field: dict[str, list[str]] = {}
     for finding in scan.findings_summary:
         findings_by_field.setdefault(finding.field_name, []).append(finding.rule_id)
@@ -196,6 +204,7 @@ def _scan_terminal(
 def _redaction_success(
     artifact: PatchArtifact,
     profile: MetadataSecurityProfile,
+    scan: SecretScanResult,
     status: str,
     projection: tuple[tuple[str, str], ...],
 ) -> RedactionFact:
@@ -203,6 +212,7 @@ def _redaction_success(
         contract_version=artifact.contract_version,
         redaction_id="sha256:" + "0" * 64,
         input_artifact_id=artifact.artifact_id,
+        secret_scan_id=scan.scan_id,
         output_artifact_digest="sha256:" + sha256_hex(projection),
         rule_set_id=profile.redaction_rule_set_id,
         status=status,  # type: ignore[arg-type]
@@ -211,14 +221,28 @@ def _redaction_success(
 
 
 def _redaction_terminal(
-    artifact: PatchArtifact, profile: MetadataSecurityProfile, status: str
+    artifact: PatchArtifact,
+    profile: MetadataSecurityProfile,
+    secret_scan_id: str,
+    status: str,
 ) -> RedactionFact:
     provisional = RedactionFact(
         contract_version=artifact.contract_version,
         redaction_id="sha256:" + "0" * 64,
         input_artifact_id=artifact.artifact_id,
+        secret_scan_id=secret_scan_id,
         output_artifact_digest=None,
         rule_set_id=profile.redaction_rule_set_id,
         status=status,  # type: ignore[arg-type]
     )
     return replace(provisional, redaction_id=redaction_id_for(provisional))
+
+
+def _intent_artifact_aligned(intent: PatchIntent, artifact: PatchArtifact) -> bool:
+    return (
+        intent.contract_version == artifact.contract_version
+        and artifact.patch_intent_id == intent.intent_id
+        and artifact.repository_identity == intent.repository_identity
+        and artifact.base_revision == intent.base_revision
+        and artifact.target_scope == intent.target_scope
+    )

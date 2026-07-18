@@ -5,6 +5,10 @@ from __future__ import annotations
 from dataclasses import replace
 import unittest
 
+from forgeflow.deterministic_patch_artifact_security.canonical import (
+    redaction_id_for,
+    scan_id_for,
+)
 from forgeflow.deterministic_patch_artifact_security.models import (
     PatchArtifact,
     PatchIntent,
@@ -57,7 +61,7 @@ class MetadataSecurityPolicyTests(unittest.TestCase):
             _intent(), _artifact(), scan, M4_PATCH_METADATA_SECURITY_V1
         )
         candidate = candidate_for(
-            _artifact(), scan, redaction, M4_PATCH_METADATA_SECURITY_V1
+            _intent(), _artifact(), scan, redaction, M4_PATCH_METADATA_SECURITY_V1
         )
 
         self.assertEqual(scan.result, "passed")
@@ -82,7 +86,13 @@ class MetadataSecurityPolicyTests(unittest.TestCase):
                 self.assertEqual(scan.findings_summary[0].rule_id, rule_id)
                 self.assertEqual(redaction.status, "redacted")
                 self.assertIsNone(
-                    candidate_for(_artifact(), scan, redaction, M4_PATCH_METADATA_SECURITY_V1)
+                    candidate_for(
+                        _intent(description),
+                        _artifact(),
+                        scan,
+                        redaction,
+                        M4_PATCH_METADATA_SECURITY_V1,
+                    )
                 )
 
     def test_invalid_profile_identity_is_indeterminate_and_never_candidate_eligible(self) -> None:
@@ -103,7 +113,7 @@ class MetadataSecurityPolicyTests(unittest.TestCase):
         self.assertEqual(
             redaction.rule_set_id, M4_PATCH_METADATA_SECURITY_V1.redaction_rule_set_id
         )
-        self.assertIsNone(candidate_for(_artifact(), scan, redaction, mismatched))
+        self.assertIsNone(candidate_for(_intent(), _artifact(), scan, redaction, mismatched))
 
     def test_tampered_scan_lineage_becomes_indeterminate(self) -> None:
         scan = scan_metadata(_intent(), _artifact(), M4_PATCH_METADATA_SECURITY_V1)
@@ -115,7 +125,9 @@ class MetadataSecurityPolicyTests(unittest.TestCase):
 
         self.assertEqual(redaction.status, "indeterminate")
         self.assertIsNone(
-            candidate_for(_artifact(), tampered, redaction, M4_PATCH_METADATA_SECURITY_V1)
+            candidate_for(
+                _intent(), _artifact(), tampered, redaction, M4_PATCH_METADATA_SECURITY_V1
+            )
         )
 
     def test_failed_scanner_and_redactor_are_never_candidate_eligible(self) -> None:
@@ -136,6 +148,7 @@ class MetadataSecurityPolicyTests(unittest.TestCase):
         self.assertEqual(failed_redaction.status, "failed")
         self.assertIsNone(
             candidate_for(
+                _intent(),
                 _artifact(),
                 failed_scan,
                 failed_redaction,
@@ -147,6 +160,7 @@ class MetadataSecurityPolicyTests(unittest.TestCase):
             contract_version="m4-patch-artifact-security/v1",
             redaction_id=_DIGEST,
             input_artifact_id=_artifact().artifact_id,
+            secret_scan_id=_DIGEST,
             output_artifact_digest=None,
             rule_set_id=M4_PATCH_METADATA_SECURITY_V1.redaction_rule_set_id,
             status="failed",
@@ -154,6 +168,7 @@ class MetadataSecurityPolicyTests(unittest.TestCase):
         passed_scan = scan_metadata(_intent(), _artifact(), M4_PATCH_METADATA_SECURITY_V1)
         self.assertIsNone(
             candidate_for(
+                _intent(),
                 _artifact(),
                 passed_scan,
                 failed_redaction,
@@ -169,7 +184,47 @@ class MetadataSecurityPolicyTests(unittest.TestCase):
         tampered = replace(redaction, redaction_id="sha256:" + "c" * 64)
 
         self.assertIsNone(
-            candidate_for(_artifact(), scan, tampered, M4_PATCH_METADATA_SECURITY_V1)
+            candidate_for(
+                _intent(), _artifact(), scan, tampered, M4_PATCH_METADATA_SECURITY_V1
+            )
+        )
+
+    def test_unaligned_intent_and_artifact_are_indeterminate(self) -> None:
+        unrelated_artifact = replace(
+            _artifact(), patch_intent_id="sha256:" + "b" * 64
+        )
+
+        scan = scan_metadata(
+            _intent(), unrelated_artifact, M4_PATCH_METADATA_SECURITY_V1
+        )
+
+        self.assertEqual(scan.result, "indeterminate")
+        self.assertEqual(scan.failure_reason, "metadata_projection_invalid")
+
+    def test_self_consistent_forged_facts_cannot_create_candidate(self) -> None:
+        intent = _intent()
+        artifact = _artifact()
+        expected_scan = scan_metadata(intent, artifact, M4_PATCH_METADATA_SECURITY_V1)
+        forged_scan = replace(expected_scan, contract_version="forged/v1")
+        forged_scan = replace(forged_scan, scan_id=scan_id_for(forged_scan))
+        expected_redaction = redact_metadata(
+            intent, artifact, expected_scan, M4_PATCH_METADATA_SECURITY_V1
+        )
+        forged_redaction = replace(
+            expected_redaction, secret_scan_id=forged_scan.scan_id
+        )
+        forged_redaction = replace(
+            forged_redaction, redaction_id=redaction_id_for(forged_redaction)
+        )
+
+        self.assertIsNone(
+            candidate_for(
+                intent,
+                artifact,
+                forged_scan,
+                forged_redaction,
+                M4_PATCH_METADATA_SECURITY_V1,
+            )
         )
 
     def test_profile_is_immutable_and_metadata_only(self) -> None:
