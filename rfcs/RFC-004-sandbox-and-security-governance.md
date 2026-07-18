@@ -402,8 +402,12 @@ references, and image digest rather than a mutable workspace path or runtime
 object. A `not_started` attempt cannot include image, exit-code, output, or
 other unobserved execution facts.
 
-M4 creates a deterministic `PatchIntent` and `PatchArtifact` rather than
-interpreting a `PatchProposal` as write authority. Before a patch is applied,
+M4 creates a deterministic `PreScanPatchMetadataIdentity` rather than
+interpreting a `PatchProposal` as write authority. It scans bounded transient
+metadata before generating PatchIntent or PatchArtifact. A passed scan and
+not-needed redaction may create them; a blocked, failed, or indeterminate
+outcome creates only `PatchSecurityTerminal`, carrying controlled reason and
+security facts without raw rationale or matched text. Before a patch is applied,
 the policy profile must evaluate target paths, diff bounds, sensitive paths,
 artifact identity, and secret-scan status. Each immutable PatchArtifact has at
 most one validation execution attempt; `max_automatic_retries` is `0`.
@@ -413,7 +417,8 @@ a new intent, attempt, fresh decision, and revalidation of artifact and base
 revision.
 
 Secret scanning and redaction use a versioned deterministic local rule set over
-the PatchArtifact, diff, persistable artifacts, PR body, and persistable log
+the pre-scan metadata identity's bounded transient projection, PatchArtifact
+after pass, diff, persistable artifacts, PR body, and persistable log
 summaries. Confirmed secret matches block commit, Draft PR, and raw
 persistence. Scanner or redaction failure must be blocked or require approval
 as selected by policy; it never defaults to allow. A `SecretScanResult` is an

@@ -25,19 +25,19 @@ RFCs/ADRs, or the canonical implementation plan.
 | Field | Value |
 | --- | --- |
 | Milestone | M4 Feature 2: Deterministic Patch Artifact and Security Scanning |
-| State | Phase 3 accepted; awaiting Phase 4 authorization. |
-| Completed through | Phase 3: Metadata-only Assembly Service |
-| Next phase | Phase 4: Acceptance and Boundary Hardening |
-| Implementation authorization | Phase 4 not authorized. |
+| State | Terminal-first architecture amendment pending user acceptance; Phase 4 stopped. |
+| Completed through | Historical Phase 3; re-baselining required. |
+| Next phase | Re-baselined Phase 1: Pre-scan contracts and terminal identity |
+| Implementation authorization | No re-baselined phase authorized. |
 
 ## Phase Index
 
 | Phase | Name | Status | Commit | Completion Record |
 | --- | --- | --- | --- | --- |
-| 1 | Immutable Contract and Canonical Identity | Accepted | `6ccb064`, `f9f5061` | [Phase 1 record](phases/phase-1-immutable-contract-and-canonical-identity.md) |
-| 2 | Registered Metadata Security Facts | Accepted | `27a2685`, `6281867`, `fe476fb`, `0d1ac55`, `6f7bbab`, `2f54dd2` | [Phase 2 record](phases/phase-2-registered-metadata-security-facts.md) |
-| 3 | Metadata-only Assembly Service | Accepted | `0fbb308`, `0cf469b` | [Phase 3 record](phases/phase-3-metadata-only-assembly-service.md) |
-| 4 | Acceptance and Boundary Hardening | Not started | None | None |
+| 1 | Immutable Contract and Canonical Identity | Historical; superseded by terminal-first amendment | `6ccb064`, `f9f5061` | [Phase 1 record](phases/phase-1-immutable-contract-and-canonical-identity.md) |
+| 2 | Registered Metadata Security Facts | Historical; superseded by terminal-first amendment | `27a2685`, `6281867`, `fe476fb`, `0d1ac55`, `6f7bbab`, `2f54dd2` | [Phase 2 record](phases/phase-2-registered-metadata-security-facts.md) |
+| 3 | Metadata-only Assembly Service | Historical; superseded by terminal-first amendment | `0fbb308`, `0cf469b` | [Phase 3 record](phases/phase-3-metadata-only-assembly-service.md) |
+| 4 | Acceptance and Boundary Hardening | Stopped pending amendment | None | None |
 
 ## Change Log
 
@@ -61,3 +61,10 @@ RFCs/ADRs, or the canonical implementation plan.
   passed 8/8; the cumulative suite passed 152 tests; strict OpenSpec
   validation, diff hygiene, and static no-I/O verification passed. Phase 4 is
   not authorized.
+- 2026-07-18: Phase 4 authorized in the assigned isolated environment; the
+  independent-subagent review permission also applies to this phase.
+- 2026-07-18: Phase 4 RED acceptance test exposed that blocked matched metadata
+  remained in PatchIntent. User selected the terminal-first architecture:
+  pre-scan identity and security facts precede all PatchIntent/PatchArtifact
+  construction. OpenSpec/RFC/profile/plan amendment is pending acceptance; no
+  implementation phase is authorized.

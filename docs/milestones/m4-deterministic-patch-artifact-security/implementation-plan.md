@@ -9,6 +9,35 @@ RFC-006, ADR-011, M4 Fixture Environment Registration, and M4 Patch Metadata
 Security Profile. Chat prompts do not redefine phase scope, files, interfaces,
 or acceptance.
 
+## Terminal-first Amendment (Pending User Acceptance)
+
+This amendment supersedes the execution order and interfaces below because the
+previous plan allowed a raw rationale-bearing PatchIntent to exist before
+security scanning. Under the accepted architecture decision, raw rationale and
+matched text must never enter any contract. The historical Phase 1–3 completion
+records remain factual records of prior work, but are not conformant evidence
+for the amended contract and do not authorize further implementation.
+
+After the amended RFC/OpenSpec/profile and this plan are accepted, implementation
+must restart with fresh phase authorization in this order:
+
+1. **Pre-scan contracts and terminal identity** — replace the pre-scan
+   PatchIntent/Artifact lineage with `PreScanPatchMetadataIdentity`, revised
+   scan/redaction references, `PatchSecurityTerminal`, controlled terminal
+   reasons, and canonical identities.
+2. **Transient metadata security facts** — scan/redact only a bounded transient
+   projection anchored by the pre-scan identity; ensure unsafe facts return a
+   terminal with no raw metadata, intent, artifact, or candidate.
+3. **Passed-path assembly** — validate M2/fixture lineage; create PatchIntent,
+   PatchArtifact, and candidate only after passed/not-needed facts.
+4. **Acceptance and boundary hardening** — verify every OpenSpec scenario,
+   terminal secrecy, no side-effect surface, and no authority escape.
+
+Each re-baselined phase requires RED → GREEN → cumulative verification, a
+focused commit, and the mandatory independent-review gate. No historical Phase
+4 implementation may resume until this amendment is accepted and the relevant
+re-baselined phase is explicitly authorized.
+
 ## Goal
 
 Deliver deterministic, immutable, metadata-only patch/security facts from M2

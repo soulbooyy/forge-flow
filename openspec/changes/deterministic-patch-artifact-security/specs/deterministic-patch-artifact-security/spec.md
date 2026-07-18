@@ -4,12 +4,21 @@
 
 ### Requirement: Patch intent and artifact SHALL remain metadata-only facts
 
-The capability SHALL derive an immutable `PatchIntent` from immutable upstream
-lineage and SHALL deterministically construct a metadata-only `PatchArtifact`
+The capability SHALL derive `PreScanPatchMetadataIdentity` from immutable
+upstream lineage, scan/redact bounded transient metadata, and only then derive
+an immutable `PatchIntent` and metadata-only `PatchArtifact` on the passed path
 against the bound repository identity and fixed base revision. A PatchArtifact
 SHALL describe target scope and change lineage only; it SHALL NOT contain a
 diff, source material, patch content, application state, or authorization for
 patch materialization, execution, commit, PR, or persistence.
+
+#### Scenario: Unsafe metadata never becomes an intent or artifact
+
+- **GIVEN** registered pre-scan metadata with a blocked, failed, or
+  indeterminate security outcome
+- **WHEN** the capability records the outcome
+- **THEN** it returns PatchSecurityTerminal without PatchIntent, PatchArtifact,
+  candidate, raw rationale, or matched text
 
 #### Scenario: Metadata construction produces no workspace side effect
 
@@ -25,7 +34,7 @@ patch materialization, execution, commit, PR, or persistence.
 Every Feature 2 fact SHALL use canonical serialization and a digest-derived
 identity, preserving its required upstream lineage. Contracts and errors SHALL
 exclude raw patch, raw diff, raw source, raw command output, credentials,
-environment values, and temporary workspace paths.
+environment values, temporary workspace paths, raw rationale, and matched text.
 
 #### Scenario: Forbidden raw payload is rejected safely
 
@@ -45,7 +54,8 @@ for a PolicyDecisionRecord.
 
 #### Scenario: Input cannot choose a security rule set
 
-- **GIVEN** a PatchIntent, PatchArtifact, Issue-derived value, or agent value
+- **GIVEN** a pre-scan identity, transient metadata input, Issue-derived value,
+  or agent value
   naming a different rule set or budget
 - **WHEN** the capability validates the registered profile lineage
 - **THEN** it returns a bounded validation error
@@ -63,15 +73,17 @@ for a PolicyDecisionRecord.
 
 ### Requirement: Unsafe security outcomes SHALL fail closed
 
-The capability SHALL yield no `RedactedArtifactReferenceCandidate` for scanner
-failure, redaction failure, indeterminate security result, or a blocked secret
-finding. A later PDR consuming any of those results SHALL be `blocked` under
+The capability SHALL yield `PatchSecurityTerminal` and no PatchIntent,
+PatchArtifact, or `RedactedArtifactReferenceCandidate` for scanner failure,
+redaction failure, indeterminate security result, or a blocked secret finding.
+A later PDR consuming any of those results SHALL be `blocked` under
 the registered fixture profile; the capability SHALL NOT convert them to
 approval required.
 
 #### Scenario: Indeterminate scan cannot reach approval or publication
 
-- **GIVEN** a PatchArtifact whose registered scan produces `indeterminate`
+- **GIVEN** a PreScanPatchMetadataIdentity whose registered scan produces
+  `indeterminate`
 - **WHEN** the capability records the security fact
 - **THEN** it produces no candidate reference
 - **AND** it performs no application, persistence, commit, PR, or approval
@@ -79,11 +91,13 @@ approval required.
 
 ### Requirement: Metadata redaction SHALL remain pre-persistence before Feature 3
 
-Feature 2 SHALL NOT generate, render, retain, or persist raw patch material,
-raw diff, or source material. It SHALL scan and redact only bounded metadata;
+Feature 2 SHALL NOT generate, render, retain, or persist raw rationale, raw
+patch material, raw diff, or source material. It SHALL scan and redact only a
+bounded transient metadata projection;
 it SHALL NOT persist a partial redacted object, a path, or a durable reference.
-Only a passed metadata scan and successful metadata redaction MAY produce an
-in-memory candidate for Feature 3 publication.
+Only a passed metadata scan and successful metadata redaction MAY produce
+PatchIntent, PatchArtifact, and an in-memory candidate for Feature 3
+publication.
 
 #### Scenario: Redaction failure leaves no eligible artifact
 

@@ -11,22 +11,36 @@ authorize a later action; Feature 2 constructs metadata only and defers patch
 materialization; Feature 3 owns publication and durable references; and the
 registered profile fail-closes all of those security outcomes as `blocked`.
 
+### Terminal-first Amendment
+
+The initial Phase 4 acceptance probe established that constructing a
+`PatchIntent` before scanning would permit a secret-like `change_description`
+to cross a contract boundary on an unsafe path. The accepted correction is
+terminal-first: a non-persistent `PreScanPatchMetadataIdentity` anchors the
+transient scan/redaction stage; only its passed outcome may construct
+`PatchIntent` and then `PatchArtifact`; every unsafe outcome emits only
+`PatchSecurityTerminal`. This amendment supersedes the prior execution order
+and requires a re-baselined plan and fresh implementation authorization after
+document review.
+
 ## Boundaries
 
 The feature consumes an immutable M2 `PatchProposal`, registered fixture
 repository identity, fixed base revision, and versioned fixture policy profile.
-It derives a `PatchIntent`, constructs a metadata-only `PatchArtifact`, and
-emits security facts scoped to that bounded metadata.
+It first derives a digest-only `PreScanPatchMetadataIdentity` and scans a
+bounded transient metadata projection that is never a contract. Only a passed
+scan and `not_needed` redaction may then derive PatchIntent and PatchArtifact.
 
 ```text
 PatchProposal
-  -> PatchIntent
-  -> PatchArtifact
+  -> transient pre-scan metadata projection
+  -> PreScanPatchMetadataIdentity
   -> SecretScanResult + RedactionFact
-  -> optional RedactedArtifactReferenceCandidate
+  -> passed: PatchIntent -> PatchArtifact -> optional candidate
+  -> blocked/failed/indeterminate: PatchSecurityTerminal
 ```
 
-The candidate is not a persisted artifact, filesystem location, patch payload,
+The candidate and terminal are not persisted artifacts, filesystem locations, patch payloads,
 publication event, or authority. Feature 3 may later consume an eligible
 candidate through its controlled store boundary. A later accepted feature with
 explicit source-access and application authority alone may materialize or apply
@@ -54,9 +68,10 @@ registered profile fixes scanner failure, redaction failure, any indeterminate
 security result, and a blocked finding as `blocked`; none may be represented as
 `requires_human_approval` or yield an artifact-reference candidate.
 
-Feature 2 never creates raw patch material, a diff, or source material. Scanner
-and redactor inputs are bounded contract metadata only; those inputs never
-enter a contract, artifact store, summary, log, PR body, or error payload. A
+Feature 2 never creates raw patch material, a diff, or source material. The
+scanner/redactor input is a bounded transient projection rather than contract
+metadata; raw rationale and matched text never enter a contract, artifact store,
+summary, log, PR body, or error payload. A
 successful candidate proves only that Feature 3 may later evaluate publication.
 A future materialization, write, execution, commit, or PR action needs explicit
 later authority and a new PDR over its current inputs.
@@ -66,10 +81,9 @@ later authority and a new PDR over its current inputs.
 - invalid lineage, unsupported registered profile/rule set, forbidden payload,
   malformed metadata-construction input, or path-bound violation returns a
   bounded validation error and no partial contract;
-- scanner failure, blocked secret finding, or indeterminate security result
-  emits the applicable scan fact, no candidate, and must be consumed as
-  `blocked` by a later fresh PDR;
-- redaction failure emits the applicable redaction fact, no candidate, and must
-  be consumed as `blocked` by a later fresh PDR; and
+- scanner failure, blocked secret finding, indeterminate security result, or
+  redaction failure emits `PatchSecurityTerminal`, no PatchIntent, no
+  PatchArtifact, and no candidate; it must be consumed as `blocked` by a later
+  fresh PDR; and
 - Feature 2 never retries, materializes or applies a patch, writes a workspace,
   persists an artifact, invokes an OCI backend, or invokes GitHub.

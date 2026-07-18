@@ -2,6 +2,10 @@
 
 ## Readiness Gate
 
+- [ ] Accept the terminal-first pre-scan contract amendment before resuming
+  implementation. Existing Phase 1–3 code is superseded by this amendment and
+  cannot be treated as conformant implementation evidence.
+
 - [x] Accept the RFC-002/004/005 scoped amendments that define the Feature 2
   contract, security, and pre-persistence boundary.
 - [x] Complete Grill-Me Report mode and incorporate its scope cuts into this
