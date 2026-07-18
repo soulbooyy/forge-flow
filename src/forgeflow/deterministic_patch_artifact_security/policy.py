@@ -182,11 +182,27 @@ def _redacted_projection(
         findings_by_field.setdefault(finding.field_name, []).append(finding.rule_id)
     redacted: list[tuple[str, str]] = []
     for field_name, value in projection:
-        replacement = value
+        replacements: list[tuple[int, int, str]] = []
         for rule_id in findings_by_field.get(field_name, []):
-            replacement = rule_patterns[rule_id].sub(f"[REDACTED:{rule_id}]", replacement)
-        redacted.append((field_name, replacement))
+            for match in rule_patterns[rule_id].finditer(value):
+                start, end = match.span()
+                if any(start < prior_end and end > prior_start for prior_start, prior_end, _ in replacements):
+                    continue
+                replacements.append((start, end, rule_id))
+        replacements.sort(key=lambda item: item[0])
+        redacted.append((field_name, _replace_spans(value, replacements)))
     return tuple(redacted)
+
+
+def _replace_spans(value: str, replacements: list[tuple[int, int, str]]) -> str:
+    parts: list[str] = []
+    cursor = 0
+    for start, end, rule_id in replacements:
+        parts.append(value[cursor:start])
+        parts.append(f"[REDACTED:{rule_id}]")
+        cursor = end
+    parts.append(value[cursor:])
+    return "".join(parts)
 
 
 def _scan_terminal(

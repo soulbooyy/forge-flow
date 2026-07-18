@@ -10,6 +10,7 @@ from forgeflow.deterministic_patch_artifact_security.canonical import (
     intent_id_for,
     redaction_id_for,
     scan_id_for,
+    sha256_hex,
 )
 from forgeflow.deterministic_patch_artifact_security.models import (
     PatchArtifact,
@@ -218,6 +219,30 @@ class MetadataSecurityPolicyTests(unittest.TestCase):
 
         self.assertEqual(scan.result, "indeterminate")
         self.assertEqual(scan.failure_reason, "metadata_projection_invalid")
+
+    def test_overlapping_matches_redact_only_the_earlier_profile_rule(self) -> None:
+        description = "token=ghp_abcdefghijklmnopqrstuvwx"
+        intent = _intent(description)
+        artifact = _artifact(intent)
+        scan = scan_metadata(intent, artifact, M4_PATCH_METADATA_SECURITY_V1)
+        redaction = redact_metadata(
+            intent, artifact, scan, M4_PATCH_METADATA_SECURITY_V1
+        )
+
+        self.assertEqual(
+            redaction.output_artifact_digest,
+            "sha256:"
+            + sha256_hex(
+                (
+                    ("PatchArtifact.target_scope", "src/calculator.py"),
+                    (
+                        "PatchIntent.change_description",
+                        "token=[REDACTED:github-token-prefix]",
+                    ),
+                    ("PatchIntent.target_scope", "src/calculator.py"),
+                )
+            ),
+        )
 
     def test_self_consistent_forged_facts_cannot_create_candidate(self) -> None:
         intent = _intent()
