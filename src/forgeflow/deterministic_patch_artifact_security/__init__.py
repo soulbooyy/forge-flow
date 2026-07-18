@@ -9,13 +9,21 @@ from .models import (
     ScanFinding,
     SecretScanResult,
 )
+from .service import (
+    PatchSecurityEnvelope,
+    PatchSecurityFacts,
+    build_patch_security_facts,
+)
 
 __all__ = [
     "DeterministicPatchArtifactSecurityValidationError",
     "PatchArtifact",
+    "PatchSecurityEnvelope",
+    "PatchSecurityFacts",
     "PatchIntent",
     "RedactedArtifactReferenceCandidate",
     "RedactionFact",
     "ScanFinding",
     "SecretScanResult",
+    "build_patch_security_facts",
 ]
