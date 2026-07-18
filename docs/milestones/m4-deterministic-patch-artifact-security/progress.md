@@ -25,10 +25,10 @@ RFCs/ADRs, or the canonical implementation plan.
 | Field | Value |
 | --- | --- |
 | Milestone | M4 Feature 2: Deterministic Patch Artifact and Security Scanning |
-| State | Re-baselined Phase 2 accepted after independent review. |
-| Completed through | Re-baselined Phase 2: Transient metadata security facts. |
-| Next phase | Re-baselined Phase 3: Passed-path assembly |
-| Implementation authorization | Phase 3 is not authorized. |
+| State | Feature 2 implementation complete; final documentation review pending. |
+| Completed through | Re-baselined Phase 4: Acceptance and boundary hardening. |
+| Next phase | None |
+| Implementation authorization | Complete |
 
 ## Phase Index
 
@@ -37,9 +37,11 @@ RFCs/ADRs, or the canonical implementation plan.
 | 1 | Immutable Contract and Canonical Identity | Historical; superseded by terminal-first amendment | `6ccb064`, `f9f5061` | [Phase 1 record](phases/phase-1-immutable-contract-and-canonical-identity.md) |
 | 2 | Registered Metadata Security Facts | Historical; superseded by terminal-first amendment | `27a2685`, `6281867`, `fe476fb`, `0d1ac55`, `6f7bbab`, `2f54dd2` | [Phase 2 record](phases/phase-2-registered-metadata-security-facts.md) |
 | 3 | Metadata-only Assembly Service | Historical; superseded by terminal-first amendment | `0fbb308`, `0cf469b` | [Phase 3 record](phases/phase-3-metadata-only-assembly-service.md) |
-| 4 | Acceptance and Boundary Hardening | Stopped pending amendment | None | None |
+| 4 | Acceptance and Boundary Hardening | Historical; superseded by terminal-first amendment | None | None |
 | 1R | Pre-scan contracts and terminal identity | Accepted after independent review | This phase commit | [Phase 1R record](phases/phase-1-pre-scan-contracts-and-terminal-identity.md) |
 | 2R | Transient metadata security facts | Accepted after independent review | This phase commit | [Phase 2R record](phases/phase-2-transient-metadata-security-facts.md) |
+| 3R | Passed-path assembly | Accepted after independent review | `0a62369` | Service and terminal-first tests |
+| 4R | Acceptance and boundary hardening | Accepted after independent review | `43b7acc` | Acceptance tests and full verification |
 
 ## Change Log
 
