@@ -76,6 +76,7 @@ class MetadataSecurityPolicyTests(unittest.TestCase):
     def test_each_registered_secret_rule_blocks_without_candidate(self) -> None:
         cases = (
             ("private-key-marker", "-----BEGIN PRIVATE KEY-----"),
+            ("private-key-marker", "-----BEGIN RSA  PRIVATE KEY-----"),
             ("github-token-prefix", "ghp_abcdefghijklmnopqrstuvwx"),
             ("credential-assignment", "token=abcdefgh"),
             ("jwt-like-token", "eyJabcdefgh.abcdefgh.abcdefgh"),

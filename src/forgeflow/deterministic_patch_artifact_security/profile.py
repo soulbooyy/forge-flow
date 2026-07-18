@@ -42,7 +42,7 @@ M4_PATCH_METADATA_SECURITY_V1 = MetadataSecurityProfile(
     rule_definitions=(
         MetadataSecurityRule(
             rule_id="private-key-marker",
-            pattern=r"-----BEGIN (?:[A-Z0-9]+ )*PRIVATE KEY-----",
+            pattern=r"-----BEGIN [A-Z0-9 ]*PRIVATE KEY-----",
         ),
         MetadataSecurityRule(
             rule_id="github-token-prefix",
