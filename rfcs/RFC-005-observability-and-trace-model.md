@@ -106,6 +106,17 @@ security processing leaves no candidate or partial object eligible for later
 publication, summary reference, patch materialization, commit creation, or
 Draft PR packaging. Actual patch materialization remains outside Feature 2.
 
+### M4 Feature 3 Metadata-only Publication Clarification
+
+Feature 3 publishes immutable governed **metadata artifacts** and durable
+references only. Its publication input is an eligible metadata-artifact
+candidate plus bounded lineage and security facts; it does not generate, read,
+retain, persist, or publish patch content, a diff, source material, or a patch
+payload. A durable artifact reference proves governed metadata publication, not
+patch material availability or application authority. Patch-content
+materialization requires a separate future capability with explicit
+source-access authority, mutation boundary, and a fresh policy gate.
+
 ### M4 Resource-Budget Audit Boundary
 
 The versioned ForgeFlow policy profile is the only source of M4 resource
