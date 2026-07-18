@@ -6,11 +6,7 @@ from dataclasses import replace
 from unittest.mock import patch
 import unittest
 
-from forgeflow.deterministic_patch_artifact_security.canonical import (
-    artifact_id_for,
-    intent_id_for,
-    scan_id_for,
-)
+from forgeflow.deterministic_patch_artifact_security.canonical import scan_id_for
 from forgeflow.deterministic_patch_artifact_security.models import (
     DeterministicPatchArtifactSecurityValidationError,
     SecretScanResult,
@@ -132,6 +128,44 @@ class PatchSecurityServiceTests(unittest.TestCase):
 
         self.assertIsInstance(result, DeterministicPatchArtifactSecurityValidationError)
         self.assertEqual(result.summary, "metadata security input is invalid")
+
+    def test_unregistered_repository_or_base_revision_returns_safe_error(self) -> None:
+        for repository_identity, base_revision in (
+            ("fixture-repository-other", _BASE_REVISION),
+            (_REPOSITORY_ID, "0" * 40),
+        ):
+            with self.subTest(repository_identity=repository_identity):
+                result = build_patch_security_facts(
+                    _proposal(), repository_identity, base_revision
+                )
+                self.assertIsInstance(
+                    result, DeterministicPatchArtifactSecurityValidationError
+                )
+
+    def test_unregistered_m2_policy_or_missing_provenance_is_rejected(self) -> None:
+        proposal = _proposal()
+        altered_policy = proposal.policy_decision
+        object.__setattr__(altered_policy, "evaluator_id", "unregistered-evaluator")
+        object.__setattr__(
+            altered_policy,
+            "decision_id",
+            policy_decision_id_for(altered_policy),
+        )
+        altered = replace(proposal, policy_decision=altered_policy)
+        altered = replace(altered, contract_id=proposal_id_for(altered))
+
+        result = build_patch_security_facts(altered, _REPOSITORY_ID, _BASE_REVISION)
+        self.assertIsInstance(result, DeterministicPatchArtifactSecurityValidationError)
+
+        missing_provenance = replace(_proposal(), limitation_codes=())
+        missing_provenance = replace(
+            missing_provenance,
+            contract_id=proposal_id_for(missing_provenance),
+        )
+        result = build_patch_security_facts(
+            missing_provenance, _REPOSITORY_ID, _BASE_REVISION
+        )
+        self.assertIsInstance(result, DeterministicPatchArtifactSecurityValidationError)
 
     def test_scanner_failed_fact_is_fail_closed(self) -> None:
         proposal = _proposal()

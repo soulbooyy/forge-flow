@@ -3,8 +3,6 @@
 from __future__ import annotations
 
 from dataclasses import replace
-import re
-import unicodedata
 from typing import TypeAlias
 
 from forgeflow.patch_proposal.canonical import (
@@ -13,6 +11,7 @@ from forgeflow.patch_proposal.canonical import (
     proposal_id_for,
 )
 from forgeflow.patch_proposal.models import PatchProposal
+from forgeflow.patch_proposal.profile import M2_CONSERVATIVE_V1
 
 from .canonical import (
     artifact_id_for,
@@ -43,7 +42,8 @@ PatchSecurityEnvelope: TypeAlias = (
     PatchSecurityFacts | DeterministicPatchArtifactSecurityValidationError
 )
 
-_BASE_REVISION = re.compile(r"^[0-9a-f]{40}$")
+_REGISTERED_REPOSITORY_IDENTITY = "fixture-repository-1300511729"
+_REGISTERED_BASE_REVISION = "97c8220cd713ebf61124ac2de2f3eadc6e4dc222"
 
 
 def build_patch_security_facts(
@@ -80,18 +80,18 @@ def _valid_inputs(
         == policy_decision_id_for(proposal.policy_decision)
         and proposal.policy_decision.evaluated_candidate_digest
         == candidate_digest_for(proposal.candidate_changes)
-        and _safe_repository_identity(repository_identity)
-        and isinstance(base_revision, str)
-        and bool(_BASE_REVISION.fullmatch(base_revision))
-    )
-
-
-def _safe_repository_identity(value: object) -> bool:
-    return (
-        isinstance(value, str)
-        and bool(value)
-        and value == value.strip()
-        and all(not unicodedata.category(character).startswith("C") for character in value)
+        and proposal.proposal_source_id == M2_CONSERVATIVE_V1.proposal_source_id
+        and proposal.schema_version == "patch-proposal/v1"
+        and proposal.result_type == "patch_proposal"
+        and proposal.policy_decision.policy_profile_id
+        == M2_CONSERVATIVE_V1.policy_profile_id
+        and proposal.policy_decision.policy_version == M2_CONSERVATIVE_V1.policy_version
+        and proposal.policy_decision.evaluator_id == M2_CONSERVATIVE_V1.evaluator_id
+        and proposal.policy_decision.revalidation_required is True
+        and proposal.limitation_codes
+        == tuple(sorted(M2_CONSERVATIVE_V1.allowed_limitation_codes))
+        and repository_identity == _REGISTERED_REPOSITORY_IDENTITY
+        and base_revision == _REGISTERED_BASE_REVISION
     )
 
 
