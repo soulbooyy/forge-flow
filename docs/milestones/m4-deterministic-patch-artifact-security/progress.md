@@ -25,10 +25,10 @@ RFCs/ADRs, or the canonical implementation plan.
 | Field | Value |
 | --- | --- |
 | Milestone | M4 Feature 2: Deterministic Patch Artifact and Security Scanning |
-| State | Terminal-first architecture amendment pending user acceptance; Phase 4 stopped. |
-| Completed through | Historical Phase 3; re-baselining required. |
-| Next phase | Re-baselined Phase 1: Pre-scan contracts and terminal identity |
-| Implementation authorization | No re-baselined phase authorized. |
+| State | Re-baselined Phase 1 accepted after independent review. |
+| Completed through | Re-baselined Phase 1: Pre-scan contracts and terminal identity. |
+| Next phase | Re-baselined Phase 2: Transient metadata security facts |
+| Implementation authorization | Phase 2 is not authorized. |
 
 ## Phase Index
 
@@ -38,6 +38,7 @@ RFCs/ADRs, or the canonical implementation plan.
 | 2 | Registered Metadata Security Facts | Historical; superseded by terminal-first amendment | `27a2685`, `6281867`, `fe476fb`, `0d1ac55`, `6f7bbab`, `2f54dd2` | [Phase 2 record](phases/phase-2-registered-metadata-security-facts.md) |
 | 3 | Metadata-only Assembly Service | Historical; superseded by terminal-first amendment | `0fbb308`, `0cf469b` | [Phase 3 record](phases/phase-3-metadata-only-assembly-service.md) |
 | 4 | Acceptance and Boundary Hardening | Stopped pending amendment | None | None |
+| 1R | Pre-scan contracts and terminal identity | Accepted after independent review | This phase commit | [Phase 1R record](phases/phase-1-pre-scan-contracts-and-terminal-identity.md) |
 
 ## Change Log
 
@@ -68,3 +69,13 @@ RFCs/ADRs, or the canonical implementation plan.
   pre-scan identity and security facts precede all PatchIntent/PatchArtifact
   construction. OpenSpec/RFC/profile/plan amendment is pending acceptance; no
   implementation phase is authorized.
+- 2026-07-18: User accepted the terminal-first RFC/OpenSpec/profile/canonical
+  plan amendment and authorized re-baselined Phase 1. Phase 1 replaces the
+  pre-scan contract lineage with `PreScanPatchMetadataIdentity` and introduces
+  `PatchSecurityTerminal`; no Phase 2 policy or Phase 3 service behavior is
+  resumed during this phase.
+- 2026-07-18: Accepted re-baselined Phase 1 after independent review. The
+  targeted contract/canonical suite passed 9/9; strict OpenSpec validation,
+  diff hygiene, and static no-I/O verification passed. The historical
+  artifact-first policy/service failures remain owned by the unauthorized
+  re-baselined Phase 2/3 work.

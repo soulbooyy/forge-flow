@@ -114,8 +114,8 @@ reconciliation; repository, Issue, user, agent, or artifact inputs cannot
 override it.
 
 ```yaml
-status: Draft # Draft | Accepted
-readiness_blocker: Terminal-first amendment acceptance and re-baselined plan acceptance.
+status: Accepted # Draft | Accepted
+readiness_blocker: none
 ```
 
 ## References

@@ -44,13 +44,34 @@ class ScanFinding:
 
 
 @dataclass(frozen=True, slots=True)
+class PreScanPatchMetadataIdentity:
+    """Non-persistent, payload-free identity for transient security processing."""
+
+    contract_version: str
+    pre_scan_metadata_id: str
+    repository_identity: str
+    base_revision: str
+    target_scope: tuple[str, ...]
+    lineage_digest: str
+
+    def __post_init__(self) -> None:
+        _require_text("contract_version", self.contract_version)
+        _require_digest("pre_scan_metadata_id", self.pre_scan_metadata_id)
+        _require_text("repository_identity", self.repository_identity)
+        _require_commit_sha("base_revision", self.base_revision)
+        _require_target_scope(self.target_scope)
+        _require_digest("lineage_digest", self.lineage_digest)
+
+
+@dataclass(frozen=True, slots=True)
 class PatchIntent:
     contract_version: str
     repository_identity: str
     base_revision: str
     intent_id: str
+    pre_scan_metadata_id: str
     target_scope: tuple[str, ...]
-    change_description: str
+    scanned_metadata_digest: str
     lineage_digest: str
 
     def __post_init__(self) -> None:
@@ -58,10 +79,9 @@ class PatchIntent:
         _require_text("repository_identity", self.repository_identity)
         _require_commit_sha("base_revision", self.base_revision)
         _require_digest("intent_id", self.intent_id)
+        _require_digest("pre_scan_metadata_id", self.pre_scan_metadata_id)
         _require_target_scope(self.target_scope)
-        _require_metadata_text(
-            "change_description", self.change_description, _MAX_CHANGE_DESCRIPTION_CHARS
-        )
+        _require_digest("scanned_metadata_digest", self.scanned_metadata_digest)
         _require_digest("lineage_digest", self.lineage_digest)
 
 
@@ -91,7 +111,7 @@ class PatchArtifact:
 class SecretScanResult:
     contract_version: str
     scan_id: str
-    artifact_id: str
+    pre_scan_metadata_id: str
     rule_set_id: str
     scanner_version: str
     result: ScanResult
@@ -101,7 +121,7 @@ class SecretScanResult:
     def __post_init__(self) -> None:
         _require_text("contract_version", self.contract_version)
         _require_digest("scan_id", self.scan_id)
-        _require_digest("artifact_id", self.artifact_id)
+        _require_digest("pre_scan_metadata_id", self.pre_scan_metadata_id)
         _require_text("rule_set_id", self.rule_set_id)
         _require_text("scanner_version", self.scanner_version)
         if self.result not in ("passed", "blocked", "failed", "indeterminate"):
@@ -124,24 +144,103 @@ class SecretScanResult:
 class RedactionFact:
     contract_version: str
     redaction_id: str
-    input_artifact_id: str
+    input_pre_scan_metadata_id: str
     secret_scan_id: str
-    output_artifact_digest: str | None
+    output_metadata_digest: str | None
     rule_set_id: str
     status: RedactionStatus
 
     def __post_init__(self) -> None:
         _require_text("contract_version", self.contract_version)
         _require_digest("redaction_id", self.redaction_id)
-        _require_digest("input_artifact_id", self.input_artifact_id)
+        _require_digest("input_pre_scan_metadata_id", self.input_pre_scan_metadata_id)
         _require_digest("secret_scan_id", self.secret_scan_id)
         _require_text("rule_set_id", self.rule_set_id)
         if self.status not in ("not_needed", "redacted", "failed", "indeterminate"):
             raise ValueError("status must be a controlled redaction status")
         if self.status in ("not_needed", "redacted"):
-            _require_digest("output_artifact_digest", self.output_artifact_digest)
-        elif self.output_artifact_digest is not None:
+            _require_digest("output_metadata_digest", self.output_metadata_digest)
+        elif self.output_metadata_digest is not None:
             raise ValueError("failed or indeterminate redaction must not expose an output digest")
+
+
+TerminalStatus: TypeAlias = Literal["blocked", "failed", "indeterminate"]
+TerminalReason: TypeAlias = Literal[
+    "security_rule_blocked",
+    "scanner_operation_failed",
+    "redaction_operation_failed",
+    "metadata_projection_invalid",
+    "security_profile_mismatch",
+]
+_TERMINAL_REASONS = {
+    "blocked": ("security_rule_blocked",),
+    "failed": ("scanner_operation_failed", "redaction_operation_failed"),
+    "indeterminate": ("metadata_projection_invalid", "security_profile_mismatch"),
+}
+
+
+@dataclass(frozen=True, slots=True)
+class PatchSecurityTerminal:
+    """Payload-free unsafe terminal; it grants no authority of any kind."""
+
+    contract_version: str
+    terminal_id: str
+    pre_scan_metadata_id: str
+    lineage_digest: str
+    secret_scan_result: SecretScanResult
+    redaction_fact: RedactionFact
+    terminal_status: TerminalStatus
+    terminal_reason: TerminalReason
+
+    def __post_init__(self) -> None:
+        _require_text("contract_version", self.contract_version)
+        _require_digest("terminal_id", self.terminal_id)
+        _require_digest("pre_scan_metadata_id", self.pre_scan_metadata_id)
+        _require_digest("lineage_digest", self.lineage_digest)
+        if not isinstance(self.secret_scan_result, SecretScanResult):
+            raise ValueError("secret_scan_result must be a scoped security fact")
+        if not isinstance(self.redaction_fact, RedactionFact):
+            raise ValueError("redaction_fact must be a scoped security fact")
+        if self.secret_scan_result.pre_scan_metadata_id != self.pre_scan_metadata_id:
+            raise ValueError("secret_scan_result must bind the terminal pre-scan identity")
+        if self.redaction_fact.input_pre_scan_metadata_id != self.pre_scan_metadata_id:
+            raise ValueError("redaction_fact must bind the terminal pre-scan identity")
+        if self.redaction_fact.secret_scan_id != self.secret_scan_result.scan_id:
+            raise ValueError("redaction_fact must bind the terminal scan")
+        if (
+            self.redaction_fact.status == "not_needed"
+            and self.secret_scan_result.result != "passed"
+        ):
+            raise ValueError("not-needed redaction requires a passed scan")
+        if self.terminal_status not in _TERMINAL_REASONS:
+            raise ValueError("terminal_status must be an unsafe security status")
+        if self.terminal_reason not in _TERMINAL_REASONS[self.terminal_status]:
+            raise ValueError("terminal_reason must match terminal_status")
+        if (
+            self.terminal_status == "blocked"
+            and self.secret_scan_result.result != "blocked"
+        ):
+            raise ValueError("blocked terminal must bind a blocked scan")
+        if (
+            self.terminal_reason == "scanner_operation_failed"
+            and (
+                self.secret_scan_result.result != "failed"
+                or self.secret_scan_result.failure_reason != "scanner_operation_failed"
+            )
+        ):
+            raise ValueError("scanner failure terminal must bind a failed scan")
+        if (
+            self.terminal_reason == "redaction_operation_failed"
+            and self.redaction_fact.status != "failed"
+        ):
+            raise ValueError("redaction failure terminal must bind failed redaction")
+        if self.terminal_status == "indeterminate":
+            scan_proves_reason = (
+                self.secret_scan_result.result == "indeterminate"
+                and self.secret_scan_result.failure_reason == self.terminal_reason
+            )
+            if not scan_proves_reason and self.redaction_fact.status != "indeterminate":
+                raise ValueError("indeterminate terminal must bind an indeterminate security fact")
 
 
 @dataclass(frozen=True, slots=True)
@@ -149,6 +248,7 @@ class RedactedArtifactReferenceCandidate:
     contract_version: str
     candidate_id: str
     patch_artifact_id: str
+    pre_scan_metadata_id: str
     secret_scan_id: str
     redaction_id: str
     redacted_metadata_digest: str
@@ -162,6 +262,7 @@ class RedactedArtifactReferenceCandidate:
         _require_text("contract_version", self.contract_version)
         _require_digest("candidate_id", self.candidate_id)
         _require_digest("patch_artifact_id", self.patch_artifact_id)
+        _require_digest("pre_scan_metadata_id", self.pre_scan_metadata_id)
         _require_digest("secret_scan_id", self.secret_scan_id)
         _require_digest("redaction_id", self.redaction_id)
         _require_digest("redacted_metadata_digest", self.redacted_metadata_digest)

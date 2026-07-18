@@ -9,7 +9,7 @@ RFC-006, ADR-011, M4 Fixture Environment Registration, and M4 Patch Metadata
 Security Profile. Chat prompts do not redefine phase scope, files, interfaces,
 or acceptance.
 
-## Terminal-first Amendment (Pending User Acceptance)
+## Terminal-first Amendment (Accepted)
 
 This amendment supersedes the execution order and interfaces below because the
 previous plan allowed a raw rationale-bearing PatchIntent to exist before
@@ -83,15 +83,17 @@ persistence, or authorization capability.
 - Create `src/forgeflow/deterministic_patch_artifact_security/{__init__,models,canonical}.py` — frozen contracts and deterministic IDs.
 - Create `tests/deterministic_patch_artifact_security/{__init__,test_contracts,test_canonical}.py` — contract and canonicalization verification.
 
-**Interfaces:** `PatchIntent`, `PatchArtifact`, `SecretScanResult`,
-`RedactionFact`, `RedactedArtifactReferenceCandidate`, validation error envelope,
-and digest helpers named in the AI draft.
+**Interfaces:** `PreScanPatchMetadataIdentity`, `PatchIntent` (passed-path
+only), `PatchArtifact`, `SecretScanResult` and `RedactionFact` anchored to the
+pre-scan identity, `PatchSecurityTerminal`,
+`RedactedArtifactReferenceCandidate`, validation error envelope, and canonical
+digest helpers.
 
-- [ ] Write targeted failing contract/canonical tests and record RED results.
-- [ ] Implement the minimum frozen models and canonical SHA-256 identity helpers; run targeted GREEN tests.
-- [ ] Refactor only inside Phase 1; run the cumulative implemented suite.
-- [ ] Run `git diff --check` and inspect `git status --short`.
-- [ ] Create one focused commit, Phase 1 Completion Record, and progress update.
+- [x] Write targeted failing contract/canonical tests and record RED results.
+- [x] Implement the minimum frozen models and canonical SHA-256 identity helpers; run targeted GREEN tests.
+- [x] Refactor only inside Phase 1; run the cumulative implemented suite.
+- [x] Run `git diff --check` and inspect `git status --short`.
+- [x] Create one focused commit, Phase 1 Completion Record, and progress update.
 
 **Acceptance:** Contracts are payload-free, identity-stable, metadata-only, and
 reject forbidden raw data without copying it; an approved independent review

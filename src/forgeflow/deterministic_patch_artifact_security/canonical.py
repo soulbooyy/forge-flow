@@ -11,6 +11,8 @@ from .models import (
     DeterministicPatchArtifactSecurityValidationError,
     PatchArtifact,
     PatchIntent,
+    PatchSecurityTerminal,
+    PreScanPatchMetadataIdentity,
     RedactedArtifactReferenceCandidate,
     RedactionFact,
     SecretScanResult,
@@ -36,6 +38,10 @@ def intent_id_for(value: PatchIntent) -> str:
     return f"sha256:{sha256_hex(value, omit_fields=frozenset({'intent_id'}))}"
 
 
+def pre_scan_metadata_id_for(value: PreScanPatchMetadataIdentity) -> str:
+    return f"sha256:{sha256_hex(value, omit_fields=frozenset({'pre_scan_metadata_id'}))}"
+
+
 def artifact_id_for(value: PatchArtifact) -> str:
     return f"sha256:{sha256_hex(value, omit_fields=frozenset({'artifact_id'}))}"
 
@@ -46,6 +52,10 @@ def scan_id_for(value: SecretScanResult) -> str:
 
 def redaction_id_for(value: RedactionFact) -> str:
     return f"sha256:{sha256_hex(value, omit_fields=frozenset({'redaction_id'}))}"
+
+
+def terminal_id_for(value: PatchSecurityTerminal) -> str:
+    return f"sha256:{sha256_hex(value, omit_fields=frozenset({'terminal_id'}))}"
 
 
 def candidate_id_for(value: RedactedArtifactReferenceCandidate) -> str:

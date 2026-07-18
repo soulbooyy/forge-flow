@@ -35,9 +35,8 @@ M4_PATCH_METADATA_SECURITY_V1 = MetadataSecurityProfile(
     scanner_version="deterministic-metadata-scanner-v1",
     redaction_rule_set_id="m4-patch-metadata-redaction-v1",
     allowed_field_names=(
-        "PatchArtifact.target_scope",
-        "PatchIntent.change_description",
-        "PatchIntent.target_scope",
+        "PreScanMetadataProjection.change_description",
+        "PreScanMetadataProjection.target_scope",
     ),
     rule_definitions=(
         MetadataSecurityRule(
