@@ -629,7 +629,8 @@ application state.
 authorization. A scan result identifies its scan ID, scoped artifact ID,
 rule-set ID, scanner version, result, bounded findings summary, and failure
 reason when applicable. A redaction fact identifies its redaction ID, input
-artifact ID, output artifact digest, rule-set ID, and status. Every contract
+artifact ID, exact consumed SecretScanResult ID, output artifact digest,
+rule-set ID, and status. Every contract
 identity is derived through canonical serialization and digest; timestamps and
 random or agent-generated identifiers must not be the sole identity fact.
 

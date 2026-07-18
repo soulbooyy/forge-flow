@@ -7,6 +7,8 @@ from typing import Literal, TypeAlias
 import re
 import unicodedata
 
+from .profile import M4_PATCH_METADATA_SECURITY_V1
+
 
 ScanResult: TypeAlias = Literal["passed", "blocked", "failed", "indeterminate"]
 RedactionStatus: TypeAlias = Literal["not_needed", "redacted", "failed", "indeterminate"]
@@ -17,17 +19,6 @@ _FORBIDDEN_SCOPE_SEGMENTS = frozenset(("", ".", ".."))
 _MAX_TARGET_SCOPE_ENTRIES = 10
 _MAX_TARGET_SCOPE_PATH_CHARS = 512
 _MAX_CHANGE_DESCRIPTION_CHARS = 1_000
-_ALLOWED_FINDING_RULE_IDS = (
-    "private-key-marker",
-    "github-token-prefix",
-    "credential-assignment",
-    "jwt-like-token",
-)
-_ALLOWED_FINDING_FIELD_NAMES = (
-    "PatchArtifact.target_scope",
-    "PatchIntent.change_description",
-    "PatchIntent.target_scope",
-)
 _SAFE_FAILURE_REASONS = {
     "failed": ("scanner_operation_failed",),
     "indeterminate": ("metadata_projection_invalid", "security_profile_mismatch"),
@@ -46,9 +37,9 @@ class ScanFinding:
     field_name: str
 
     def __post_init__(self) -> None:
-        if self.rule_id not in _ALLOWED_FINDING_RULE_IDS:
+        if self.rule_id not in M4_PATCH_METADATA_SECURITY_V1.ordered_rule_ids:
             raise ValueError("rule_id must be registered")
-        if self.field_name not in _ALLOWED_FINDING_FIELD_NAMES:
+        if self.field_name not in M4_PATCH_METADATA_SECURITY_V1.allowed_field_names:
             raise ValueError("field_name must be allowlisted")
 
 
@@ -249,7 +240,10 @@ def _require_target_scope(value: object) -> None:
 def _require_sorted_unique_findings(value: object) -> None:
     if not isinstance(value, tuple) or any(not isinstance(item, ScanFinding) for item in value):
         raise ValueError("findings_summary must be a tuple of controlled findings")
-    rule_rank = {rule_id: index for index, rule_id in enumerate(_ALLOWED_FINDING_RULE_IDS)}
+    rule_rank = {
+        rule_id: index
+        for index, rule_id in enumerate(M4_PATCH_METADATA_SECURITY_V1.ordered_rule_ids)
+    }
     if value != tuple(
         sorted(set(value), key=lambda item: (rule_rank[item.rule_id], item.field_name))
     ):
