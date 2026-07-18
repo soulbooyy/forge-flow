@@ -25,17 +25,17 @@ RFCs/ADRs, or the canonical implementation plan.
 | Field | Value |
 | --- | --- |
 | Milestone | M4 Feature 2: Deterministic Patch Artifact and Security Scanning |
-| State | Phase 1 accepted; awaiting Phase 2 authorization. |
-| Completed through | Phase 1: Immutable Contract and Canonical Identity |
-| Next phase | Phase 2: Registered Metadata Security Facts |
-| Implementation authorization | Phase 2 not authorized. |
+| State | Phase 2 accepted; awaiting Phase 3 authorization. |
+| Completed through | Phase 2: Registered Metadata Security Facts |
+| Next phase | Phase 3: Metadata-only Assembly Service |
+| Implementation authorization | Phase 3 not authorized. |
 
 ## Phase Index
 
 | Phase | Name | Status | Commit | Completion Record |
 | --- | --- | --- | --- | --- |
 | 1 | Immutable Contract and Canonical Identity | Accepted | `6ccb064`, `f9f5061` | [Phase 1 record](phases/phase-1-immutable-contract-and-canonical-identity.md) |
-| 2 | Registered Metadata Security Facts | Not started | None | None |
+| 2 | Registered Metadata Security Facts | Accepted | `27a2685`, `6281867`, `fe476fb`, `0d1ac55`, `6f7bbab`, `2f54dd2` | [Phase 2 record](phases/phase-2-registered-metadata-security-facts.md) |
 | 3 | Metadata-only Assembly Service | Not started | None | None |
 | 4 | Acceptance and Boundary Hardening | Not started | None | None |
 
@@ -50,3 +50,8 @@ RFCs/ADRs, or the canonical implementation plan.
   rounds found and verified contract-security corrections; targeted tests passed
   10/10, the cumulative suite passed 133 tests, strict OpenSpec validation and
   static no-I/O verification passed. Phase 2 remains unauthorized.
+- 2026-07-18: Phase 2 authorized in the assigned isolated environment.
+- 2026-07-18: Accepted Phase 2 after independent review. Targeted policy tests
+  passed 11/11; the cumulative suite passed 144 tests; strict OpenSpec
+  validation, diff hygiene, and static no-I/O verification passed. Phase 3 is
+  not authorized.
