@@ -10,6 +10,7 @@ def _id(value: object, field: str) -> str:
 
 
 def request_id_for(value: object) -> str: return _id(value, "request_id")
+def policy_decision_id_for(value: object) -> str: return _id(value, "policy_decision_id")
 def terminal_id_for(value: object) -> str: return _id(value, "terminal_id")
 def idempotency_record_id_for(value: object) -> str: return _id(value, "record_id")
 def pr_result_id_for(value: object) -> str: return _id(value, "result_id")

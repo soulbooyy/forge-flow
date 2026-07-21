@@ -8,3 +8,4 @@ adapter. It is not yet authorized for implementation or GitHub interaction.
 - [Fixture registration](../../fixtures/m4-fixture-environment-registration.md)
 - [Progress](progress.md)
 - [Phase 1 completion record](phases/phase-1-immutable-mutation-contracts-and-idempotency.md)
+- [Phase 2 completion record](phases/phase-2-eligibility-and-redacted-body-assembly.md)

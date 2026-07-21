@@ -4,9 +4,9 @@
 
 | Field | Value |
 | --- | --- |
-| State | Phase 1 accepted; Phase 2 not yet authorized. |
-| Next phase | Explicit Feature 4 Phase 2 authorization. |
-| Implementation authorization | Granted for Phase 1 only. |
+| State | Phase 2 accepted; Phase 3 not yet authorized. |
+| Next phase | Explicit Feature 4 Phase 3 authorization. |
+| Implementation authorization | Granted through Phase 2. |
 | GitHub mutation authorization | Not granted. |
 
 ## Boundary
@@ -20,3 +20,4 @@ may call GitHub, provision credentials, create a branch, commit, or Draft PR.
 | Phase | Name | Status | Completion Record |
 | --- | --- | --- | --- |
 | 1 | Immutable mutation contracts and idempotency | Accepted | [Phase 1 record](phases/phase-1-immutable-mutation-contracts-and-idempotency.md) |
+| 2 | Eligibility and redacted body assembly | Accepted | [Phase 2 record](phases/phase-2-eligibility-and-redacted-body-assembly.md) |

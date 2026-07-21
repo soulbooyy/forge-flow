@@ -68,6 +68,41 @@ class DraftPRRequest:
 
 
 @dataclass(frozen=True, slots=True)
+class FixturePolicyDecisionRecord:
+    """Canonical, request-bindable allowed-policy fact for the fixture only."""
+
+    schema_version: str
+    policy_decision_id: str
+    repository_identity: str
+    base_revision: str
+    profile_id: str
+    profile_version: str
+    artifact_reference_id: str
+    approval_decision_id: str
+    idempotency_key: str
+    outcome: str
+    expires_at: int
+
+    @classmethod
+    def create(cls, artifact_reference_id, approval_decision_id, idempotency_key, outcome, expires_at):
+        from .canonical import policy_decision_id_for
+        provisional = object.__new__(cls)
+        for name, value in (("schema_version", SCHEMA_VERSION), ("policy_decision_id", "sha256:" + "0" * 64), ("repository_identity", REPOSITORY_IDENTITY), ("base_revision", BASE_REVISION), ("profile_id", PROFILE_ID), ("profile_version", PROFILE_VERSION), ("artifact_reference_id", artifact_reference_id), ("approval_decision_id", approval_decision_id), ("idempotency_key", idempotency_key), ("outcome", outcome), ("expires_at", expires_at)):
+            object.__setattr__(provisional, name, value)
+        return cls(SCHEMA_VERSION, policy_decision_id_for(provisional), REPOSITORY_IDENTITY, BASE_REVISION, PROFILE_ID, PROFILE_VERSION, artifact_reference_id, approval_decision_id, idempotency_key, outcome, expires_at)
+
+    def __post_init__(self) -> None:
+        if (self.schema_version != SCHEMA_VERSION or self.repository_identity != REPOSITORY_IDENTITY or self.base_revision != BASE_REVISION or self.profile_id != PROFILE_ID or self.profile_version != PROFILE_VERSION or self.outcome not in ("allowed", "blocked", "requires_human_approval") or type(self.expires_at) is not int or self.expires_at <= 0):
+            raise ValueError("invalid fixture policy decision")
+        for value in (self.policy_decision_id, self.artifact_reference_id, self.approval_decision_id):
+            _digest(value)
+        _identifier(self.idempotency_key)
+        from .canonical import policy_decision_id_for
+        if self.policy_decision_id != policy_decision_id_for(self):
+            raise ValueError("noncanonical policy decision id")
+
+
+@dataclass(frozen=True, slots=True)
 class PRTerminal:
     schema_version: str
     terminal_id: str
