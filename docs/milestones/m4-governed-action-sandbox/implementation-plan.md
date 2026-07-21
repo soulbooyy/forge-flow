@@ -83,14 +83,14 @@ explicit Phase 1 authorization, and an assigned M4 branch/worktree.
 `PolicyDecisionRecord`, `ExecutionAttempt`, `ResourceObservations`, and
 `GovernedActionSandboxValidationError`; canonical ID helpers for each contract.
 
-- [ ] Write failing tests for exact literals, frozen/slotted models, ID format,
+- [x] Write failing tests for exact literals, frozen/slotted models, ID format,
   canonical self-exclusion, PDR ID equality, observation bounds, no raw fields,
   not-started fact absence, stale revision, and cancellation compatibility.
-- [ ] Run RED: `uv run --no-sync python -m unittest tests.governed_action_sandbox.test_contracts tests.governed_action_sandbox.test_canonical -v`.
-- [ ] Implement the smallest models/profile/canonical helpers; calculate final
+- [x] Run RED: `uv run --no-sync python -m unittest tests.governed_action_sandbox.test_contracts tests.governed_action_sandbox.test_canonical -v`.
+- [x] Implement the smallest models/profile/canonical helpers; calculate final
   IDs only after validation.
-- [ ] Run GREEN and cumulative `unittest discover`; create computed fixtures.
-- [ ] Run strict OpenSpec/diff/status checks; commit
+- [x] Run GREEN and cumulative `unittest discover`; create computed fixtures.
+- [x] Run strict OpenSpec/diff/status checks; commit
   `feat(governed-action-sandbox): add immutable execution contracts`; create
   the Phase 1 completion record and update progress.
 
@@ -114,14 +114,14 @@ non-authorizing, and non-retryable.
 **Interfaces:** `build_action_intent`, `build_command_intent`, and
 `evaluate_command_intent`; all return contracts only and perform no I/O.
 
-- [ ] Write failing tests for exact command/image/profile/repository values,
+- [x] Write failing tests for exact command/image/profile/repository values,
   fresh PDR lineage, mismatch blocking, approval-required terminals, and stale
   revision mapping to `requires_human_approval` plus
   `not_started/base_revision_mismatch`.
-- [ ] Run RED: `uv run --no-sync python -m unittest tests.governed_action_sandbox.test_policy -v`.
-- [ ] Implement pure policy assembly; never read repository configuration,
+- [x] Run RED: `uv run --no-sync python -m unittest tests.governed_action_sandbox.test_policy -v`.
+- [x] Implement pure policy assembly; never read repository configuration,
   environment, Issue content, credentials, workspace, or OCI runtime.
-- [ ] Run targeted GREEN, cumulative suite, prohibited-I/O import check,
+- [x] Run targeted GREEN, cumulative suite, prohibited-I/O import check,
   OpenSpec/diff/status checks; commit
   `feat(governed-action-sandbox): add exact policy evaluation`; create the
   Phase 2 completion record and update progress.
@@ -158,21 +158,21 @@ authorization fact. A non-`allowed` PDR must produce the corresponding
 Capability proof occurs before `run`; an unproven backend must never receive a
 run call.
 
-- [ ] Write failing tests with controlled fake backends for: injected blocked,
+- [x] Write failing tests with controlled fake backends for: injected blocked,
   approval-required, and stale-base PDRs with zero backend launches; invalid
   evaluated-input lineage returning a validation envelope with zero launches;
   no-network/credential/image/workspace proof and no host fallback; command
   failure; timeout/output budget; and post-start cancellation. The RED tests
   must construct the ActionIntent → CommandIntent → PDR tuple explicitly and
   may not rely on hidden current-state reads.
-- [ ] Run RED: `uv run --no-sync python -m unittest tests.governed_action_sandbox.test_oci_adapter tests.governed_action_sandbox.test_service -v`.
-- [ ] Implement the minimal adapter seam. It must form no shell command, prove
+- [x] Run RED: `uv run --no-sync python -m unittest tests.governed_action_sandbox.test_oci_adapter tests.governed_action_sandbox.test_service -v`.
+- [x] Implement the minimal adapter seam. It must form no shell command, prove
   every OCI constraint before start, discard output after bounded accounting,
   destroy the temporary workspace, and return `sandbox_unavailable` before
   launch if any proof fails.
-- [ ] Run GREEN with fakes only. Run an actual registered OCI image only after
+- [x] Run GREEN with fakes only. Run an actual registered OCI image only after
   separate fixture-owner approval and registered reset/audit evidence.
-- [ ] Run cumulative verification and focused checks; commit
+- [x] Run cumulative verification and focused checks; commit
   `feat(governed-action-sandbox): add fail-closed oci attempt service`; create
   the Phase 3 completion record and update progress.
 
@@ -192,16 +192,16 @@ never becomes command failure or retry.
 
 **Interfaces:** use only the Phase 1–3 public APIs; add no new public surface.
 
-- [ ] Write failing acceptance tests for canonical IDs, all PDR outcomes,
+- [x] Write failing acceptance tests for canonical IDs, all PDR outcomes,
   stale revision zero facts, OCI capability failure, command/limit/timeout/
   cancellation terminals, zero retry, zero artifact refs, raw payload rejection,
   and prohibited imports/effects.
-- [ ] Run RED: `uv run --no-sync python -m unittest tests.governed_action_sandbox.test_acceptance -v`.
-- [ ] Make only scoped corrections; do not add patch, scan/redaction, approval,
+- [x] Run RED: `uv run --no-sync python -m unittest tests.governed_action_sandbox.test_acceptance -v`.
+- [x] Make only scoped corrections; do not add patch, scan/redaction, approval,
   artifact, GitHub, provider, DeerFlow, or retry capabilities.
-- [ ] Run final targeted/full tests, strict OpenSpec validation, prohibited
+- [x] Run final targeted/full tests, strict OpenSpec validation, prohibited
   surface search, `git diff --check`, and `git status --short`.
-- [ ] Commit `test(governed-action-sandbox): add acceptance coverage`; create
+- [x] Commit `test(governed-action-sandbox): add acceptance coverage`; create
   Phase 4 completion record, update progress, conduct required independent
   review, and stop for user confirmation.
 
