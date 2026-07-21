@@ -9,3 +9,4 @@ adapter. It is not yet authorized for implementation or GitHub interaction.
 - [Progress](progress.md)
 - [Phase 1 completion record](phases/phase-1-immutable-mutation-contracts-and-idempotency.md)
 - [Phase 2 completion record](phases/phase-2-eligibility-and-redacted-body-assembly.md)
+- [Phase 3 completion record](phases/phase-3-fail-closed-adapter-seam.md)

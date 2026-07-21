@@ -11,7 +11,7 @@ PROFILE_VERSION = "1.0.0"
 _DIGEST = re.compile(r"^sha256:[0-9a-f]{64}$")
 _IDENTIFIER = re.compile(r"^[a-z][a-z0-9-]{2,63}$")
 _COMMIT_ID = re.compile(r"^[0-9a-f]{40}$")
-_TERMINALS = frozenset(("policy_blocked", "approval_required", "idempotency_conflict", "ambiguous_result"))
+_TERMINALS = frozenset(("policy_blocked", "approval_required", "idempotency_conflict", "ambiguous_result", "materialization_unavailable"))
 
 
 def _digest(value: object) -> None:

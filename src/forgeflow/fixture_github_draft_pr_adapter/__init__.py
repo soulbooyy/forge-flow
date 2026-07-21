@@ -9,9 +9,12 @@ from .canonical import (
 )
 from .models import DraftPRRequest, FixturePolicyDecisionRecord, IdempotencyRecord, PRResult, PRTerminal
 from .service import RedactedBodyFacts, evaluate_eligibility, render_redacted_body
+from .adapter import AdapterOutcome, ControlledFixtureAdapter
 
 __all__ = (
     "DraftPRRequest",
+    "AdapterOutcome",
+    "ControlledFixtureAdapter",
     "FixturePolicyDecisionRecord",
     "IdempotencyRecord",
     "PRResult",
