@@ -17,10 +17,13 @@ PolicyDecisionRecord or an execution/publication authorization.
 ## MetadataArtifactReference
 
 Publication input is only Feature 2's eligible candidate. The output contains
-`artifact_reference_id`, run ID, candidate ID, artifact metadata ID, content
-digest, profile identity, and lineage digest. Its content is canonical bounded
-metadata/reference data only. A local location is never included in the
-contract or summary.
+`artifact_reference_id`, run ID, candidate ID, artifact metadata ID,
+`content_digest`, `candidate_content_digest`, profile identity, and lineage
+digest. `content_digest` is the SHA-256 digest of the canonical metadata bytes
+actually published by Feature 3. `candidate_content_digest` is Feature 2's
+redacted metadata digest and binds upstream security lineage only. Both are
+digest references, never raw source, diff, or patch content. A local location
+is never included in the contract or summary.
 
 ## TraceEvent and DurableRunSummary
 
