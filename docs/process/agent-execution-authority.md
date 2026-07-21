@@ -81,6 +81,12 @@ occurred.
   external-state wait that has exhausted safe in-scope work.
 - A final response must not merely report an incomplete repair loop when a
   safe implementation, test, review, documentation, or commit step remains.
+- A statement that the agent is "continuing into" a named test, review, fix,
+  or commit step creates an immediate obligation to execute that step in the
+  same ongoing task; it must not be followed by an empty final status message.
+- Do not send a final response while an authorized review, fix, test, commit,
+  or phase-completion chain remains unfinished. “Review initiated”, “review
+  pending”, and “tests passed before review” are explicitly non-terminal.
 
 ## Feature Exceptions
 
