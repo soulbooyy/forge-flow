@@ -7,13 +7,18 @@ import tempfile
 
 from .models import MetadataArtifactReference
 from .canonical import artifact_reference_id_for
-from .service import metadata_bytes_for
+from .service import metadata_bytes_for, publishable_metadata
 
 
-def publish_metadata(root: object, reference: object) -> MetadataArtifactReference | None:
+def publish_metadata(root: object, candidate: object, run_id: object) -> MetadataArtifactReference | None:
     """Atomically publish verified canonical metadata; never persist caller paths."""
-    if not isinstance(root, Path) or not root.is_dir() or not isinstance(reference, MetadataArtifactReference):
+    reference = publishable_metadata(candidate, run_id)
+    if not isinstance(root, Path) or not root.is_dir() or reference is None:
         return None
+    return _write_metadata(root, reference)
+
+
+def _write_metadata(root: Path, reference: MetadataArtifactReference) -> MetadataArtifactReference | None:
     payload = metadata_bytes_for(reference)
     if (reference.artifact_reference_id != artifact_reference_id_for(reference)
             or "sha256:" + hashlib.sha256(payload).hexdigest() != reference.content_digest):
