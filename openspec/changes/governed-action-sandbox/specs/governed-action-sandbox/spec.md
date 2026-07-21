@@ -85,6 +85,17 @@ workspace, or timestamp facts.
 - **AND** it contains no image, exit-code, output, workspace, or approval
   decision record
 
+#### Scenario: Execution consumes explicit evaluated inputs
+
+- **GIVEN** an immutable ActionIntent, CommandIntent, and PolicyDecisionRecord
+  supplied to the execution service with an injected OCI backend
+- **WHEN** the PDR outcome is `blocked`, `requires_human_approval`, or a
+  stale-base `requires_human_approval`
+- **THEN** the service returns the matching `not_started` terminal fact
+- **AND** it does not call the backend or infer policy/repository state from
+  the backend, workspace, or global runtime state
+- **AND** only an `allowed` PDR can reach OCI capability proof
+
 ### Requirement: Failures and budgets SHALL stop without retry
 
 The capability SHALL represent only its applicable RFC-002 bounded failure

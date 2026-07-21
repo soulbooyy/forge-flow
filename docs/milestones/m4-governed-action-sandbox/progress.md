@@ -1,4 +1,4 @@
-# Milestone 4: Governed Action and Sandbox Boundary Progress
+# Milestone 4, Feature 1: Governed Action and Sandbox Boundary Progress
 
 ## Purpose
 
@@ -16,31 +16,64 @@ RFCs/ADRs, or the canonical implementation plan.
 
 | Field | Value |
 | --- | --- |
-| Branch | Not assigned; do not create before explicit Phase 1 authorization. |
-| Worktree | Not assigned; do not create before explicit Phase 1 authorization. |
+| Branch | `feature/m4-governed-action-sandbox` |
+| Worktree | `.worktrees/m4-governed-action-sandbox` |
 | Execution mode | Lightweight Implementation Execution |
 
 ## Current Status
 
 | Field | Value |
 | --- | --- |
-| Milestone | Governed Action and Sandbox Boundary |
-| State | Canonical plan accepted; awaiting Phase 1 authorization |
-| Completed through | None |
-| Next phase | Phase 1: Contract Foundation and Canonical Fixtures |
-| Implementation authorization | Not granted |
+| M4 feature | 1 — Governed Action and Sandbox Boundary |
+| Feature state | Complete; OCI negative fixture path reconciled |
+| M4 milestone state | Planned; not closed |
+| Completed through | Phase 4: Acceptance Matrix and Boundary Hardening |
+| Next phase | None |
+| Implementation authorization | Feature 1 canonical plan complete; no further Feature 1 work authorized by this plan |
+| External OCI closure readiness | Negative fixture execution is evidenced. Full positive end-to-end closure belongs to later M4 features and is not claimed. |
 
 ## Phase Index
 
 | Phase | Name | Status | Commit | Completion Record |
 | --- | --- | --- | --- | --- |
-| 1 | Contract Foundation and Canonical Fixtures | Not started | None | None |
-| 2 | Exact Policy and Terminal Assembly | Not started | None | None |
-| 3 | Fail-Closed OCI Adapter and Attempt Service | Not started | None | None |
-| 4 | Acceptance Matrix and Boundary Hardening | Not started | None | None |
+| 1 | Contract Foundation and Canonical Fixtures | Complete | `88bbbae` | [Phase 1 record](phases/phase-1-contract-foundation-and-canonical-fixtures.md) |
+| 2 | Exact Policy and Terminal Assembly | Complete | `6a1fe04` | [Phase 2 record](phases/phase-2-exact-policy-and-terminal-assembly.md) |
+| 3 | Fail-Closed OCI Adapter and Attempt Service | Complete | `746a0f9` | [Phase 3 record](phases/phase-3-fail-closed-oci-adapter-and-attempt-service.md) |
+| 4 | Acceptance Matrix and Boundary Hardening | Complete | `b162f7b` | [Phase 4 record](phases/phase-4-acceptance-matrix-and-boundary-hardening.md) |
 
 ## Change Log
 
+- 2026-07-16: Ran the single explicitly authorized real OCI fixture probe using
+  the registered image digest. It exited non-zero under the required isolation
+  controls; no retry or external mutation was performed. See [redacted run
+  evidence](evidence/real-oci-fixture-run-2026-07-16.md).
+- 2026-07-16: Reconciled the OCI probe. The runner image intentionally contains
+  no fixture source and the probe mounted no fixed-revision workspace, so
+  `exit=1` is a workspace-provisioning alignment result, not
+  `sandbox_unavailable`, `policy_blocked`, or a governed `command_failed`
+  terminal. A subsequent base-SHA-verified controlled re-probe confirmed the
+  fixture's expected pre-fix negative test failure; see [re-probe
+  evidence](evidence/real-oci-fixture-reprobe-2026-07-16.md). Full positive
+  end-to-end external closure remains unclaimed.
+- 2026-07-16: Completed Phase 4 in `b162f7b`; the Feature 1 canonical plan is complete. M4 itself remains planned pending separately gated feature changes.
+- 2026-07-16: Began explicitly authorized Phase 4 under the assigned M4
+  worktree; no work beyond the canonical plan is authorized.
+- 2026-07-16: Completed Phase 3 in `746a0f9`; final independent closure review
+  found no P1/P2. Phase 4 remains unstarted pending explicit authorization.
+- 2026-07-15: Began explicitly authorized Phase 3 under the assigned M4
+  worktree; Phase 4 remains out of scope.
+- 2026-07-15: Completed Phase 2 in `6a1fe04`; final independent closure review
+  found no P1/P2 after stale-base and null-preserving PDR-lineage corrections.
+  Phase 3 remains unstarted pending explicit authorization.
+- 2026-07-15: Began explicitly authorized Phase 2 under the assigned M4
+  worktree; Phase 3 remains out of scope.
+- 2026-07-15: Completed Phase 1 in `88bbbae`; independent closure review
+  passed after contract, terminal-fact, resource, timeout, and lineage
+  corrections. Phase 2 remains unstarted pending explicit authorization.
+- 2026-07-15: Assigned the milestone isolation environment: branch
+  `feature/m4-governed-action-sandbox`, worktree
+  `.worktrees/m4-governed-action-sandbox`; began explicitly authorized Phase 1
+  under Lightweight Implementation Execution.
 - 2026-07-15: Canonical plan accepted after independent review; awaiting
   explicit Phase 1 authorization. No branch, worktree, implementation, sandbox
   execution, or GitHub mutation is authorized.

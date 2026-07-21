@@ -20,6 +20,9 @@
   is optional; request explicit user approval before invoking it.
 - [x] Reconcile the draft against accepted authority into the sole canonical
   plan before implementation.
+- [x] Amend the Phase 3 evaluated-input boundary so the execution service
+  explicitly consumes immutable ActionIntent, CommandIntent, and PDR inputs;
+  non-allowed PDRs remain zero-launch execution-layer terminals.
 - [ ] Create the M4 milestone index and progress record only with the
   canonical plan.
 

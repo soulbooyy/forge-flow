@@ -1,8 +1,8 @@
-# Milestone 4: Governed Action and Sandbox Boundary
+# Milestone 4, Feature 1: Governed Action and Sandbox Boundary
 
 ## Scope
 
-This first M4 feature establishes immutable governed-action contracts, exact
+This first feature within the planned M4 Draft PR MVP establishes immutable governed-action contracts, exact
 fixture-only command policy, and a fail-closed OCI sandbox execution seam. It
 excludes patch generation/application, scanning/redaction, approval workflow,
 artifact store, durable summary, GitHub activity, providers, DeerFlow runtime,
@@ -19,6 +19,13 @@ and retry.
 - [Canonical implementation plan](implementation-plan.md)
 - [Progress](progress.md)
 
-## Phase Completion Records
+## Feature Completion Records
 
-No implementation phase has started or completed.
+- [Phase 1: Contract Foundation and Canonical Fixtures](phases/phase-1-contract-foundation-and-canonical-fixtures.md)
+- [Phase 2: Exact Policy and Terminal Assembly](phases/phase-2-exact-policy-and-terminal-assembly.md)
+- [Phase 3: Fail-Closed OCI Adapter and Attempt Service](phases/phase-3-fail-closed-oci-adapter-and-attempt-service.md)
+- [Phase 4: Acceptance Matrix and Boundary Hardening](phases/phase-4-acceptance-matrix-and-boundary-hardening.md)
+
+Feature 1 is complete. Milestone 4 remains planned until its separately gated
+patch/security, approval/trace/summary, Draft PR adapter, and end-to-end
+evaluation feature changes are complete.
