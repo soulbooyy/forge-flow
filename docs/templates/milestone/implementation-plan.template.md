@@ -5,6 +5,7 @@
 This is the sole execution authority for this milestone. It reconciles the
 [AI-assisted draft](<AI_ASSISTED_DRAFT_LINK>) against <AUTHORITATIVE_INPUTS>.
 Chat prompts do not redefine phase scope, files, interfaces, or acceptance.
+It follows [Agent Execution Authority and Stop Rules](../../process/agent-execution-authority.md), subject to narrower feature-specific limits.
 
 ## Goal
 

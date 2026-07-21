@@ -5,6 +5,7 @@
 This plan follows the accepted Feature 4 OpenSpec, ADR-010, RFC-002/004/005,
 and the registered M4 fixture environment. It authorizes neither implementation
 nor a GitHub mutation until an explicit Phase 1 authorization is recorded.
+It follows [Agent Execution Authority and Stop Rules](../../process/agent-execution-authority.md). GitHub calls, opaque credential use, and external mutations retain their explicit feature-specific gates.
 
 ## Global Constraints
 
