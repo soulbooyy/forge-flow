@@ -204,6 +204,16 @@ proved safe, blocks publication.
 
 ## M4 Readiness Preconditions
 
+### Feature 3 Publication Digest Clarification
+
+For Feature 3 metadata-only publication, the durable reference carries two
+distinct digests: `content_digest` identifies the canonical metadata bytes
+actually atomically published by the controlled store, while
+`candidate_content_digest` preserves Feature 2's redacted-metadata security
+lineage. The published metadata bytes exclude both derived reference identity
+and digest fields, avoiding a self-referential hash. Neither digest denotes or
+permits patch, diff, or source material.
+
 Before an M4 OpenSpec may introduce persistence or a Draft PR adapter, it must
 define exact contract fields, artifact identity, redaction failure semantics,
 size bounds, and the mapping from runtime events to ForgeFlow-owned durable

@@ -1,7 +1,7 @@
 import unittest
 from dataclasses import replace
 
-from forgeflow.approval_trace_durable_summary.service import append_summary, publishable_metadata
+from forgeflow.approval_trace_durable_summary.service import append_summary, metadata_bytes_for, publishable_metadata
 from forgeflow.approval_trace_durable_summary.canonical import event_id_for, summary_id_for
 from forgeflow.approval_trace_durable_summary.models import DurableRunSummary, TraceEvent
 from forgeflow.deterministic_patch_artifact_security.canonical import candidate_id_for
@@ -29,7 +29,9 @@ class ServiceTests(unittest.TestCase):
         self.assertIsNotNone(reference)
         assert reference is not None
         self.assertEqual(reference.candidate_id, candidate().candidate_id)
-        self.assertEqual(reference.content_digest, D)
+        self.assertEqual(reference.candidate_content_digest, D)
+        import hashlib
+        self.assertEqual(reference.content_digest, "sha256:" + hashlib.sha256(metadata_bytes_for(reference)).hexdigest())
 
     def test_rejects_tampered_candidate_or_unsafe_run_id(self):
         self.assertIsNone(publishable_metadata(replace(candidate(), candidate_id=D), "run-0001"))

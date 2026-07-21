@@ -58,10 +58,10 @@ class ApprovalDecision:
 
 @dataclass(frozen=True, slots=True)
 class MetadataArtifactReference:
-    schema_version: str; artifact_reference_id: str; run_id: str; candidate_id: str; artifact_metadata_id: str; content_digest: str; profile_id: str; profile_version: int; lineage_digest: str
+    schema_version: str; artifact_reference_id: str; run_id: str; candidate_id: str; artifact_metadata_id: str; content_digest: str; candidate_content_digest: str; profile_id: str; profile_version: int; lineage_digest: str
     def __post_init__(self) -> None:
         _schema(self.schema_version)
-        for value in (self.artifact_reference_id, self.candidate_id, self.artifact_metadata_id, self.content_digest, self.lineage_digest): _digest(value)
+        for value in (self.artifact_reference_id, self.candidate_id, self.artifact_metadata_id, self.content_digest, self.candidate_content_digest, self.lineage_digest): _digest(value)
         _safe_identifier(self.run_id); _safe_identifier(self.profile_id)
         if type(self.profile_version) is not int or self.profile_version <= 0:
             raise ValueError("invalid metadata artifact reference")

@@ -1,0 +1,54 @@
+import tempfile
+import unittest
+from pathlib import Path
+from dataclasses import replace
+import hashlib
+
+from forgeflow.approval_trace_durable_summary.canonical import artifact_reference_id_for
+from forgeflow.approval_trace_durable_summary.models import MetadataArtifactReference
+from forgeflow.approval_trace_durable_summary.service import metadata_bytes_for
+from forgeflow.approval_trace_durable_summary.store import publish_metadata
+
+D = "sha256:" + "a" * 64
+
+
+def reference():
+    provisional = MetadataArtifactReference("forgeflow.approval-trace-durable-summary.v1", D, "run-0001", D, D, "sha256:" + "0" * 64, D, "profile-001", 1, D)
+    with_digest = replace(provisional, content_digest="sha256:" + hashlib.sha256(metadata_bytes_for(provisional)).hexdigest())
+    return replace(with_digest, artifact_reference_id=artifact_reference_id_for(with_digest))
+
+
+class StoreTests(unittest.TestCase):
+    def test_rejects_non_reference_without_writing(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.assertIsNone(publish_metadata(root, object()))
+            self.assertEqual(list(root.iterdir()), [])
+
+    def test_publishes_verified_bytes_at_a_durable_id(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            artifact = reference()
+            self.assertEqual(publish_metadata(root, artifact), artifact)
+            self.assertEqual((root / f"{artifact.artifact_reference_id[7:]}.json").read_bytes(), metadata_bytes_for(artifact))
+
+    def test_rejects_digest_mismatch_without_a_final_artifact(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.assertIsNone(publish_metadata(root, replace(reference(), content_digest=D)))
+            self.assertEqual(list(root.iterdir()), [])
+
+    def test_never_overwrites_an_existing_immutable_artifact(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            artifact = reference()
+            target = root / f"{artifact.artifact_reference_id[7:]}.json"
+            target.write_bytes(b"existing")
+            self.assertIsNone(publish_metadata(root, artifact))
+            self.assertEqual(target.read_bytes(), b"existing")
+
+    def test_rejects_a_noncanonical_reference_id_without_writing(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.assertIsNone(publish_metadata(root, replace(reference(), artifact_reference_id=D)))
+            self.assertEqual(list(root.iterdir()), [])
