@@ -16,7 +16,15 @@ Completed 2026-07-21.
 
 ## Phase 2
 
-Pending.
+Completed 2026-07-21.
+
+- Added closed snapshot, target-file, and transformer registrations with exact
+  revalidation before PDR issuance.
+- PDR issuance accepts only a private verification proof, reuses the exact
+  Feature 1 profile reference, and mints a unique fresh attempt per issuance.
+- Targeted contract/registry tests and source-selection boundary checks passed.
+  Independent review found deterministic attempt reuse; it was fixed and
+  retested.
 
 ## Phase 3
 
