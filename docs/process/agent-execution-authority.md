@@ -50,6 +50,38 @@ Do not pause for:
 - focused commits; or
 - authorized rebase/merge work.
 
+## Recoverable Execution Failures
+
+Treat the following as self-recoverable execution work, not a user decision:
+
+- malformed tool-call or patch syntax;
+- transient sandbox/cache/lock failures;
+- an incomplete command invocation;
+- a failed test, import, formatting check, or local verification command; and
+- a reviewer finding that remains within accepted scope.
+
+For a recoverable failure, the agent must:
+
+1. inspect the error;
+2. correct the command, patch, or scoped implementation;
+3. rerun the relevant verification; and
+4. continue the review/fix loop.
+
+Do not end a turn or request confirmation solely because a recoverable failure
+occurred.
+
+## In-Progress Work Is Not a Stop Condition
+
+- “In review”, “review findings received”, “in a repair loop”, “tests running”,
+  “retest pending”, and “documentation pending” are commentary states only.
+- While a user-authorized phase remains incomplete, the agent must continue to
+  the next safe execution step automatically.
+- The agent may end a turn during in-progress work only for a Mandatory User
+  Decision defined by this policy, a user interruption, or an unavoidable
+  external-state wait that has exhausted safe in-scope work.
+- A final response must not merely report an incomplete repair loop when a
+  safe implementation, test, review, documentation, or commit step remains.
+
 ## Feature Exceptions
 
 - Canonical plans reference this policy.
