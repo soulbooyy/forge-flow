@@ -7,3 +7,4 @@ adapter. It is not yet authorized for implementation or GitHub interaction.
 - [ADR-010](../../../adr/ADR-010-restrict-m4-github-mutations-to-policy-gated-fixture-repository.md)
 - [Fixture registration](../../fixtures/m4-fixture-environment-registration.md)
 - [Progress](progress.md)
+- [Phase 1 completion record](phases/phase-1-immutable-mutation-contracts-and-idempotency.md)
