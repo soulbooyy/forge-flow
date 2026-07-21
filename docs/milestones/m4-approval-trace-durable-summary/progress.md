@@ -4,9 +4,9 @@
 
 | Field | Value |
 | --- | --- |
-| State | Phase 1 accepted; awaiting Feature 2 integration before Phase 2. |
-| Completed through | Phase 1 — Immutable approval and trace contracts |
-| Next phase | Rebase or merge updated `main` after Feature 2 integration, then Phase 2: Metadata-only publication and summary assembly |
+| State | Feature 3 implementation complete; closure recorded. |
+| Completed through | Phase 4 — Acceptance and boundary hardening |
+| Next phase | None — Feature 3 complete. |
 | Branch | `feature/m4-approval-trace-durable-summary` |
 | Worktree | `.worktrees/m4-approval-trace-durable-summary` |
 
@@ -14,10 +14,10 @@
 
 | Phase | Name | Status | Commit | Completion Record |
 | --- | --- | --- | --- | --- |
-| 1 | Immutable approval and trace contracts | Accepted | `feat(approval-trace): add immutable contracts` | [Phase 1 record](phases/phase-1-immutable-approval-and-trace-contracts.md) |
-| 2 | Metadata-only publication and summary assembly | Blocked on Feature 2 integration | None | None |
-| 3 | Controlled local metadata store | Not started | None | None |
-| 4 | Acceptance and boundary hardening | Not started | None | None |
+| 1 | Immutable approval and trace contracts | Accepted | `a67aacc` | [Phase 1 record](phases/phase-1-immutable-approval-and-trace-contracts.md) |
+| 2 | Metadata-only publication and summary assembly | Accepted | `0cf6f62` | [Phase 2 record](phases/phase-2-metadata-only-publication-and-summary-assembly.md) |
+| 3 | Controlled local metadata store | Accepted | `da98e65` | [Phase 3 record](phases/phase-3-controlled-local-metadata-store.md) |
+| 4 | Acceptance and boundary hardening | Accepted | `f3a82f7` | [Phase 4 record](phases/phase-4-acceptance-and-boundary-hardening.md) |
 
 ## Change Log
 
@@ -26,3 +26,9 @@
   paused until the authoritative Feature 2
   `RedactedArtifactReferenceCandidate` contract is reviewed and integrated into
   `main`; Feature 3 will then rebase or merge the updated baseline.
+- 2026-07-21: Feature 2 was independently reviewed and integrated into `main`;
+  Feature 3 rebased onto that baseline before Phase 2 resumed.
+- 2026-07-21: Accepted Phases 2–4 after independent review and final full
+  verification. The implementation publishes only canonical governed metadata
+  bytes and excludes source, diff, patch payloads, execution, GitHub, retry,
+  remote storage, encryption, and retention.
