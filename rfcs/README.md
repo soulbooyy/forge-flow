@@ -25,6 +25,7 @@ RFCs are not feature implementation specs. Feature-level implementation plans be
 | [RFC-005](RFC-005-observability-and-trace-model.md) | Observability and Trace Model | Draft | Define product-level run summaries, trace spans, evidence references, redaction, retention, cost metrics, and PR-facing trace summaries. |
 | [RFC-006](RFC-006-evaluation-framework.md) | Evaluation Framework | Draft | Define first-version evaluation using controlled fixtures, core metrics, failure tracking, and later paths toward broader benchmarks. |
 | [RFC-007](RFC-007-deerflow-extension-strategy.md) | DeerFlow Extension Strategy | Draft | Define how ForgeFlow uses DeerFlow runtime, graph, thread state, tool orchestration, checkpointing, middleware hooks, and tracing hooks without becoming a shallow fork. |
+| [RFC-008](RFC-008-controlled-materialization-and-mutation-authority.md) | Controlled Materialization and Mutation Authority | Draft | Separate materialization, payload eligibility, and future real mutation authority. |
 
 ## RFC vs OpenSpec
 
