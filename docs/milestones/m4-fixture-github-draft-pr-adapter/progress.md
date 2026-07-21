@@ -4,8 +4,8 @@
 
 | Field | Value |
 | --- | --- |
-| State | OpenSpec draft prepared; awaiting acceptance. |
-| Next phase | Architecture/OpenSpec acceptance, then canonical planning. |
+| State | OpenSpec accepted; canonical plan prepared; implementation not authorized. |
+| Next phase | Explicit Feature 4 Phase 1 authorization. |
 | Implementation authorization | Not granted. |
 | GitHub mutation authorization | Not granted. |
 
