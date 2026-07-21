@@ -16,4 +16,7 @@ GitHub effects.
 
 ## Phase Completion Records
 
-No phases completed.
+- [Re-baselined Phase 1](phases/phase-1-pre-scan-contracts-and-terminal-identity.md)
+- [Re-baselined Phase 2](phases/phase-2-transient-metadata-security-facts.md)
+- [Re-baselined Phase 3](phases/phase-3-passed-path-assembly.md)
+- [Re-baselined Phase 4](phases/phase-4-acceptance-and-boundary-hardening.md)

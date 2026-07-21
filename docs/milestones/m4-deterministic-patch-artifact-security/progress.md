@@ -25,7 +25,7 @@ RFCs/ADRs, or the canonical implementation plan.
 | Field | Value |
 | --- | --- |
 | Milestone | M4 Feature 2: Deterministic Patch Artifact and Security Scanning |
-| State | Feature 2 implementation complete; final documentation review pending. |
+| State | Feature 2 complete; terminal-first closure recorded. |
 | Completed through | Re-baselined Phase 4: Acceptance and boundary hardening. |
 | Next phase | None |
 | Implementation authorization | Complete |
@@ -38,10 +38,10 @@ RFCs/ADRs, or the canonical implementation plan.
 | 2 | Registered Metadata Security Facts | Historical; superseded by terminal-first amendment | `27a2685`, `6281867`, `fe476fb`, `0d1ac55`, `6f7bbab`, `2f54dd2` | [Phase 2 record](phases/phase-2-registered-metadata-security-facts.md) |
 | 3 | Metadata-only Assembly Service | Historical; superseded by terminal-first amendment | `0fbb308`, `0cf469b` | [Phase 3 record](phases/phase-3-metadata-only-assembly-service.md) |
 | 4 | Acceptance and Boundary Hardening | Historical; superseded by terminal-first amendment | None | None |
-| 1R | Pre-scan contracts and terminal identity | Accepted after independent review | This phase commit | [Phase 1R record](phases/phase-1-pre-scan-contracts-and-terminal-identity.md) |
-| 2R | Transient metadata security facts | Accepted after independent review | This phase commit | [Phase 2R record](phases/phase-2-transient-metadata-security-facts.md) |
-| 3R | Passed-path assembly | Accepted after independent review | `0a62369` | Service and terminal-first tests |
-| 4R | Acceptance and boundary hardening | Accepted after independent review | `43b7acc` | Acceptance tests and full verification |
+| 1R | Pre-scan contracts and terminal identity | Accepted after independent review | `eed0422` | [Phase 1R record](phases/phase-1-pre-scan-contracts-and-terminal-identity.md) |
+| 2R | Transient metadata security facts | Accepted after independent review | `07c30f2` | [Phase 2R record](phases/phase-2-transient-metadata-security-facts.md) |
+| 3R | Passed-path assembly | Accepted after independent review | `0a62369` | [Phase 3R record](phases/phase-3-passed-path-assembly.md) |
+| 4R | Acceptance and boundary hardening | Accepted after independent review | `43b7acc`, `94851ae` | [Phase 4R record](phases/phase-4-acceptance-and-boundary-hardening.md) |
 
 ## Change Log
 
@@ -86,3 +86,10 @@ RFCs/ADRs, or the canonical implementation plan.
   policy suite passed 7/7, including profile mismatch, invalid projection,
   blocked-rule, and tampered-scan fail-closed cases. Phase 2 returns only
   scan/redaction facts and creates no candidate; Phase 3 remains unauthorized.
+- 2026-07-18: Accepted re-baselined Phases 3 and 4 after independent review,
+  terminal-first acceptance verification, strict OpenSpec validation, diff
+  hygiene, and static no-I/O checks. The final durable-lineage correction was
+  completed in `94851ae` before Feature 2 integration.
+- 2026-07-21: Final documentation review reconciled the canonical plan, index,
+  progress ledger, and re-baselined 3R/4R completion records. Feature 2 is
+  closed on the integrated main baseline.

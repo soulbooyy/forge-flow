@@ -138,11 +138,11 @@ recorded before Phase 2 is accepted.
 base_revision)` returns only Feature 2 success/failure contracts and in-memory
 eligibility facts; it has no adapter parameter or side-effect dependency.
 
-- [ ] Write targeted failing service tests for clean, blocked, failed, indeterminate, and lineage-invalid inputs.
-- [ ] Implement the smallest assembly path; run targeted GREEN tests.
-- [ ] Refactor only inside Phase 3; run the cumulative implemented suite.
-- [ ] Run `git diff --check` and inspect `git status --short`.
-- [ ] Create one focused commit, Phase 3 Completion Record, and progress update.
+- [x] Write targeted failing service tests for clean, blocked, failed, indeterminate, and lineage-invalid inputs.
+- [x] Implement the smallest assembly path; run targeted GREEN tests.
+- [x] Refactor only inside Phase 3; run the cumulative implemented suite.
+- [x] Run `git diff --check` and inspect `git status --short`.
+- [x] Create one focused commit, Phase 3 Completion Record, and progress update.
 
 **Acceptance:** The service has no source/diff renderer, workspace/OCI/GitHub
 integration, persistence path, or PDR evaluator; the required review-gate
@@ -160,10 +160,10 @@ accepted.
 
 **Interfaces:** Public service and immutable contracts from Phases 1–3 only.
 
-- [ ] Write targeted failing acceptance tests for every OpenSpec requirement and prohibited side effect.
-- [ ] Implement only minimal corrections in accepted scope; run targeted GREEN tests.
-- [ ] Refactor only inside Phase 4; run `uv run --no-sync python -m unittest discover -s tests -v`, `openspec validate deterministic-patch-artifact-security --strict`, `git diff --check`, and `git status --short`.
-- [ ] Create one focused commit, Phase 4 Completion Record, and progress update.
+- [x] Write targeted failing acceptance tests for every OpenSpec requirement and prohibited side effect.
+- [x] Implement only minimal corrections in accepted scope; run targeted GREEN tests.
+- [x] Refactor only inside Phase 4; run `uv run --no-sync python -m unittest discover -s tests -v`, `openspec validate deterministic-patch-artifact-security --strict`, `git diff --check`, and `git status --short`.
+- [x] Create one focused commit, Phase 4 Completion Record, and progress update.
 
 **Acceptance:** All Feature 2 requirements pass with no raw material,
 side-effect, persistence, or authorization escape; the required review-gate
