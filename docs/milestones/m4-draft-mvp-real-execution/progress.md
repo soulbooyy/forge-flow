@@ -44,4 +44,20 @@ Completed 2026-07-22 without external mutation.
   creates no further external effect.
 - Targeted RED/GREEN, fault/replay, authority-isolation tests, and independent
   review passed. The concrete GitHub CLI provider and the real-payload harness
-  remain separate, unimplemented work; no GitHub mutation was attempted.
+remain separate, unimplemented work; no GitHub mutation was attempted.
+
+## GitHub CLI provider seam
+
+Completed 2026-07-22 without invoking the CLI.
+
+- The only concrete provider uses fixed `gh` argv tuples and JSON stdin; it
+  never uses a shell, token argument, environment token, or raw output log.
+- Only a verified HTTP 404 can represent an absent reconciliation branch.
+  Authentication, transport, rate-limit, and provider failures propagate and
+  fail closed.
+- Every branch, Git object, and ref response is validated before it becomes an
+  input to a later write. The provider accepts only the registered fixture,
+  base, target, deterministic governed-change branch format, commit message,
+  Issue title, and Draft PR body.
+- Targeted RED/GREEN tests and independent review passed. No GitHub request or
+  mutation was attempted by this batch.
