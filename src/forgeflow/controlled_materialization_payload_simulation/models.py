@@ -267,13 +267,14 @@ _HANDLE_MINT_CAPABILITY = object()
 class EphemeralPayloadHandle:
     """A deliberately non-serializable, harness-private liveness token."""
 
-    __slots__ = ("_token", "_live")
+    __slots__ = ("_token", "_live", "_binding")
 
     def __init__(self, capability: object, token: object) -> None:
         if capability is not _HANDLE_MINT_CAPABILITY or type(token) is not object:
             raise TypeError("EphemeralPayloadHandle can only be minted by the harness")
         self._token = token
         self._live = True
+        self._binding = None
 
     @property
     def is_live(self) -> bool:
@@ -293,3 +294,9 @@ class EphemeralPayloadHandle:
 def _mint_ephemeral_handle() -> EphemeralPayloadHandle:
     """Private harness seam; no durable contract exposes this capability."""
     return EphemeralPayloadHandle(_HANDLE_MINT_CAPABILITY, object())
+
+
+def _bind_ephemeral_handle(handle: EphemeralPayloadHandle, binding: tuple[str, ...]) -> None:
+    if not handle.is_live or handle._binding is not None:
+        raise ValueError("handle binding is single-use")
+    handle._binding = binding

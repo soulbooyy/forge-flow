@@ -44,4 +44,11 @@ Completed 2026-07-22.
 
 ## Phase 4
 
-Pending.
+Completed 2026-07-22.
+
+- Added deterministic in-memory `forgeflow-sim-*` fake identities with exact
+  payload/PDR/handle binding, controlled binding terminals, and unconditional
+  one-attempt handle destruction.
+- Added real-surface rejection for all v1 PDRs and simulation identities.
+- Full suite, OpenSpec validation, and independent review repair loop passed;
+  no provider, Git, network, or credential surface was added.
