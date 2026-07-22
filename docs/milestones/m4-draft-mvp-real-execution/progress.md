@@ -30,3 +30,18 @@ GitHub does not expose a complete fine-grained permission grant to the client;
 no token value is retained. The authorized scenario remains limited to one
 branch, one commit, and one Draft PR for one idempotency key, with no automatic
 retry and mandatory reset/audit cleanup.
+
+## GitHub mutation orchestration seam
+
+Completed 2026-07-22 without external mutation.
+
+- The adapter accepts only an independently fresh real-mutation PDR and a
+  non-serializable ephemeral payload whose digest and lineage match exactly.
+- It reads the registered remote base before any write and uses a deterministic
+  governed-change branch identity for reconciliation.
+- A branch claim is made before the first provider write. Any partial,
+  malformed, or uncertain remote state is `ambiguous_result`; manual replay
+  creates no further external effect.
+- Targeted RED/GREEN, fault/replay, authority-isolation tests, and independent
+  review passed. The concrete GitHub CLI provider and the real-payload harness
+  remain separate, unimplemented work; no GitHub mutation was attempted.
