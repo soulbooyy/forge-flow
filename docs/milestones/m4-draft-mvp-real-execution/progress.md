@@ -22,9 +22,11 @@ measurement. The temporary checkout was removed.
 
 ### Fixture GitHub mutation
 
-Not accepted. A read-only preflight on 2026-07-22 confirmed the registered
-private fixture repository and open Issue #1, but the locally configured
-GitHub CLI credential is a general OAuth credential rather than the registered
-fixture-only fine-grained token or GitHub App installation. The gate therefore
-fails closed before branch, commit, or Draft-PR creation. No GitHub mutation
-was attempted.
+Accepted 2026-07-22 after the credential was replaced. A read-only preflight
+confirmed a fine-grained token, the registered private repository ID
+`1300511729`, default branch `main`, and open Issue #1. The operator attests
+that the token is fixture-only and has the registered minimal permissions.
+GitHub does not expose a complete fine-grained permission grant to the client;
+no token value is retained. The authorized scenario remains limited to one
+branch, one commit, and one Draft PR for one idempotency key, with no automatic
+retry and mandatory reset/audit cleanup.

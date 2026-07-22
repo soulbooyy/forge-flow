@@ -9,7 +9,7 @@
 ## External gates
 
 - [x] Accept and complete the local-Docker readiness matrix.
-- [ ] Accept the fixture-GitHub readiness matrix before any credential use or mutation.
+- [x] Accept the fixture-GitHub readiness matrix before any credential use or mutation.
 
 ## Phases 2–4
 

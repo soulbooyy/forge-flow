@@ -13,16 +13,18 @@ other GitHub mutation.
 | Repository | `soulbooyy/forgeflow-m4-fixture` — private, default branch `main` |
 | Issue | #1 — open, registered fixture issue |
 | Base revision | remains the registered immutable SHA |
-| Credential eligibility | rejected |
+| Credential eligibility | accepted after replacement |
 
 ## Gate result
 
-The locally configured GitHub CLI authentication is a general OAuth credential
-with broad repository authority. The fixture registration permits only a
-fixture-scoped fine-grained token or GitHub App installation. The credential
-does not satisfy that constraint, so the mutation gate is **not accepted**.
+The original general OAuth credential was replaced with a fine-grained token.
+Read-only checks confirm the registered fixture repository, its numeric ID,
+its `main` default branch, and the registered open Issue #1. The fixture owner
+attests that the token is restricted to this repository with the registered
+minimal permissions. GitHub intentionally does not expose the complete
+fine-grained grant to the client, so this record retains no token value or
+unredacted credential metadata. The mutation gate is **accepted**.
 
 No token value, raw GitHub payload, request body, source content, or command
-output is retained in this record. The required recovery is to configure an
-approved fixture-only credential, then repeat this read-only preflight before
-any mutation attempt.
+output is retained in this record. The next step is implementation and review
+of the fixture-only adapter before the single authorized mutation scenario.
