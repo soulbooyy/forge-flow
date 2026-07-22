@@ -90,23 +90,23 @@ class GitHubCliFixtureProvider:
         base = self._json(("gh", "api", f"repos/{_REPOSITORY}/git/commits/{_BASE_SHA}"), None, "base_read_failed")
         tree_sha = base.get("tree", {}).get("sha") if isinstance(base.get("tree"), dict) else None
         if not isinstance(tree_sha, str) or not _SHA.fullmatch(tree_sha):
-            raise LookupError("registered base tree is unavailable")
+            raise GhProviderFailure("base_read_failed")
         blob = self._json(("gh", "api", "--method", "POST", f"repos/{_REPOSITORY}/git/blobs", "--input", "-"), {"content": base64.b64encode(content).decode("ascii"), "encoding": "base64"}, "blob_create_failed")
         blob_sha = blob.get("sha")
         if not isinstance(blob_sha, str) or not _SHA.fullmatch(blob_sha):
-            raise LookupError("blob creation did not return an identity")
+            raise GhProviderFailure("blob_create_failed")
         tree = self._json(("gh", "api", "--method", "POST", f"repos/{_REPOSITORY}/git/trees", "--input", "-"), {"base_tree": tree_sha, "tree": [{"path": FIXTURE_TARGET_PATH, "mode": "100644", "type": "blob", "sha": blob_sha}]}, "tree_create_failed")
         created_tree = tree.get("sha")
         if not isinstance(created_tree, str) or not _SHA.fullmatch(created_tree):
-            raise LookupError("tree creation did not return an identity")
+            raise GhProviderFailure("tree_create_failed")
         commit = self._json(("gh", "api", "--method", "POST", f"repos/{_REPOSITORY}/git/commits", "--input", "-"), {"message": message, "tree": created_tree, "parents": [_BASE_SHA]}, "commit_create_failed")
         commit_sha = commit.get("sha")
         if not isinstance(commit_sha, str) or not _SHA.fullmatch(commit_sha):
-            raise LookupError("commit creation did not return an identity")
+            raise GhProviderFailure("commit_create_failed")
         ref = self._json(("gh", "api", "--method", "PATCH", f"repos/{_REPOSITORY}/git/refs/heads/{branch_name}", "--input", "-"), {"sha": commit_sha, "force": False}, "branch_update_failed")
         response_sha = ref.get("object", {}).get("sha") if isinstance(ref.get("object"), dict) else None
         if ref.get("ref") != f"refs/heads/{branch_name}" or response_sha != commit_sha:
-            raise LookupError("branch update did not return the expected ref")
+            raise GhProviderFailure("branch_update_failed")
         return commit_sha
 
     def create_draft_pr(self, branch_name: str, base_branch: str, title: str, body: str) -> str:
