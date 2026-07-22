@@ -8,6 +8,7 @@ from forgeflow.governed_changes.real_mutation.github_adapter import (
     FixtureGitHubProvider,
     _mint_ephemeral_payload,
 )
+from forgeflow.governed_changes.real_mutation.github_cli import GhProviderFailure
 from forgeflow.governed_changes.real_mutation.models import RealMutationPDR, RealMutationRequest
 
 
@@ -152,6 +153,43 @@ class FixtureGitHubMutationAdapterTest(unittest.TestCase):
         self.assertEqual(provider.created, ["branch", "commit"])
         self.assertTrue(first_payload.destroyed)
         self.assertTrue(retry_payload.destroyed)
+
+    def test_provider_failure_retains_only_controlled_code(self):
+        class RejectedProvider(FakeProvider):
+            def create_branch(self, branch_name: str, base_sha: str) -> str:
+                raise GhProviderFailure("provider_rejected")
+
+        payload = _mint_ephemeral_payload(self.payload_id, self.payload_digest, "fixture-calculator-v1", self.payload_bytes)
+        result = FixtureGitHubMutationAdapter(RejectedProvider(self.base_sha)).execute(self.request, self.pdr, payload, now=10)
+
+        self.assertEqual(result.outcome, "provider_failed")
+        self.assertEqual(result.provider_failure_code, "provider_rejected")
+        self.assertTrue(payload.destroyed)
+
+    def test_unknown_provider_code_is_normalized_fail_closed(self):
+        class ForgedProvider(FakeProvider):
+            def create_branch(self, branch_name: str, base_sha: str) -> str:
+                error = RuntimeError()
+                error.code = "untrusted-value"  # type: ignore[attr-defined]
+                raise error
+
+        payload = _mint_ephemeral_payload(self.payload_id, self.payload_digest, "fixture-calculator-v1", self.payload_bytes)
+        result = FixtureGitHubMutationAdapter(ForgedProvider(self.base_sha)).execute(self.request, self.pdr, payload, now=10)
+
+        self.assertEqual((result.outcome, result.provider_failure_code), ("provider_failed", "provider_unavailable"))
+        self.assertTrue(payload.destroyed)
+
+    def test_unhashable_provider_code_is_normalized_fail_closed(self):
+        class ForgedProvider(FakeProvider):
+            def create_branch(self, branch_name: str, base_sha: str) -> str:
+                error = RuntimeError()
+                error.code = []  # type: ignore[attr-defined]
+                raise error
+
+        payload = _mint_ephemeral_payload(self.payload_id, self.payload_digest, "fixture-calculator-v1", self.payload_bytes)
+        result = FixtureGitHubMutationAdapter(ForgedProvider(self.base_sha)).execute(self.request, self.pdr, payload, now=10)
+
+        self.assertEqual((result.outcome, result.provider_failure_code), ("provider_failed", "provider_unavailable"))
 
 
 if __name__ == "__main__":

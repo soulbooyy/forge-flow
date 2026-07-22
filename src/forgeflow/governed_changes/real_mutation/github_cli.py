@@ -26,6 +26,12 @@ class GhNotFound(LookupError):
     """Only a verified GitHub HTTP 404 may mean a remote object is absent."""
 
 
+class GhProviderFailure(LookupError):
+    def __init__(self, code: str) -> None:
+        super().__init__(code)
+        self.code = code
+
+
 class SubprocessGhRunner:
     """Runs a fixed `gh` argv; it never accepts a shell string or credential."""
 
@@ -34,7 +40,13 @@ class SubprocessGhRunner:
         if completed.returncode != 0:
             if b"HTTP 404" in completed.stderr:
                 raise GhNotFound("github object is absent")
-            raise LookupError("github provider request failed")
+            if b"HTTP 401" in completed.stderr or b"HTTP 403" in completed.stderr:
+                raise GhProviderFailure("credential_rejected")
+            if b"HTTP 429" in completed.stderr:
+                raise GhProviderFailure("rate_limited")
+            if b"HTTP 422" in completed.stderr:
+                raise GhProviderFailure("provider_rejected")
+            raise GhProviderFailure("provider_unavailable")
         return completed.stdout.decode("utf-8")
 
 

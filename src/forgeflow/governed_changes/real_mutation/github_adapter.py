@@ -15,6 +15,7 @@ _REPOSITORY_ID = "1300511729"
 _BASE_SHA = "97c8220cd713ebf61124ac2de2f3eadc6e4dc222"
 _MINT_CAPABILITY = object()
 _COMMIT_SHA = re.compile(r"^[0-9a-f]{40}$")
+_PROVIDER_FAILURE_CODES = frozenset(("credential_rejected", "rate_limited", "provider_rejected", "provider_unavailable"))
 
 
 class FixtureGitHubProvider(Protocol):
@@ -75,12 +76,19 @@ class RealMutationResult:
     commit_sha: str | None = None
     draft_pr_number: str | None = None
     automatic_retries: int = 0
+    provider_failure_code: str | None = None
 
     def __post_init__(self) -> None:
         if self.outcome not in {"draft_pr_created", "reconciled", "base_revision_mismatch", "not_authorized", "ambiguous_result", "provider_failed"}:
             raise ValueError("result outcome must be controlled")
         if self.automatic_retries != 0:
             raise ValueError("automatic retries are prohibited")
+        if self.outcome == "provider_failed" and self.provider_failure_code not in _PROVIDER_FAILURE_CODES:
+            raise ValueError("provider failure requires a controlled code")
+        if self.outcome != "provider_failed" and self.provider_failure_code is not None:
+            raise ValueError("provider failure code is exclusive to provider failure")
+        if self.provider_failure_code is not None and self.provider_failure_code not in _PROVIDER_FAILURE_CODES:
+            raise ValueError("provider failure code must be controlled")
 
 
 class FixtureGitHubMutationAdapter:
@@ -117,8 +125,10 @@ class FixtureGitHubMutationAdapter:
             if not pr_number.isdecimal():
                 return RealMutationResult("ambiguous_result")
             return RealMutationResult("draft_pr_created", branch_name, commit, pr_number)
-        except Exception:
-            return RealMutationResult("provider_failed")
+        except Exception as error:
+            candidate = getattr(error, "code", None)
+            code = candidate if isinstance(candidate, str) and candidate in _PROVIDER_FAILURE_CODES else "provider_unavailable"
+            return RealMutationResult("provider_failed", provider_failure_code=code)
         finally:
             if isinstance(payload, EphemeralMutationPayload):
                 payload.destroy()
