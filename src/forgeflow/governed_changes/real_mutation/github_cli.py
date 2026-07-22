@@ -122,7 +122,7 @@ class GitHubCliFixtureProvider:
         input_bytes = None if payload is None else json.dumps(payload, separators=(",", ":")).encode("utf-8")
         try:
             result = json.loads(self._runner.run(args, input_bytes))
-        except GhProviderFailure:
+        except Exception:
             raise GhProviderFailure(failure_code) from None
         if not isinstance(result, dict):
             raise LookupError("github provider response is not an object")
