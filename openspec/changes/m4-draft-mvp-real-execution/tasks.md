@@ -3,8 +3,8 @@
 ## Phase 1 — zero-effect authority and request contracts
 
 - [x] Record explicit implementation authorization for zero-effect preparation.
-- [ ] Define the real-mutation PDR, request, terminal, and idempotency contracts.
-- [ ] Prove v1 PDR and `forgeflow-sim-*` rejection before adapter construction.
+- [x] Define the real-mutation PDR, request, terminal, and idempotency contracts.
+- [x] Prove v1 PDR and `forgeflow-sim-*` rejection before adapter construction.
 
 ## External gates
 
