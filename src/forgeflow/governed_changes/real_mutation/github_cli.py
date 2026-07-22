@@ -87,23 +87,23 @@ class GitHubCliFixtureProvider:
     def create_commit(self, branch_name: str, target_path: str, content: bytes, message: str) -> str:
         if not _BRANCH.fullmatch(branch_name) or target_path != FIXTURE_TARGET_PATH or message != "fix: correct calculator addition":
             raise ValueError("unregistered commit request")
-        base = self._json(("gh", "api", f"repos/{_REPOSITORY}/git/commits/{_BASE_SHA}"), None)
+        base = self._json(("gh", "api", f"repos/{_REPOSITORY}/git/commits/{_BASE_SHA}"), None, "base_read_failed")
         tree_sha = base.get("tree", {}).get("sha") if isinstance(base.get("tree"), dict) else None
         if not isinstance(tree_sha, str) or not _SHA.fullmatch(tree_sha):
             raise LookupError("registered base tree is unavailable")
-        blob = self._json(("gh", "api", "--method", "POST", f"repos/{_REPOSITORY}/git/blobs", "--input", "-"), {"content": base64.b64encode(content).decode("ascii"), "encoding": "base64"})
+        blob = self._json(("gh", "api", "--method", "POST", f"repos/{_REPOSITORY}/git/blobs", "--input", "-"), {"content": base64.b64encode(content).decode("ascii"), "encoding": "base64"}, "blob_create_failed")
         blob_sha = blob.get("sha")
         if not isinstance(blob_sha, str) or not _SHA.fullmatch(blob_sha):
             raise LookupError("blob creation did not return an identity")
-        tree = self._json(("gh", "api", "--method", "POST", f"repos/{_REPOSITORY}/git/trees", "--input", "-"), {"base_tree": tree_sha, "tree": [{"path": FIXTURE_TARGET_PATH, "mode": "100644", "type": "blob", "sha": blob_sha}]})
+        tree = self._json(("gh", "api", "--method", "POST", f"repos/{_REPOSITORY}/git/trees", "--input", "-"), {"base_tree": tree_sha, "tree": [{"path": FIXTURE_TARGET_PATH, "mode": "100644", "type": "blob", "sha": blob_sha}]}, "tree_create_failed")
         created_tree = tree.get("sha")
         if not isinstance(created_tree, str) or not _SHA.fullmatch(created_tree):
             raise LookupError("tree creation did not return an identity")
-        commit = self._json(("gh", "api", "--method", "POST", f"repos/{_REPOSITORY}/git/commits", "--input", "-"), {"message": message, "tree": created_tree, "parents": [_BASE_SHA]})
+        commit = self._json(("gh", "api", "--method", "POST", f"repos/{_REPOSITORY}/git/commits", "--input", "-"), {"message": message, "tree": created_tree, "parents": [_BASE_SHA]}, "commit_create_failed")
         commit_sha = commit.get("sha")
         if not isinstance(commit_sha, str) or not _SHA.fullmatch(commit_sha):
             raise LookupError("commit creation did not return an identity")
-        ref = self._json(("gh", "api", "--method", "PATCH", f"repos/{_REPOSITORY}/git/refs/heads/{branch_name}", "--input", "-"), {"sha": commit_sha, "force": False})
+        ref = self._json(("gh", "api", "--method", "PATCH", f"repos/{_REPOSITORY}/git/refs/heads/{branch_name}", "--input", "-"), {"sha": commit_sha, "force": False}, "branch_update_failed")
         response_sha = ref.get("object", {}).get("sha") if isinstance(ref.get("object"), dict) else None
         if ref.get("ref") != f"refs/heads/{branch_name}" or response_sha != commit_sha:
             raise LookupError("branch update did not return the expected ref")
@@ -118,9 +118,12 @@ class GitHubCliFixtureProvider:
             raise LookupError("draft PR creation did not return a number")
         return str(number)
 
-    def _json(self, args: tuple[str, ...], payload: object | None) -> dict[str, object]:
+    def _json(self, args: tuple[str, ...], payload: object | None, failure_code: str = "provider_unavailable") -> dict[str, object]:
         input_bytes = None if payload is None else json.dumps(payload, separators=(",", ":")).encode("utf-8")
-        result = json.loads(self._runner.run(args, input_bytes))
+        try:
+            result = json.loads(self._runner.run(args, input_bytes))
+        except GhProviderFailure:
+            raise GhProviderFailure(failure_code) from None
         if not isinstance(result, dict):
             raise LookupError("github provider response is not an object")
         return result

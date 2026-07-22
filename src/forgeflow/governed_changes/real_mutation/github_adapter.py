@@ -15,7 +15,7 @@ _REPOSITORY_ID = "1300511729"
 _BASE_SHA = "97c8220cd713ebf61124ac2de2f3eadc6e4dc222"
 _MINT_CAPABILITY = object()
 _COMMIT_SHA = re.compile(r"^[0-9a-f]{40}$")
-_PROVIDER_FAILURE_CODES = frozenset(("credential_rejected", "rate_limited", "provider_rejected", "provider_unavailable"))
+_PROVIDER_FAILURE_CODES = frozenset(("credential_rejected", "rate_limited", "provider_rejected", "provider_unavailable", "base_read_failed", "blob_create_failed", "tree_create_failed", "commit_create_failed", "branch_update_failed", "draft_pr_create_failed"))
 
 
 class FixtureGitHubProvider(Protocol):
