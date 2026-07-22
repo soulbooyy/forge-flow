@@ -8,10 +8,9 @@ import re
 from typing import Protocol
 
 from .models import RealMutationPDR, RealMutationRequest
+from .fixture_registry import FIXTURE_TARGET_FILE_ID, FIXTURE_TARGET_PATH
 
 
-_TARGET_FILE_ID = "fixture-calculator-v1"
-_TARGET_PATH = "calculator.py"
 _REPOSITORY_ID = "1300511729"
 _BASE_SHA = "97c8220cd713ebf61124ac2de2f3eadc6e4dc222"
 _MINT_CAPABILITY = object()
@@ -111,7 +110,7 @@ class FixtureGitHubMutationAdapter:
             self._claimed_keys.add(request.idempotency_key)
             if self._provider.create_branch(branch_name, _BASE_SHA) != branch_name:
                 return RealMutationResult("ambiguous_result")
-            commit = self._provider.create_commit(branch_name, _TARGET_PATH, payload.content_for_provider, "fix: correct calculator addition")
+            commit = self._provider.create_commit(branch_name, FIXTURE_TARGET_PATH, payload.content_for_provider, "fix: correct calculator addition")
             if not _COMMIT_SHA.fullmatch(commit):
                 return RealMutationResult("ambiguous_result")
             pr_number = self._provider.create_draft_pr(branch_name, "main", "Fix calculator addition bug", "Closes #1.\n\nAutomated fixture-only draft PR.")
@@ -128,7 +127,7 @@ class FixtureGitHubMutationAdapter:
     def _authorized(request: object, pdr: object, payload: object, now: int) -> bool:
         if not isinstance(request, RealMutationRequest) or not isinstance(pdr, RealMutationPDR) or not isinstance(payload, EphemeralMutationPayload):
             return False
-        if payload.destroyed or payload.target_file_id != _TARGET_FILE_ID or not pdr.is_fresh_at(now):
+        if payload.destroyed or payload.target_file_id != FIXTURE_TARGET_FILE_ID or not pdr.is_fresh_at(now):
             return False
         if (request.repository_id, request.base_sha, request.payload_id, request.payload_digest, request.idempotency_key, request.real_mutation_pdr_id) != (
             _REPOSITORY_ID, _BASE_SHA, pdr.payload_id, pdr.payload_digest, pdr.idempotency_key, pdr.pdr_id

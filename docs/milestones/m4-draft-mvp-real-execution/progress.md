@@ -60,4 +60,17 @@ Completed 2026-07-22 without invoking the CLI.
   base, target, deterministic governed-change branch format, commit message,
   Issue title, and Draft PR body.
 - Targeted RED/GREEN tests and independent review passed. No GitHub request or
-  mutation was attempted by this batch.
+mutation was attempted by this batch.
+
+## Real payload harness
+
+Completed 2026-07-22 without external mutation.
+
+- A single registry owns the fixture target ID/path and immutable input/output
+  digests. The source is accepted only when it matches the registered snapshot.
+- The only transformer changes one subtraction operator in a return expression;
+  it requires exactly one match and validates the registered output digest.
+- Payload bytes remain non-serializable and are passed only to the in-memory
+  provider boundary. A controlled read-only revalidation of the fixed fixture
+  SHA passed without retaining or displaying source content.
+- Targeted tests, authority checks, and independent review passed.

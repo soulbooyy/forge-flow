@@ -37,7 +37,7 @@ class GitHubCliFixtureProviderTest(unittest.TestCase):
         ])
         provider = GitHubCliFixtureProvider(runner)
 
-        commit = provider.create_commit("forgeflow-governed-change-aaaaaaaaaaaa", "calculator.py", b"return left + right\n", "fix: correct calculator addition")
+        commit = provider.create_commit("forgeflow-governed-change-aaaaaaaaaaaa", "src/calculator.py", b"return left + right\n", "fix: correct calculator addition")
 
         self.assertEqual(commit, "e" * 40)
         blob_args, blob_body = runner.calls[1]
@@ -72,7 +72,7 @@ class GitHubCliFixtureProviderTest(unittest.TestCase):
         provider = GitHubCliFixtureProvider(runner)
 
         with self.assertRaises(LookupError):
-            provider.create_commit("forgeflow-governed-change-aaaaaaaaaaaa", "calculator.py", b"x", "fix: correct calculator addition")
+            provider.create_commit("forgeflow-governed-change-aaaaaaaaaaaa", "src/calculator.py", b"x", "fix: correct calculator addition")
 
         self.assertEqual(len(runner.calls), 2)
 

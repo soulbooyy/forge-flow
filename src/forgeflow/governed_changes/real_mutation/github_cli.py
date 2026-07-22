@@ -8,6 +8,8 @@ import re
 import subprocess
 from typing import Protocol
 
+from .fixture_registry import FIXTURE_TARGET_PATH
+
 
 _REPOSITORY = "soulbooyy/forgeflow-m4-fixture"
 _BASE_SHA = "97c8220cd713ebf61124ac2de2f3eadc6e4dc222"
@@ -71,7 +73,7 @@ class GitHubCliFixtureProvider:
         return branch_name if response.get("ref") == f"refs/heads/{branch_name}" else ""
 
     def create_commit(self, branch_name: str, target_path: str, content: bytes, message: str) -> str:
-        if not _BRANCH.fullmatch(branch_name) or target_path != "calculator.py" or message != "fix: correct calculator addition":
+        if not _BRANCH.fullmatch(branch_name) or target_path != FIXTURE_TARGET_PATH or message != "fix: correct calculator addition":
             raise ValueError("unregistered commit request")
         base = self._json(("gh", "api", f"repos/{_REPOSITORY}/git/commits/{_BASE_SHA}"), None)
         tree_sha = base.get("tree", {}).get("sha") if isinstance(base.get("tree"), dict) else None
@@ -81,7 +83,7 @@ class GitHubCliFixtureProvider:
         blob_sha = blob.get("sha")
         if not isinstance(blob_sha, str) or not _SHA.fullmatch(blob_sha):
             raise LookupError("blob creation did not return an identity")
-        tree = self._json(("gh", "api", "--method", "POST", f"repos/{_REPOSITORY}/git/trees", "--input", "-"), {"base_tree": tree_sha, "tree": [{"path": "calculator.py", "mode": "100644", "type": "blob", "sha": blob_sha}]})
+        tree = self._json(("gh", "api", "--method", "POST", f"repos/{_REPOSITORY}/git/trees", "--input", "-"), {"base_tree": tree_sha, "tree": [{"path": FIXTURE_TARGET_PATH, "mode": "100644", "type": "blob", "sha": blob_sha}]})
         created_tree = tree.get("sha")
         if not isinstance(created_tree, str) or not _SHA.fullmatch(created_tree):
             raise LookupError("tree creation did not return an identity")
