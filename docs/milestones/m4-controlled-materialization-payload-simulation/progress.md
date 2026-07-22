@@ -28,7 +28,19 @@ Completed 2026-07-21.
 
 ## Phase 3
 
-Pending.
+Completed 2026-07-22.
+
+- Added the isolated local-Docker protocol/seam with exact Feature 1 profile
+  rejection, local/no-network/read-only/empty-environment/credential/resource
+  proofs, and no process surface outside `sandbox.py`.
+- Materialization retains only facts and digests in payload contracts; security
+  non-pass states, validation assertion failures, and infrastructure failures
+  terminate fail-closed without payload text.
+- Added explicit current-time PDR freshness, every proof-gap coverage, cleanup
+  coverage, and a private one-shot harness continuation. It exposes a live
+  lease only during the same lifecycle, then destroys it in `finally`.
+- Independent review found and closed profile-proof, security-fact, expiry,
+  public-handle, and continuation-lifecycle gaps; targeted tests passed.
 
 ## Phase 4
 
