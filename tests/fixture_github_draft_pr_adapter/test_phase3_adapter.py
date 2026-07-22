@@ -1,23 +1,23 @@
 from dataclasses import replace
 import unittest
 
-from forgeflow.approval_trace_durable_summary.canonical import (
+from forgeflow.governed_changes.approval_trace.canonical import (
     artifact_reference_id_for,
     decision_id_for,
     summary_id_for,
 )
-from forgeflow.approval_trace_durable_summary.models import (
+from forgeflow.governed_changes.approval_trace.models import (
     ApprovalDecision,
     DurableRunSummary,
     MetadataArtifactReference,
     SCHEMA_VERSION as DURABLE_SCHEMA,
 )
-from forgeflow.fixture_github_draft_pr_adapter.adapter import ControlledFixtureAdapter
-from forgeflow.fixture_github_draft_pr_adapter.models import (
+from forgeflow.governed_changes.draft_pr.adapter import ControlledFixtureAdapter
+from forgeflow.governed_changes.draft_pr.models import (
     DraftPRRequest,
     FixturePolicyDecisionRecord,
 )
-from forgeflow.fixture_github_draft_pr_adapter.service import RedactedBodyFacts
+from forgeflow.governed_changes.draft_pr.service import RedactedBodyFacts
 
 D = "sha256:" + "a" * 64
 D2 = "sha256:" + "b" * 64

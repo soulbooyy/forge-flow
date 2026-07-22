@@ -2,16 +2,16 @@ from __future__ import annotations
 
 import unittest
 
-from forgeflow.controlled_materialization_payload_simulation.models import TransformationManifest
-from forgeflow.controlled_materialization_payload_simulation.policy import issue_materialization_pdr
-from forgeflow.controlled_materialization_payload_simulation.registry import (
+from forgeflow.governed_changes.materialization.models import TransformationManifest
+from forgeflow.governed_changes.materialization.policy import issue_materialization_pdr
+from forgeflow.governed_changes.materialization.registry import (
     REGISTERED_SNAPSHOT,
     revalidate_snapshot,
     resolve_target_file,
     resolve_transformer,
 )
-from forgeflow.controlled_materialization_payload_simulation.sandbox import DockerCapabilityProof, DockerMaterializationFacts, ValidationFacts
-from forgeflow.controlled_materialization_payload_simulation.service import EphemeralPayloadLease, materialize
+from forgeflow.governed_changes.materialization.sandbox import DockerCapabilityProof, DockerMaterializationFacts, ValidationFacts
+from forgeflow.governed_changes.materialization.service import EphemeralPayloadLease, materialize
 
 
 class RegistryServiceTest(unittest.TestCase):

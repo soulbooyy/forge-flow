@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import FrozenInstanceError
 import unittest
 
-from forgeflow.deterministic_patch_artifact_security.models import (
+from forgeflow.governed_changes.artifact_security.models import (
     PatchArtifact,
     PatchIntent,
     PatchSecurityTerminal,

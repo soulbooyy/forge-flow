@@ -1,8 +1,8 @@
 import unittest
 from dataclasses import FrozenInstanceError
 
-from forgeflow.fixture_github_draft_pr_adapter.models import DraftPRRequest, PRTerminal, IdempotencyRecord, PRResult, BASE_REVISION, ISSUE_ID, ISSUE_NUMBER, PROFILE_ID, PROFILE_VERSION, REPOSITORY_IDENTITY
-from forgeflow.fixture_github_draft_pr_adapter.canonical import request_id_for, idempotency_record_id_for, pr_result_id_for
+from forgeflow.governed_changes.draft_pr.models import DraftPRRequest, PRTerminal, IdempotencyRecord, PRResult, BASE_REVISION, ISSUE_ID, ISSUE_NUMBER, PROFILE_ID, PROFILE_VERSION, REPOSITORY_IDENTITY
+from forgeflow.governed_changes.draft_pr.canonical import request_id_for, idempotency_record_id_for, pr_result_id_for
 
 D = "sha256:" + "a" * 64
 

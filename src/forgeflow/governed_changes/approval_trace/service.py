@@ -4,10 +4,10 @@ from dataclasses import asdict, replace
 import hashlib
 import json
 
-from forgeflow.deterministic_patch_artifact_security.canonical import (
+from forgeflow.governed_changes.artifact_security.canonical import (
     is_canonical_candidate,
 )
-from forgeflow.deterministic_patch_artifact_security.models import (
+from forgeflow.governed_changes.artifact_security.models import (
     RedactedArtifactReferenceCandidate,
 )
 

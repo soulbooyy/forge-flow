@@ -10,8 +10,8 @@ import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
-from forgeflow.governed_action_sandbox import canonical_bytes, sha256_hex  # noqa: E402
-from forgeflow.governed_action_sandbox.canonical import (  # noqa: E402
+from forgeflow.governed_changes.action_execution import canonical_bytes, sha256_hex  # noqa: E402
+from forgeflow.governed_changes.action_execution.canonical import (  # noqa: E402
     action_intent_id_for,
     command_intent_id_for,
     execution_attempt_id_for,

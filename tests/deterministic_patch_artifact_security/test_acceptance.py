@@ -2,8 +2,8 @@
 from __future__ import annotations
 from dataclasses import asdict, replace
 import unittest
-from forgeflow.deterministic_patch_artifact_security.models import PatchSecurityTerminal
-from forgeflow.deterministic_patch_artifact_security.service import build_patch_security_facts
+from forgeflow.governed_changes.artifact_security.models import PatchSecurityTerminal
+from forgeflow.governed_changes.artifact_security.service import build_patch_security_facts
 from tests.deterministic_patch_artifact_security.test_service import R, B, proposal
 
 class AcceptanceTests(unittest.TestCase):
@@ -22,7 +22,7 @@ class AcceptanceTests(unittest.TestCase):
 
     def test_feature_package_has_no_side_effect_surface(self):
         from pathlib import Path
-        root = Path(__file__).parents[2] / "src/forgeflow/deterministic_patch_artifact_security"
+        root = Path(__file__).parents[2] / "src/forgeflow/governed_changes/artifact_security"
         paths = tuple(root.glob("*.py"))
         self.assertTrue(paths)
         source = "\n".join(path.read_text() for path in paths)

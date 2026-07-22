@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import unittest
 
-from forgeflow.controlled_materialization_payload_simulation.models import MaterializationPDR
-from forgeflow.m4_draft_mvp_real_execution.models import RealMutationPDR, RealMutationRequest, RealMutationTerminal
+from forgeflow.governed_changes.materialization.models import MaterializationPDR
+from forgeflow.governed_changes.real_mutation.models import RealMutationPDR, RealMutationRequest, RealMutationTerminal
 
 
 class RealMutationContractsTest(unittest.TestCase):

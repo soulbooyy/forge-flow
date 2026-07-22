@@ -2,8 +2,8 @@
 from __future__ import annotations
 from dataclasses import replace
 import unittest
-from forgeflow.deterministic_patch_artifact_security.models import DeterministicPatchArtifactSecurityValidationError, PatchSecurityTerminal
-from forgeflow.deterministic_patch_artifact_security.service import build_patch_security_facts
+from forgeflow.governed_changes.artifact_security.models import DeterministicPatchArtifactSecurityValidationError, PatchSecurityTerminal
+from forgeflow.governed_changes.artifact_security.service import build_patch_security_facts
 from forgeflow.patch_proposal.canonical import candidate_digest_for, policy_decision_id_for, proposal_id_for
 from forgeflow.patch_proposal.models import CandidateChange, FixStrategy, PatchProposal, PolicyDecisionRef, RootCauseHypothesis, TaskInput
 R="fixture-repository-1300511729"; B="97c8220cd713ebf61124ac2de2f3eadc6e4dc222"

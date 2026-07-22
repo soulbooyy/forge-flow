@@ -5,20 +5,20 @@ from __future__ import annotations
 from dataclasses import replace
 import unittest
 
-from forgeflow.deterministic_patch_artifact_security.canonical import (
+from forgeflow.governed_changes.artifact_security.canonical import (
     pre_scan_metadata_id_for,
     redaction_id_for,
     scan_id_for,
     sha256_hex,
 )
-from forgeflow.deterministic_patch_artifact_security.models import (
+from forgeflow.governed_changes.artifact_security.models import (
     PreScanPatchMetadataIdentity,
 )
-from forgeflow.deterministic_patch_artifact_security.policy import (
+from forgeflow.governed_changes.artifact_security.policy import (
     redact_metadata,
     scan_metadata,
 )
-from forgeflow.deterministic_patch_artifact_security.profile import (
+from forgeflow.governed_changes.artifact_security.profile import (
     M4_PATCH_METADATA_SECURITY_V1,
 )
 

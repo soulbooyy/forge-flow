@@ -6,7 +6,7 @@ import hashlib
 from dataclasses import dataclass
 from collections.abc import Callable
 
-from forgeflow.governed_action_sandbox.profile import M4_FIXTURE_V1
+from forgeflow.governed_changes.action_execution.profile import M4_FIXTURE_V1
 
 from .models import EphemeralPayloadHandle, MaterializationPDR, MaterializationTerminal, MaterializedCommitPayload, TransformationManifest, _mint_ephemeral_handle
 from .registry import VerifiedSnapshot, resolve_transformer

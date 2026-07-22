@@ -2,8 +2,8 @@ from dataclasses import FrozenInstanceError
 import hashlib
 import json
 import unittest
-from forgeflow.approval_trace_durable_summary.models import ApprovalRequest,ApprovalDecision,MetadataArtifactReference,TraceEvent,DurableRunSummary
-from forgeflow.approval_trace_durable_summary.canonical import request_id_for,decision_id_for,artifact_reference_id_for,event_id_for,summary_id_for
+from forgeflow.governed_changes.approval_trace.models import ApprovalRequest,ApprovalDecision,MetadataArtifactReference,TraceEvent,DurableRunSummary
+from forgeflow.governed_changes.approval_trace.canonical import request_id_for,decision_id_for,artifact_reference_id_for,event_id_for,summary_id_for
 D="sha256:"+"a"*64
 D2="sha256:"+"b"*64
 SCHEMA="forgeflow.approval-trace-durable-summary.v1"

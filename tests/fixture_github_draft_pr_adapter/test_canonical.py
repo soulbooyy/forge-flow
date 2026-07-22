@@ -1,8 +1,8 @@
 from dataclasses import replace
 import unittest
 
-from forgeflow.fixture_github_draft_pr_adapter.models import DraftPRRequest, FixturePolicyDecisionRecord, IdempotencyRecord, PRTerminal, PRResult
-from forgeflow.fixture_github_draft_pr_adapter.canonical import request_id_for, policy_decision_id_for, terminal_id_for, idempotency_record_id_for, pr_result_id_for
+from forgeflow.governed_changes.draft_pr.models import DraftPRRequest, FixturePolicyDecisionRecord, IdempotencyRecord, PRTerminal, PRResult
+from forgeflow.governed_changes.draft_pr.canonical import request_id_for, policy_decision_id_for, terminal_id_for, idempotency_record_id_for, pr_result_id_for
 
 D = "sha256:" + "a" * 64
 

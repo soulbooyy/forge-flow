@@ -3,10 +3,10 @@ import tempfile
 from pathlib import Path
 from dataclasses import replace
 
-from forgeflow.approval_trace_durable_summary import service
-from forgeflow.approval_trace_durable_summary.store import publish_metadata
-from forgeflow.deterministic_patch_artifact_security.canonical import candidate_id_for
-from forgeflow.deterministic_patch_artifact_security.models import RedactedArtifactReferenceCandidate
+from forgeflow.governed_changes.approval_trace import service
+from forgeflow.governed_changes.approval_trace.store import publish_metadata
+from forgeflow.governed_changes.artifact_security.canonical import candidate_id_for
+from forgeflow.governed_changes.artifact_security.models import RedactedArtifactReferenceCandidate
 
 D = "sha256:" + "a" * 64
 

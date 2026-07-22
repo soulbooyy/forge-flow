@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import replace
 import unittest
 
-from forgeflow.deterministic_patch_artifact_security.canonical import (
+from forgeflow.governed_changes.artifact_security.canonical import (
     candidate_id_for,
     canonical_bytes,
     is_canonical_candidate,
@@ -13,7 +13,7 @@ from forgeflow.deterministic_patch_artifact_security.canonical import (
     sha256_hex,
     terminal_id_for,
 )
-from forgeflow.deterministic_patch_artifact_security.models import (
+from forgeflow.governed_changes.artifact_security.models import (
     PatchSecurityTerminal,
     PreScanPatchMetadataIdentity,
     RedactionFact,

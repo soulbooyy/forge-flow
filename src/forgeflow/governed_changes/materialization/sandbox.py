@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from typing import Protocol
 import subprocess
 
-from forgeflow.governed_action_sandbox.profile import M4_FIXTURE_V1, M4FixtureProfile
+from forgeflow.governed_changes.action_execution.profile import M4_FIXTURE_V1, M4FixtureProfile
 
 
 @dataclass(frozen=True, slots=True)

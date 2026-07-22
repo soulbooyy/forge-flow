@@ -1,33 +1,3 @@
-"""Deterministic metadata-only patch artifact security facts."""
-
-from .models import (
-    DeterministicPatchArtifactSecurityValidationError,
-    PatchArtifact,
-    PatchIntent,
-    PatchSecurityTerminal,
-    PreScanPatchMetadataIdentity,
-    RedactedArtifactReferenceCandidate,
-    RedactionFact,
-    ScanFinding,
-    SecretScanResult,
-)
-from .service import (
-    PatchSecurityEnvelope,
-    PatchSecurityFacts,
-    build_patch_security_facts,
-)
-
-__all__ = [
-    "DeterministicPatchArtifactSecurityValidationError",
-    "PatchArtifact",
-    "PatchSecurityTerminal",
-    "PatchSecurityEnvelope",
-    "PatchSecurityFacts",
-    "PatchIntent",
-    "PreScanPatchMetadataIdentity",
-    "RedactedArtifactReferenceCandidate",
-    "RedactionFact",
-    "ScanFinding",
-    "SecretScanResult",
-    "build_patch_security_facts",
-]
+"""Deprecated compatibility import; use forgeflow.governed_changes.artifact_security."""
+from forgeflow.governed_changes._compat import install_legacy_alias
+install_legacy_alias(__name__, "forgeflow.governed_changes.artifact_security")

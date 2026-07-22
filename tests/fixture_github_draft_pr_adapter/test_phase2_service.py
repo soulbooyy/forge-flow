@@ -1,23 +1,23 @@
 import unittest
 
-from forgeflow.approval_trace_durable_summary.models import (
+from forgeflow.governed_changes.approval_trace.models import (
     ApprovalDecision,
     DurableRunSummary,
     MetadataArtifactReference,
     SCHEMA_VERSION as DURABLE_SCHEMA,
 )
-from forgeflow.approval_trace_durable_summary.canonical import (
+from forgeflow.governed_changes.approval_trace.canonical import (
     artifact_reference_id_for,
     decision_id_for,
     summary_id_for,
 )
 from dataclasses import replace
-from forgeflow.fixture_github_draft_pr_adapter.models import (
+from forgeflow.governed_changes.draft_pr.models import (
     DraftPRRequest,
     FixturePolicyDecisionRecord,
     PRResult,
 )
-from forgeflow.fixture_github_draft_pr_adapter.service import (
+from forgeflow.governed_changes.draft_pr.service import (
     RedactedBodyFacts,
     evaluate_eligibility,
     render_redacted_body,

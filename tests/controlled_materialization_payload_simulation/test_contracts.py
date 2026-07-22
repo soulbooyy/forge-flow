@@ -4,12 +4,12 @@ from dataclasses import replace
 import json
 import unittest
 
-from forgeflow.controlled_materialization_payload_simulation.canonical import (
+from forgeflow.governed_changes.materialization.canonical import (
     materialization_pdr_id_for,
     materialized_payload_id_for,
     payload_eligibility_pdr_id_for,
 )
-from forgeflow.controlled_materialization_payload_simulation.models import (
+from forgeflow.governed_changes.materialization.models import (
     EphemeralPayloadHandle,
     MaterializationPDR,
     MaterializationTerminal,

@@ -2,10 +2,10 @@ from dataclasses import replace
 from pathlib import Path
 import unittest
 
-from forgeflow.approval_trace_durable_summary.canonical import artifact_reference_id_for, decision_id_for, summary_id_for
-from forgeflow.approval_trace_durable_summary.models import ApprovalDecision, DurableRunSummary, MetadataArtifactReference, SCHEMA_VERSION as DURABLE_SCHEMA
-from forgeflow.fixture_github_draft_pr_adapter.adapter import ControlledFixtureAdapter
-from forgeflow.fixture_github_draft_pr_adapter.models import DraftPRRequest, FixturePolicyDecisionRecord
+from forgeflow.governed_changes.approval_trace.canonical import artifact_reference_id_for, decision_id_for, summary_id_for
+from forgeflow.governed_changes.approval_trace.models import ApprovalDecision, DurableRunSummary, MetadataArtifactReference, SCHEMA_VERSION as DURABLE_SCHEMA
+from forgeflow.governed_changes.draft_pr.adapter import ControlledFixtureAdapter
+from forgeflow.governed_changes.draft_pr.models import DraftPRRequest, FixturePolicyDecisionRecord
 
 class Phase4AcceptanceTests(unittest.TestCase):
     def _facts(self):
@@ -19,7 +19,7 @@ class Phase4AcceptanceTests(unittest.TestCase):
         summary = DurableRunSummary(DURABLE_SCHEMA, digest_b, "run-0001", (digest_a,), (reference.artifact_reference_id,), (policy.policy_decision_id,), (approval.decision_id,), "complete")
         summary = replace(summary, summary_id=summary_id_for(summary))
         request = DraftPRRequest.create("run-0001", policy.policy_decision_id, approval.decision_id, reference.artifact_reference_id, summary.summary_id, "idempotency-001")
-        from forgeflow.fixture_github_draft_pr_adapter.service import RedactedBodyFacts
+        from forgeflow.governed_changes.draft_pr.service import RedactedBodyFacts
         facts = RedactedBodyFacts("fixture-task-accepted", "governed-metadata-update", ("change-001",), "succeeded", "passed", 0, "none")
         return request, policy, approval, reference, summary, facts
 

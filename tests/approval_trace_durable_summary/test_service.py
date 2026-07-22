@@ -1,11 +1,11 @@
 import unittest
 from dataclasses import replace
 
-from forgeflow.approval_trace_durable_summary.service import append_summary, metadata_bytes_for, publishable_metadata
-from forgeflow.approval_trace_durable_summary.canonical import event_id_for, summary_id_for
-from forgeflow.approval_trace_durable_summary.models import DurableRunSummary, TraceEvent
-from forgeflow.deterministic_patch_artifact_security.canonical import candidate_id_for
-from forgeflow.deterministic_patch_artifact_security.models import RedactedArtifactReferenceCandidate
+from forgeflow.governed_changes.approval_trace.service import append_summary, metadata_bytes_for, publishable_metadata
+from forgeflow.governed_changes.approval_trace.canonical import event_id_for, summary_id_for
+from forgeflow.governed_changes.approval_trace.models import DurableRunSummary, TraceEvent
+from forgeflow.governed_changes.artifact_security.canonical import candidate_id_for
+from forgeflow.governed_changes.artifact_security.models import RedactedArtifactReferenceCandidate
 
 
 D = "sha256:" + "a" * 64

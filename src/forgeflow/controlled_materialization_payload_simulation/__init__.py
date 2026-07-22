@@ -1,19 +1,3 @@
-"""Local-only controlled materialization and fake payload simulation."""
-
-from .models import (
-    EphemeralPayloadHandle,
-    MaterializationPDR,
-    MaterializationTerminal,
-    MaterializedCommitPayload,
-    PayloadEligibilityPDR,
-    TransformationManifest,
-)
-
-__all__ = (
-    "EphemeralPayloadHandle",
-    "MaterializationPDR",
-    "MaterializationTerminal",
-    "MaterializedCommitPayload",
-    "PayloadEligibilityPDR",
-    "TransformationManifest",
-)
+"""Deprecated compatibility import; use forgeflow.governed_changes.materialization."""
+from forgeflow.governed_changes._compat import install_legacy_alias
+install_legacy_alias(__name__, "forgeflow.governed_changes.materialization")

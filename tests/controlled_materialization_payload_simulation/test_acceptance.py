@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import unittest
 
-from forgeflow.controlled_materialization_payload_simulation.fake_adapter import reject_real_mutation_input
-from forgeflow.controlled_materialization_payload_simulation.models import MaterializationPDR, PayloadEligibilityPDR
+from forgeflow.governed_changes.materialization.fake_adapter import reject_real_mutation_input
+from forgeflow.governed_changes.materialization.models import MaterializationPDR, PayloadEligibilityPDR
 
 
 class AcceptanceTest(unittest.TestCase):

@@ -8,7 +8,7 @@ import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
-from forgeflow.governed_action_sandbox import (  # noqa: E402
+from forgeflow.governed_changes.action_execution import (  # noqa: E402
     ActionIntent,
     CommandIntent,
     ExecutionAttempt,

@@ -3,12 +3,12 @@
 from dataclasses import dataclass
 import re
 
-from forgeflow.approval_trace_durable_summary.models import (
+from forgeflow.governed_changes.approval_trace.models import (
     ApprovalDecision,
     DurableRunSummary,
     MetadataArtifactReference,
 )
-from forgeflow.approval_trace_durable_summary.canonical import (
+from forgeflow.governed_changes.approval_trace.canonical import (
     artifact_reference_id_for,
     decision_id_for,
     summary_id_for,

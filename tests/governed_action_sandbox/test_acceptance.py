@@ -8,7 +8,7 @@ import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
-from forgeflow.governed_action_sandbox import (  # noqa: E402
+from forgeflow.governed_changes.action_execution import (  # noqa: E402
     M4_FIXTURE_V1,
     OciCapabilityProof,
     OciRunFacts,
@@ -95,7 +95,7 @@ class GovernedActionSandboxAcceptanceTests(unittest.TestCase):
         self.assertEqual((attempt.status, attempt.failure_reason), ("not_started", "sandbox_unavailable"))
         self.assertEqual(backend.run_calls, 0)
         self.assertEqual(attempt.artifact_ref_ids, ())
-        for path in (ROOT / "src" / "forgeflow" / "governed_action_sandbox").glob("*.py"):
+        for path in (ROOT / "src" / "forgeflow" / "governed_changes" / "action_execution").glob("*.py"):
             source = path.read_text(encoding="utf-8")
             for forbidden in ("subprocess", "socket", "requests", "urllib", "httpx", "os.system", "pathlib.Path"):
                 self.assertNotIn(forbidden, source)

@@ -4,10 +4,10 @@ from pathlib import Path
 from dataclasses import replace
 import hashlib
 
-from forgeflow.approval_trace_durable_summary.canonical import artifact_reference_id_for
-from forgeflow.approval_trace_durable_summary.models import MetadataArtifactReference
-from forgeflow.approval_trace_durable_summary.service import metadata_bytes_for
-from forgeflow.approval_trace_durable_summary.store import _write_metadata, publish_metadata
+from forgeflow.governed_changes.approval_trace.canonical import artifact_reference_id_for
+from forgeflow.governed_changes.approval_trace.models import MetadataArtifactReference
+from forgeflow.governed_changes.approval_trace.service import metadata_bytes_for
+from forgeflow.governed_changes.approval_trace.store import _write_metadata, publish_metadata
 
 D = "sha256:" + "a" * 64
 

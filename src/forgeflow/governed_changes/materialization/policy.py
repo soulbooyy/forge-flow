@@ -6,7 +6,7 @@ from itertools import count
 
 from .models import MaterializationPDR, TransformationManifest
 from .registry import REGISTERED_SNAPSHOT, VerifiedSnapshot, resolve_transformer
-from forgeflow.governed_action_sandbox.profile import M4_FIXTURE_V1
+from forgeflow.governed_changes.action_execution.profile import M4_FIXTURE_V1
 
 _ATTEMPT_SEQUENCE = count(1)
 
