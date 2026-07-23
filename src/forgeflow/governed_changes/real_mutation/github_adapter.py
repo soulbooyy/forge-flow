@@ -15,7 +15,7 @@ _REPOSITORY_ID = "1300511729"
 _BASE_SHA = "97c8220cd713ebf61124ac2de2f3eadc6e4dc222"
 _MINT_CAPABILITY = object()
 _COMMIT_SHA = re.compile(r"^[0-9a-f]{40}$")
-_PROVIDER_FAILURE_CODES = frozenset(("credential_rejected", "rate_limited", "provider_rejected", "provider_unavailable", "branch_create_failed", "base_read_failed", "blob_create_failed", "tree_create_failed", "commit_create_failed", "branch_update_failed", "draft_pr_create_failed"))
+_PROVIDER_FAILURE_CODES = frozenset(("authorization_check_failed", "credential_rejected", "rate_limited", "provider_rejected", "provider_unavailable", "branch_create_failed", "base_read_failed", "blob_create_failed", "tree_create_failed", "commit_create_failed", "branch_update_failed", "draft_pr_create_failed"))
 
 
 class _StageFailure(Exception):
@@ -104,7 +104,7 @@ class FixtureGitHubMutationAdapter:
         self._claimed_keys: set[str] = set()
 
     def execute(self, request: RealMutationRequest, pdr: RealMutationPDR, payload: EphemeralMutationPayload, *, now: int) -> RealMutationResult:
-        stage = "provider_unavailable"
+        stage = "authorization_check_failed"
         try:
             if not self._authorized(request, pdr, payload, now):
                 return RealMutationResult("not_authorized")
