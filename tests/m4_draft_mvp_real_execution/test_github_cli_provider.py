@@ -73,6 +73,10 @@ class GitHubCliFixtureProviderTest(unittest.TestCase):
         with self.assertRaisesRegex(GhProviderFailure, "pr_lookup_failed"):
             GitHubCliFixtureProvider(runner).find_by_idempotency_key("sha256:" + "a" * 64)
 
+    def test_reconciliation_malformed_branch_response_has_a_controlled_code(self):
+        with self.assertRaisesRegex(GhProviderFailure, "branch_lookup_response_invalid"):
+            GitHubCliFixtureProvider(FakeRunner(["not-a-sha"])).find_by_idempotency_key("sha256:" + "a" * 64)
+
     def test_malformed_git_identity_stops_before_following_write(self):
         runner = FakeRunner(['{"tree":{"sha":"' + "b" * 40 + '"}}', '{"sha":"not-a-sha"}'])
         provider = GitHubCliFixtureProvider(runner)

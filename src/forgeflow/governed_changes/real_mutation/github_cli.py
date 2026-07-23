@@ -72,7 +72,7 @@ class GitHubCliFixtureProvider:
         except Exception:
             raise GhProviderFailure("branch_lookup_failed") from None
         if not _SHA.fullmatch(commit):
-            raise LookupError("branch ref did not return a commit SHA")
+            raise GhProviderFailure("branch_lookup_response_invalid")
         try:
             records = json.loads(self._runner.run(("gh", "pr", "list", "--repo", _REPOSITORY, "--head", f"soulbooyy:{branch}", "--state", "all", "--limit", "2", "--json", "number,headRefOid")))
         except GhProviderFailure as error:
@@ -82,12 +82,12 @@ class GitHubCliFixtureProvider:
         except Exception:
             raise GhProviderFailure("pr_lookup_failed") from None
         if not isinstance(records, list) or len(records) > 1:
-            return (branch, None, None)
+            raise GhProviderFailure("pr_lookup_response_invalid")
         if not records:
             return (branch, commit, None)
         record = records[0]
         if not isinstance(record, dict) or not isinstance(record.get("number"), int) or record.get("headRefOid") != commit:
-            return (branch, None, None)
+            raise GhProviderFailure("pr_lookup_response_invalid")
         return (branch, commit, str(record["number"]))
 
     def create_branch(self, branch_name: str, base_sha: str) -> str:
