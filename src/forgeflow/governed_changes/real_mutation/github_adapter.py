@@ -18,6 +18,11 @@ _COMMIT_SHA = re.compile(r"^[0-9a-f]{40}$")
 _PROVIDER_FAILURE_CODES = frozenset(("credential_rejected", "rate_limited", "provider_rejected", "provider_unavailable", "branch_create_failed", "base_read_failed", "blob_create_failed", "tree_create_failed", "commit_create_failed", "branch_update_failed", "draft_pr_create_failed"))
 
 
+class _StageFailure(Exception):
+    def __init__(self, code: str) -> None:
+        self.code = code
+
+
 class FixtureGitHubProvider(Protocol):
     """Only this seam may later speak to the GitHub provider."""
 
@@ -102,10 +107,10 @@ class FixtureGitHubMutationAdapter:
         try:
             if not self._authorized(request, pdr, payload, now):
                 return RealMutationResult("not_authorized")
-            if self._provider.read_base_sha() != _BASE_SHA:
+            if self._call("base_read_failed", self._provider.read_base_sha) != _BASE_SHA:
                 return RealMutationResult("base_revision_mismatch")
             branch_name = "forgeflow-governed-change-" + request.idempotency_key[7:19]
-            existing = self._provider.find_by_idempotency_key(request.idempotency_key)
+            existing = self._call("provider_unavailable", self._provider.find_by_idempotency_key, request.idempotency_key)
             if existing is not None:
                 branch, commit, pr_number = existing
                 if branch != branch_name or commit is None or pr_number is None or not _COMMIT_SHA.fullmatch(commit) or not pr_number.isdecimal():
@@ -116,12 +121,12 @@ class FixtureGitHubMutationAdapter:
             # Claim before the provider call: a transport failure can occur after
             # the remote ref was created, and retrying that uncertainty is unsafe.
             self._claimed_keys.add(request.idempotency_key)
-            if self._provider.create_branch(branch_name, _BASE_SHA) != branch_name:
+            if self._call("branch_create_failed", self._provider.create_branch, branch_name, _BASE_SHA) != branch_name:
                 return RealMutationResult("ambiguous_result")
-            commit = self._provider.create_commit(branch_name, FIXTURE_TARGET_PATH, payload.content_for_provider, "fix: correct calculator addition")
+            commit = self._call("commit_create_failed", self._provider.create_commit, branch_name, FIXTURE_TARGET_PATH, payload.content_for_provider, "fix: correct calculator addition")
             if not _COMMIT_SHA.fullmatch(commit):
                 return RealMutationResult("ambiguous_result")
-            pr_number = self._provider.create_draft_pr(branch_name, "main", "Fix calculator addition bug", "Closes #1.\n\nAutomated fixture-only draft PR.")
+            pr_number = self._call("draft_pr_create_failed", self._provider.create_draft_pr, branch_name, "main", "Fix calculator addition bug", "Closes #1.\n\nAutomated fixture-only draft PR.")
             if not pr_number.isdecimal():
                 return RealMutationResult("ambiguous_result")
             return RealMutationResult("draft_pr_created", branch_name, commit, pr_number)
@@ -144,3 +149,11 @@ class FixtureGitHubMutationAdapter:
         ):
             return False
         return (payload.payload_id, payload.payload_digest) == (pdr.payload_id, pdr.payload_digest)
+
+    @staticmethod
+    def _call(code: str, function: object, *args: object) -> object:
+        try:
+            return function(*args)  # type: ignore[operator]
+        except Exception as error:
+            candidate = getattr(error, "code", None)
+            raise _StageFailure(candidate if isinstance(candidate, str) and candidate in _PROVIDER_FAILURE_CODES else code) from None

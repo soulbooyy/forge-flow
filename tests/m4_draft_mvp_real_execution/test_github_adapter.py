@@ -176,7 +176,7 @@ class FixtureGitHubMutationAdapterTest(unittest.TestCase):
         payload = _mint_ephemeral_payload(self.payload_id, self.payload_digest, "fixture-calculator-v1", self.payload_bytes)
         result = FixtureGitHubMutationAdapter(ForgedProvider(self.base_sha)).execute(self.request, self.pdr, payload, now=10)
 
-        self.assertEqual((result.outcome, result.provider_failure_code), ("provider_failed", "provider_unavailable"))
+        self.assertEqual((result.outcome, result.provider_failure_code), ("provider_failed", "branch_create_failed"))
         self.assertTrue(payload.destroyed)
 
     def test_unhashable_provider_code_is_normalized_fail_closed(self):
@@ -189,7 +189,7 @@ class FixtureGitHubMutationAdapterTest(unittest.TestCase):
         payload = _mint_ephemeral_payload(self.payload_id, self.payload_digest, "fixture-calculator-v1", self.payload_bytes)
         result = FixtureGitHubMutationAdapter(ForgedProvider(self.base_sha)).execute(self.request, self.pdr, payload, now=10)
 
-        self.assertEqual((result.outcome, result.provider_failure_code), ("provider_failed", "provider_unavailable"))
+        self.assertEqual((result.outcome, result.provider_failure_code), ("provider_failed", "branch_create_failed"))
 
 
 if __name__ == "__main__":
