@@ -81,7 +81,7 @@ class GitHubCliFixtureProvider:
         if base_sha != _BASE_SHA or not _BRANCH.fullmatch(branch_name):
             raise ValueError("unregistered branch request")
         payload = {"ref": f"refs/heads/{branch_name}", "sha": _BASE_SHA}
-        response = self._json(("gh", "api", "--method", "POST", f"repos/{_REPOSITORY}/git/refs", "--input", "-"), payload)
+        response = self._json(("gh", "api", "--method", "POST", f"repos/{_REPOSITORY}/git/refs", "--input", "-"), payload, "branch_create_failed")
         return branch_name if response.get("ref") == f"refs/heads/{branch_name}" else ""
 
     def create_commit(self, branch_name: str, target_path: str, content: bytes, message: str) -> str:
