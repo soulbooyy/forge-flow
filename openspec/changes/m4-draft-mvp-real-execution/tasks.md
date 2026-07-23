@@ -15,4 +15,4 @@
 
 - [ ] Implement and test local Docker harness after its gate.
 - [ ] Implement and test fixture-only GitHub Draft PR adapter after its gate.
-- [ ] Run one accepted external scenario, reset the fixture, and retain only redacted audit evidence.
+- [x] Run one accepted external scenario, reset the fixture, and retain only redacted audit evidence.

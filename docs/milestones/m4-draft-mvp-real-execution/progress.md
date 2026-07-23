@@ -99,3 +99,14 @@ Completed 2026-07-23 after one fully reconciled fixture scenario.
   rejection classifications.
 - RED/GREEN provider tests and independent local review passed; the next fresh
   scenario will identify which reconciliation operation needs correction.
+
+## Accepted fixture Draft PR scenario
+
+Completed 2026-07-23.
+
+- A fresh real-mutation PDR, idempotency key, and temporary fixture checkout
+  completed the registered branch, commit, and Draft PR path.
+- The Draft PR was closed, its branch was deleted, the checkout was removed,
+  and the registered `main` base SHA was re-audited successfully.
+- Only controlled outcome and stage evidence was retained; no token, payload,
+  source, raw provider response, or temporary path was recorded.
