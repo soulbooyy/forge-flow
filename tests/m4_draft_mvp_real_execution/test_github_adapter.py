@@ -2,8 +2,10 @@ from __future__ import annotations
 
 import hashlib
 import unittest
+from unittest.mock import patch
 
 from forgeflow.governed_changes.real_mutation.github_adapter import (
+    EphemeralMutationPayload,
     FixtureGitHubMutationAdapter,
     FixtureGitHubProvider,
     _mint_ephemeral_payload,
@@ -190,6 +192,68 @@ class FixtureGitHubMutationAdapterTest(unittest.TestCase):
         result = FixtureGitHubMutationAdapter(ForgedProvider(self.base_sha)).execute(self.request, self.pdr, payload, now=10)
 
         self.assertEqual((result.outcome, result.provider_failure_code), ("provider_failed", "branch_create_failed"))
+
+    def test_authorization_freshness_exception_uses_a_controlled_substage(self):
+        provider = FakeProvider(self.base_sha)
+        payload = _mint_ephemeral_payload(self.payload_id, self.payload_digest, "fixture-calculator-v1", self.payload_bytes)
+
+        with patch.object(RealMutationPDR, "is_fresh_at", side_effect=RuntimeError("injected")):
+            result = FixtureGitHubMutationAdapter(provider).execute(self.request, self.pdr, payload, now=10)
+
+        self.assertEqual((result.outcome, result.provider_failure_code), ("provider_failed", "authorization_freshness_check_failed"))
+        self.assertEqual(provider.created, [])
+        self.assertTrue(payload.destroyed)
+
+    def test_authorization_payload_exception_uses_a_controlled_substage(self):
+        provider = FakeProvider(self.base_sha)
+        payload = _mint_ephemeral_payload(self.payload_id, self.payload_digest, "fixture-calculator-v1", self.payload_bytes)
+        original = EphemeralMutationPayload.__getattribute__
+
+        def explode(instance, name):
+            if name == "target_file_id":
+                raise RuntimeError("injected")
+            return original(instance, name)
+
+        with patch.object(EphemeralMutationPayload, "__getattribute__", explode):
+            result = FixtureGitHubMutationAdapter(provider).execute(self.request, self.pdr, payload, now=10)
+
+        self.assertEqual((result.outcome, result.provider_failure_code), ("provider_failed", "authorization_payload_check_failed"))
+        self.assertEqual(provider.created, [])
+        self.assertTrue(payload.destroyed)
+
+    def test_authorization_lineage_exception_uses_a_controlled_substage(self):
+        provider = FakeProvider(self.base_sha)
+        payload = _mint_ephemeral_payload(self.payload_id, self.payload_digest, "fixture-calculator-v1", self.payload_bytes)
+        original = RealMutationRequest.__getattribute__
+
+        def explode(instance, name):
+            if name == "repository_id":
+                raise RuntimeError("injected")
+            return original(instance, name)
+
+        with patch.object(RealMutationRequest, "__getattribute__", explode):
+            result = FixtureGitHubMutationAdapter(provider).execute(self.request, self.pdr, payload, now=10)
+
+        self.assertEqual((result.outcome, result.provider_failure_code), ("provider_failed", "authorization_lineage_check_failed"))
+        self.assertEqual(provider.created, [])
+        self.assertTrue(payload.destroyed)
+
+    def test_authorization_binding_exception_uses_a_controlled_substage(self):
+        provider = FakeProvider(self.base_sha)
+        payload = _mint_ephemeral_payload(self.payload_id, self.payload_digest, "fixture-calculator-v1", self.payload_bytes)
+        original = EphemeralMutationPayload.__getattribute__
+
+        def explode(instance, name):
+            if name == "payload_id":
+                raise RuntimeError("injected")
+            return original(instance, name)
+
+        with patch.object(EphemeralMutationPayload, "__getattribute__", explode):
+            result = FixtureGitHubMutationAdapter(provider).execute(self.request, self.pdr, payload, now=10)
+
+        self.assertEqual((result.outcome, result.provider_failure_code), ("provider_failed", "authorization_binding_check_failed"))
+        self.assertEqual(provider.created, [])
+        self.assertTrue(payload.destroyed)
 
 
 if __name__ == "__main__":

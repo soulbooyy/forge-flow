@@ -74,3 +74,15 @@ Completed 2026-07-22 without external mutation.
   provider boundary. A controlled read-only revalidation of the fixed fixture
   SHA passed without retaining or displaying source content.
 - Targeted tests, authority checks, and independent review passed.
+
+## Authorization-stage diagnosis
+
+Completed 2026-07-23 without external mutation.
+
+- Authorization failures are partitioned into controlled payload, freshness,
+  lineage, and payload-binding stage codes; no original exception data is
+  retained in a result.
+- RED/GREEN fault-injection tests confirm every partition fails before a
+  provider write and destroys the ephemeral payload.
+- Targeted adapter, provider, payload, and contract tests passed; local review
+  found no further authority or result-surface expansion.

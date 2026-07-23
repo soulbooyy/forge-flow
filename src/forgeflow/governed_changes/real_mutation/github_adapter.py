@@ -15,7 +15,24 @@ _REPOSITORY_ID = "1300511729"
 _BASE_SHA = "97c8220cd713ebf61124ac2de2f3eadc6e4dc222"
 _MINT_CAPABILITY = object()
 _COMMIT_SHA = re.compile(r"^[0-9a-f]{40}$")
-_PROVIDER_FAILURE_CODES = frozenset(("authorization_check_failed", "credential_rejected", "rate_limited", "provider_rejected", "provider_unavailable", "branch_create_failed", "base_read_failed", "blob_create_failed", "tree_create_failed", "commit_create_failed", "branch_update_failed", "draft_pr_create_failed"))
+_PROVIDER_FAILURE_CODES = frozenset((
+    "authorization_check_failed",
+    "authorization_payload_check_failed",
+    "authorization_freshness_check_failed",
+    "authorization_lineage_check_failed",
+    "authorization_binding_check_failed",
+    "credential_rejected",
+    "rate_limited",
+    "provider_rejected",
+    "provider_unavailable",
+    "branch_create_failed",
+    "base_read_failed",
+    "blob_create_failed",
+    "tree_create_failed",
+    "commit_create_failed",
+    "branch_update_failed",
+    "draft_pr_create_failed",
+))
 
 
 class _StageFailure(Exception):
@@ -148,13 +165,36 @@ class FixtureGitHubMutationAdapter:
     def _authorized(request: object, pdr: object, payload: object, now: int) -> bool:
         if not isinstance(request, RealMutationRequest) or not isinstance(pdr, RealMutationPDR) or not isinstance(payload, EphemeralMutationPayload):
             return False
-        if payload.destroyed or payload.target_file_id != FIXTURE_TARGET_FILE_ID or not pdr.is_fresh_at(now):
+        try:
+            payload_is_eligible = not payload.destroyed and payload.target_file_id == FIXTURE_TARGET_FILE_ID
+        except Exception:
+            raise _StageFailure("authorization_payload_check_failed") from None
+        if not payload_is_eligible:
             return False
-        if (request.repository_id, request.base_sha, request.payload_id, request.payload_digest, request.idempotency_key, request.real_mutation_pdr_id) != (
-            _REPOSITORY_ID, _BASE_SHA, pdr.payload_id, pdr.payload_digest, pdr.idempotency_key, pdr.pdr_id
-        ):
+        try:
+            pdr_is_fresh = pdr.is_fresh_at(now)
+        except Exception:
+            raise _StageFailure("authorization_freshness_check_failed") from None
+        if not pdr_is_fresh:
             return False
-        return (payload.payload_id, payload.payload_digest) == (pdr.payload_id, pdr.payload_digest)
+        try:
+            request_lineage = (
+                request.repository_id, request.base_sha, request.payload_id,
+                request.payload_digest, request.idempotency_key,
+                request.real_mutation_pdr_id,
+            )
+            pdr_lineage = (
+                _REPOSITORY_ID, _BASE_SHA, pdr.payload_id, pdr.payload_digest,
+                pdr.idempotency_key, pdr.pdr_id,
+            )
+        except Exception:
+            raise _StageFailure("authorization_lineage_check_failed") from None
+        if request_lineage != pdr_lineage:
+            return False
+        try:
+            return (payload.payload_id, payload.payload_digest) == (pdr.payload_id, pdr.payload_digest)
+        except Exception:
+            raise _StageFailure("authorization_binding_check_failed") from None
 
     @staticmethod
     def _call(code: str, function: object, *args: object) -> object:
