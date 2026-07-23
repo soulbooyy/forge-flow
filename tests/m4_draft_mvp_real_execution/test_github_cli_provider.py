@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import unittest
 
-from forgeflow.governed_changes.real_mutation.github_cli import GhNotFound, GitHubCliFixtureProvider
+from forgeflow.governed_changes.real_mutation.github_cli import GhNotFound, GhProviderFailure, GitHubCliFixtureProvider
 
 
 class FakeRunner:
@@ -64,8 +64,14 @@ class GitHubCliFixtureProviderTest(unittest.TestCase):
         unavailable = GitHubCliFixtureProvider(FakeRunner([LookupError("unavailable")]))
 
         self.assertIsNone(not_found.find_by_idempotency_key("sha256:" + "a" * 64))
-        with self.assertRaises(LookupError):
+        with self.assertRaisesRegex(GhProviderFailure, "branch_lookup_failed"):
             unavailable.find_by_idempotency_key("sha256:" + "a" * 64)
+
+    def test_reconciliation_pr_lookup_failure_has_a_controlled_code(self):
+        runner = FakeRunner(["a" * 40, LookupError("unavailable")])
+
+        with self.assertRaisesRegex(GhProviderFailure, "pr_lookup_failed"):
+            GitHubCliFixtureProvider(runner).find_by_idempotency_key("sha256:" + "a" * 64)
 
     def test_malformed_git_identity_stops_before_following_write(self):
         runner = FakeRunner(['{"tree":{"sha":"' + "b" * 40 + '"}}', '{"sha":"not-a-sha"}'])

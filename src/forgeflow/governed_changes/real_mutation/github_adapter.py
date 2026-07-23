@@ -21,6 +21,8 @@ _PROVIDER_FAILURE_CODES = frozenset((
     "authorization_freshness_check_failed",
     "authorization_lineage_check_failed",
     "authorization_binding_check_failed",
+    "branch_lookup_failed",
+    "pr_lookup_failed",
     "credential_rejected",
     "rate_limited",
     "provider_rejected",

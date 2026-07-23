@@ -86,3 +86,16 @@ Completed 2026-07-23 without external mutation.
   provider write and destroys the ephemeral payload.
 - Targeted adapter, provider, payload, and contract tests passed; local review
   found no further authority or result-surface expansion.
+
+## Reconciliation lookup diagnosis
+
+Completed 2026-07-23 after one fully reconciled fixture scenario.
+
+- The scenario returned the controlled generic provider-unavailable result
+  before any branch was retained; reconciliation, checkout removal, and fixed
+  base-SHA audit completed.
+- Reconciliation now separately records controlled branch-ref and PR-list
+  lookup failures, while preserving credential, rate-limit, and provider
+  rejection classifications.
+- RED/GREEN provider tests and independent local review passed; the next fresh
+  scenario will identify which reconciliation operation needs correction.

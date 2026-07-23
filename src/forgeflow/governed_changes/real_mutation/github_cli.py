@@ -65,9 +65,22 @@ class GitHubCliFixtureProvider:
             commit = self._runner.run(("gh", "api", f"repos/{_REPOSITORY}/git/ref/heads/{branch}", "--jq", ".object.sha")).strip()
         except GhNotFound:
             return None
+        except GhProviderFailure as error:
+            if error.code != "provider_unavailable":
+                raise
+            raise GhProviderFailure("branch_lookup_failed") from None
+        except Exception:
+            raise GhProviderFailure("branch_lookup_failed") from None
         if not _SHA.fullmatch(commit):
             raise LookupError("branch ref did not return a commit SHA")
-        records = json.loads(self._runner.run(("gh", "pr", "list", "--repo", _REPOSITORY, "--head", f"soulbooyy:{branch}", "--state", "all", "--limit", "2", "--json", "number,headRefOid")))
+        try:
+            records = json.loads(self._runner.run(("gh", "pr", "list", "--repo", _REPOSITORY, "--head", f"soulbooyy:{branch}", "--state", "all", "--limit", "2", "--json", "number,headRefOid")))
+        except GhProviderFailure as error:
+            if error.code != "provider_unavailable":
+                raise
+            raise GhProviderFailure("pr_lookup_failed") from None
+        except Exception:
+            raise GhProviderFailure("pr_lookup_failed") from None
         if not isinstance(records, list) or len(records) > 1:
             return (branch, None, None)
         if not records:
