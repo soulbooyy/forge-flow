@@ -86,6 +86,14 @@ class GitHubCliFixtureProviderTest(unittest.TestCase):
 
         self.assertEqual(len(runner.calls), 2)
 
+    def test_draft_pr_uses_fixed_cli_form_and_parses_only_the_registered_url(self):
+        runner = FakeRunner(["https://github.com/soulbooyy/forgeflow-m4-fixture/pull/42\n"])
+
+        number = GitHubCliFixtureProvider(runner).create_draft_pr("forgeflow-governed-change-aaaaaaaaaaaa", "main", "Fix calculator addition bug", "Closes #1.\n\nAutomated fixture-only draft PR.")
+
+        self.assertEqual(number, "42")
+        self.assertNotIn("--json", runner.calls[0][0])
+
 
 if __name__ == "__main__":
     unittest.main()

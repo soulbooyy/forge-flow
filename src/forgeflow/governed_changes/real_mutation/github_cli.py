@@ -16,6 +16,7 @@ _BASE_SHA = "97c8220cd713ebf61124ac2de2f3eadc6e4dc222"
 _BASE_BRANCH = "main"
 _BRANCH = re.compile(r"^forgeflow-governed-change-[0-9a-f]{12}$")
 _SHA = re.compile(r"^[0-9a-f]{40}$")
+_PR_URL = re.compile(r"^https://github\.com/soulbooyy/forgeflow-m4-fixture/pull/([1-9][0-9]*)\s*$")
 
 
 class GhRunner(Protocol):
@@ -125,11 +126,14 @@ class GitHubCliFixtureProvider:
     def create_draft_pr(self, branch_name: str, base_branch: str, title: str, body: str) -> str:
         if not _BRANCH.fullmatch(branch_name) or base_branch != _BASE_BRANCH or title != "Fix calculator addition bug" or body != "Closes #1.\n\nAutomated fixture-only draft PR.":
             raise ValueError("unregistered draft PR request")
-        result = json.loads(self._runner.run(("gh", "pr", "create", "--repo", _REPOSITORY, "--base", _BASE_BRANCH, "--head", branch_name, "--title", title, "--body", body, "--draft", "--json", "number")))
-        number = result.get("number") if isinstance(result, dict) else None
-        if not isinstance(number, int):
+        try:
+            response = self._runner.run(("gh", "pr", "create", "--repo", _REPOSITORY, "--base", _BASE_BRANCH, "--head", branch_name, "--title", title, "--body", body, "--draft"))
+        except Exception:
+            raise GhProviderFailure("draft_pr_create_failed") from None
+        match = _PR_URL.fullmatch(response)
+        if match is None:
             raise LookupError("draft PR creation did not return a number")
-        return str(number)
+        return match.group(1)
 
     def _json(self, args: tuple[str, ...], payload: object | None, failure_code: str = "provider_unavailable") -> dict[str, object]:
         input_bytes = None if payload is None else json.dumps(payload, separators=(",", ":")).encode("utf-8")
