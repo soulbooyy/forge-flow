@@ -110,3 +110,15 @@ Completed 2026-07-23.
   and the registered `main` base SHA was re-audited successfully.
 - Only controlled outcome and stage evidence was retained; no token, payload,
   source, raw provider response, or temporary path was recorded.
+
+## M4 closure audit
+
+Completed 2026-07-23.
+
+- The registered fixture audit found zero governed-change branch residues and
+  zero open managed Draft PR residues; the fixed `main` SHA remained exact.
+- The closure satisfies the canonical plan's denied/fault-path, reset, and
+  redacted-evidence requirements, while preserving RFC-008 and ADR-012's
+  separate-authority and ephemeral-payload boundaries.
+- The completed task list, implementation evidence, fixture registration, and
+  acceptance record now agree on the M4 Draft MVP lifecycle.

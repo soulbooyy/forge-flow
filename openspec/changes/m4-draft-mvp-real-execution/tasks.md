@@ -13,6 +13,6 @@
 
 ## Phases 2–4
 
-- [ ] Implement and test local Docker harness after its gate.
-- [ ] Implement and test fixture-only GitHub Draft PR adapter after its gate.
+- [x] Implement and test local Docker harness after its gate.
+- [x] Implement and test fixture-only GitHub Draft PR adapter after its gate.
 - [x] Run one accepted external scenario, reset the fixture, and retain only redacted audit evidence.
